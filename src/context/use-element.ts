@@ -1,8 +1,9 @@
-import { ContextElement } from '../model/elements';
-import { CONTEXT, hasContext, useContext } from './context';
+import { hasContext } from '../model/elements';
+import { throwNowContext } from '../utils/util';
+import { CONTEXT, useContext } from './context';
 
-export const useElement = (element: ContextElement, fn: VoidFunction) => {
-  if (!hasContext(element)) throw new Error(`${element.localName} does not contain context object`);
+export const useElement = (element: HTMLElement, fn: VoidFunction) => {
+  if (!hasContext(element)) throwNowContext(Object.toString.call(element));
   useContext(element[CONTEXT], fn);
 };
 

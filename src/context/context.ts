@@ -1,4 +1,4 @@
-import { ContextElement } from "../model/elements";
+import { throwNowContext } from '../utils/util';
 
 export interface Context {}
 
@@ -15,6 +15,6 @@ export const useContext = (context: Context, fn: VoidFunction) => {
   }
 };
 
-export function hasContext(element: object): element is ContextElement {
-    return Object.hasOwn(element, CONTEXT) && element instanceof HTMLElement;
-}
+export const getCurrentContext = () => {
+  return currentContext ?? throwNowContext('TODO');
+};
