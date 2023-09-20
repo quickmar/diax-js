@@ -1,5 +1,5 @@
-export interface Type<T> {
-    new (...args: unknown[]): T;
+export interface NoArgType<T> {
+    new (): T;
     prototype: T;
 }
 
