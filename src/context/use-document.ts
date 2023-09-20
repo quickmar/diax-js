@@ -1,5 +1,4 @@
-import { hasContext } from '../model/elements';
-import { throwNowContext } from '../utils/util';
+import { hasContext, throwNowContext } from '../utils/util';
 import { CONTEXT, Context, useContext } from './context';
 
 export const useDocument = (fn: VoidFunction) => {
