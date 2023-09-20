@@ -1,4 +1,5 @@
-import { Context, CONTEXT } from "../context/context";
+import { CONTEXT } from "../context/context";
+import { Context } from "../model/context";
 import { ContextElement } from "../model/elements";
 
 export function throwNowContext(description: string): never {

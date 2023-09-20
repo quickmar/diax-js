@@ -1,10 +1,10 @@
+import { Context } from '../model/context';
 import { throwNowContext } from '../utils/util';
 
-export interface Context {}
+let currentContext: Context | null = null;
 
 export const CONTEXT = Symbol('context');
 
-let currentContext: Context | null = null;
 
 export const useContext = (context: Context, fn: VoidFunction) => {
   try {
