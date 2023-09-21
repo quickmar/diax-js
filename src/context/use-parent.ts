@@ -8,7 +8,7 @@ import { instantiate } from './use-self';
 export function useParent<T>(type: NoArgType<T>, skipSelf?: boolean): T {
   const currentContext = getCurrentContext();
   for (const context of contextIterator(currentContext, skipSelf)) {
-    if (context?.dependencies.hasInstance(type)) {
+    if (context.dependencies.hasInstance(type)) {
       return context.dependencies.getInstance(type);
     }
   }
