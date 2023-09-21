@@ -23,4 +23,13 @@ describe.each([ElementContext, DocumentContext])('useContext', (ContextCtor) => 
       'Context can be use only inside of useContext Function. Context is not defined!',
     );
   });
+
+  it('should not allow for nesting', () => {
+    const action = () =>
+      useContext(context, () => {
+        useContext(context, () => {});
+      });
+
+    expect(action).toThrowError('Nesting is not allowed!');
+  });
 });

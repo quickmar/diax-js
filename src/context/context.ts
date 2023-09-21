@@ -5,9 +5,9 @@ let currentContext: Context | null = null;
 
 export const CONTEXT = Symbol('context');
 
-
 export const useContext = (context: Context, fn: VoidFunction) => {
   try {
+    if (currentContext !== null) throw new Error('Nesting is not allowed!');
     currentContext = context;
     fn();
   } finally {
