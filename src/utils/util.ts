@@ -11,7 +11,7 @@ export function getElementContext(element: Element): Context {
   if (hasContext(element)) {
     return element[CONTEXT];
   }
-  throwNoContext(element.localName);
+  throwNoContext(`For ${element.localName}`);
 }
 
 export function hasContext(element: object): element is ContextElement {
