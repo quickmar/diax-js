@@ -6,12 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest",
+    "lint": "eslint --ignore-path .eslintignore --ext .js,.ts ."
   },
   "devDependencies": {
-    "typescript": "^5.0.2",
-    "vite": "^4.4.5",
     "eslint": "^8.49.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.2",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-import": "^2.28.1",
     "eslint-plugin-n": "^16.1.0",
@@ -19,6 +20,8 @@
     "eslint-plugin-promise": "^6.1.1",
     "jsdom": "^22.1.0",
     "prettier": "^3.0.3",
+    "typescript": "^5.0.2",
+    "vite": "^4.4.5",
     "vite-plugin-dts": "^3.5.3",
     "vitest": "^0.34.4"
   },
