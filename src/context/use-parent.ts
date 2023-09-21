@@ -1,9 +1,8 @@
 import { NoArgType } from '../model/common';
 import { Context } from '../model/context';
-import { hasContext } from '../utils/util';
+import { hasContext, instantiate } from '../utils/util';
 import { CONTEXT, getCurrentContext } from './context';
 import { initDocumentContext } from './use-document';
-import { instantiate } from './use-self';
 
 export function useParent<T>(type: NoArgType<T>, skipSelf?: boolean): T {
   const currentContext = getCurrentContext();
@@ -18,12 +17,12 @@ export function useParent<T>(type: NoArgType<T>, skipSelf?: boolean): T {
 function* contextIterator(context: Context, skipSelf = false) {
   const hostElement = context.dependencies.getInstance(HTMLElement);
   let element = skipSelf ? hostElement.parentElement : hostElement;
-  while (element === document.body) {
-    if (hasContext(element)) {
+  do {
+    if (element && hasContext(element)) {
       yield element[CONTEXT];
     }
-    element = element.parentElement;
-  }
+    element = element?.parentElement ?? null;
+  } while (element === document.body) 
   yield initDocumentContext();
   return null;
 }

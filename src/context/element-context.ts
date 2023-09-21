@@ -28,7 +28,11 @@ export class BaseDependencies implements Dependencies {
   }
 
   hasInstance<T>(type: NoArgType<T>): boolean {
-   return this.#dependencies.has(type);
+    return this.#dependencies.has(type);
+  }
+
+  removeInstance<T>(type: NoArgType<T>): void {
+    this.#dependencies.delete(type);
   }
 
   private throwNotInstanceOf(type: NoArgType<any>, instance: any): never {

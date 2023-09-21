@@ -1,5 +1,5 @@
 import { NoArgType } from '../model/common';
-import { Context } from '../model/context';
+import { instantiate } from '../utils/util';
 import { getCurrentContext } from './context';
 
 export function useSelf<T>(type: NoArgType<T>): T {
@@ -8,12 +8,5 @@ export function useSelf<T>(type: NoArgType<T>): T {
     return context.dependencies.getInstance(type);
   }
   return instantiate(context, type);
-}
-
-export function instantiate<T>(context: Context, type: NoArgType<T>) {
-    context.dependencies.setInstance(type, null);
-    const instance = new type();
-    context.dependencies.setInstance(type, instance);
-    return instance;
 }
 
