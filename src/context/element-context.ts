@@ -24,11 +24,6 @@ export class BaseDependencies implements Dependencies {
     }
     if (!this.#dependencies.has(type)) {
       this.#dependencies.set(type, instance);
-    } else {
-      const dependency = this.#dependencies.get(type);
-      if (dependency === null && instance !== null) {
-        this.#dependencies.set(type, instance);
-      }
     }
   }
 

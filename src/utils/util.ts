@@ -22,6 +22,7 @@ export function instantiate<T>(context: Context, type: NoArgType<T>) {
   try {
     context.dependencies.setInstance(type, null);
     const instance = new type();
+    context.dependencies.removeInstance(type);
     context.dependencies.setInstance(type, instance);
     return instance;
   } catch (e) {
