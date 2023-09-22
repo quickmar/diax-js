@@ -7,3 +7,14 @@ export function createContextElement(tagName: keyof HTMLElementTagNameMap): Cont
   Reflect.set(element, CONTEXT, new ElementContext());
   return element as ContextElement;
 }
+
+export function createContextElementFromString(html: string, tagName: keyof HTMLElementTagNameMap): ContextElement {
+  const element = createContextElement(tagName);
+  element.innerHTML = html;
+  for (const node of element.querySelectorAll('[context]')) {
+    const context = new ElementContext();
+    context.dependencies.setInstance(HTMLElement, node);
+    Reflect.set(node, CONTEXT, context);
+  }
+  return element as ContextElement;
+}

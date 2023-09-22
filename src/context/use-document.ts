@@ -3,7 +3,7 @@ import { hasContext } from '../utils/util';
 import { CONTEXT, useContext } from './context';
 import { DocumentContext } from './document-context';
 
-let context: Context | null = initDocumentContext();
+let context: Context | null = null;
 
 export const useDocument = (fn: VoidFunction) => {
   context = initDocumentContext();

@@ -22,7 +22,7 @@ function* contextIterator(context: Context, skipSelf = false) {
       yield element[CONTEXT];
     }
     element = element?.parentElement ?? null;
-  } while (element === document.body) 
+  } while (element !== document.body);
   yield initDocumentContext();
   return null;
 }
