@@ -17,12 +17,10 @@ export function getBaseClass(target: TargetConstructor): HTMLElementConstructor 
 
     [CONTEXT]: Context = attachContext(this);
 
-    private instance: Partial<HTMLElementCallbacks>;
+    private instance: Partial<HTMLElementCallbacks> = useSupplier(this, () => useSelf(target));
 
     constructor() {
       super();
-      useSupplier(this, HTMLElement, () => this);
-      this.instance = useSupplier(this, target, () => useSelf(target));
     }
 
     connectedCallback(): void {

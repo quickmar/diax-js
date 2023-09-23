@@ -1,9 +1,15 @@
-import { NoArgType, Supplier } from '../model/common';
+import { Supplier } from '../model/common';
 import { getNodeContext } from '../utils/util';
+import { useContext } from './context';
 
-export function useSupplier<T>(element: Element, type: NoArgType<T>, supplier: Supplier<T>): T {
+export function useSupplier<T>(element: Element, supplier: Supplier<T>): T {
+  let instance: T | null = null;
   const context = getNodeContext(element);
-  const instance = supplier();
-  context.dependencies.setInstance(type, instance);
-  return instance;
+  useContext(context, () => {
+    instance = supplier();
+  });
+  if (instance) {
+    return instance;
+  }
+  throw new ReferenceError('TODO');
 }
