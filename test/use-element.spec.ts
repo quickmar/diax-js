@@ -1,10 +1,10 @@
 import { getCurrentContext } from '../src/context/context';
 import { useElement } from '../src/context/use-element';
-import { ContextElement } from '../src/model/elements';
+import { ContextNode } from '../src/model/elements';
 import { createContextElement } from './utils';
 
 describe('useElement', () => {
-  let element: ContextElement;
+  let element: ContextNode;
 
   beforeEach(() => {
     element = createContextElement('div');
@@ -24,6 +24,6 @@ describe('useElement', () => {
   it('should throw if element does not have context', () => {
     const action = () => useElement(document.createElement('div'), () => {});
 
-    expect(action).toThrowError('For div. Context is not defined!');
+    expect(action).toThrowError('For DIV. Context is not defined!');
   });
 });

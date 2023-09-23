@@ -1,21 +1,21 @@
 import { CONTEXT } from '../context/context';
 import { NoArgType } from '../model/common';
 import { Context } from '../model/context';
-import { ContextElement } from '../model/elements';
+import { ContextNode } from '../model/elements';
 
 export function throwNoContext(description: string): never {
   throw new Error(`${description}. Context is not defined!`);
 }
 
-export function getElementContext(element: Element): Context {
+export function getNodeContext(element: Node): Context {
   if (hasContext(element)) {
     return element[CONTEXT];
   }
-  throwNoContext(`For ${element.localName}`);
+  throwNoContext(`For ${element.nodeName}`);
 }
 
-export function hasContext(element: object): element is ContextElement {
-  return Object.hasOwn(element, CONTEXT) && element instanceof HTMLElement;
+export function hasContext(element: object): element is ContextNode {
+  return Object.hasOwn(element, CONTEXT) && element instanceof Node;
 }
 
 export function instantiate<T>(context: Context, type: NoArgType<T>) {

@@ -1,6 +1,8 @@
-import { CONTEXT } from "../context/context";
-import { Context } from "./context";
+import { CONTEXT } from '../context/context';
+import { Context } from './context';
 
-export interface ContextElement extends HTMLElement {
-    readonly [CONTEXT]: Context;
+export interface ContextNode extends Node {
+  readonly [CONTEXT]: Context;
 }
+
+export interface ContextElement extends Element {}

@@ -1,8 +1,8 @@
-import { getElementContext } from '../utils/util';
+import { getNodeContext } from '../utils/util';
 import { useContext } from './context';
 
 export const useElement = (element: Element, fn: VoidFunction) => {
-  const context = getElementContext(element);
+  const context = getNodeContext(element);
   useContext(context, fn);
 };
 

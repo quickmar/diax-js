@@ -2,7 +2,7 @@ import { NoArgType } from '../model/common';
 import { Context } from '../model/context';
 import { hasContext, instantiate } from '../utils/util';
 import { CONTEXT, getCurrentContext } from './context';
-import { initDocumentContext } from './use-document';
+import { DocumentContext } from './document-context';
 
 export function useParent<T>(type: NoArgType<T>, skipSelf?: boolean): T {
   const currentContext = getCurrentContext();
@@ -23,6 +23,6 @@ function* contextIterator(context: Context, skipSelf = false) {
     }
     element = element?.parentElement ?? null;
   } while (element !== document.body);
-  yield initDocumentContext();
+  yield DocumentContext.create();
   return null;
 }
