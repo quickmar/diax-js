@@ -1,15 +1,13 @@
-import { Supplier } from '../model/common';
-import { getNodeContext } from '../utils/util';
-import { useContext } from './context';
+import { Supplier, Type } from '../model/common';
+import { getCurrentContext } from './context';
 
-export function useSupplier<T>(element: Element, supplier: Supplier<T>): T {
-  let instance: T | null = null;
-  const context = getNodeContext(element);
-  useContext(context, () => {
-    instance = supplier();
-  });
-  if (instance) {
+export function useSupplier<T>(type: Type<T>, supplier: Supplier<T>): T {
+  const context = getCurrentContext();
+  if (context.dependencies.hasInstance(type)) {
+    return context.dependencies.getInstance(type);
+  } else {
+    const instance = supplier();
+    context.dependencies.setInstance(type, instance);
     return instance;
   }
-  throw new ReferenceError('TODO');
 }

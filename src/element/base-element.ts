@@ -1,45 +1,62 @@
 import { ElementContext } from '../context/element-context';
-import { ContextHTMLElement, HTMLElementCallbacks, HTMLElementConstructor, TargetConstructor } from '../model/elements';
+import {
+  ContextHTMLElement,
+  HTMLElementCallbacks,
+  HTMLElementConstructor,
+  TargetCallbacks,
+  TargetConstructor,
+} from '../model/elements';
 import { Context } from '../model/context';
 import { CONTEXT } from '../context/context';
 import { useSelf } from '../context/use-self';
-import { useSupplier } from '../context/use-supplier';
+import { useElement } from '../context/use-element';
 
-export function getBaseClass(target: TargetConstructor): HTMLElementConstructor {
-  return class BaseElement extends HTMLElement implements ContextHTMLElement, HTMLElementCallbacks {
+export class BaseElement extends HTMLElement implements ContextHTMLElement, HTMLElementCallbacks {
+  [CONTEXT]: Context = new ElementContext(this);
+
+  protected instance: TargetCallbacks = {};
+
+  constructor(ctor: TargetConstructor) {
+    super();
+    useElement(this, () => {
+      this.instance = useSelf(ctor);
+    });
+  }
+
+  connectedCallback(): void {
+    useElement(this, () => {
+      this.instance.connectedCallback?.();
+    });
+  }
+  disconnectedCallback(): void {
+    useElement(this, () => {
+      this.instance.disconnectedCallback?.();
+    });
+  }
+  attributeChangedCallback(name: string, oldValue: unknown, newValue: unknown): void {
+    useElement(this, () => {
+      this.instance.attributeChangedCallback?.(name, oldValue, newValue);
+    });
+  }
+  adoptedCallback(): void {
+    useElement(this, () => {
+      this.instance.adoptedCallback?.();
+    });
+  }
+}
+
+export function getElementClass(target: TargetConstructor): HTMLElementConstructor {
+  return class extends BaseElement implements ContextHTMLElement, HTMLElementCallbacks {
     static get observedAttributes() {
-      return target?.observedAttributes ?? [];
+      return target.observedAttributes ?? [];
     }
 
     static get target() {
       return target;
     }
 
-    [CONTEXT]: Context = attachContext(this);
-
-    private instance: Partial<HTMLElementCallbacks> = useSupplier(this, () => useSelf(target));
-
     constructor() {
-      super();
-    }
-
-    connectedCallback(): void {
-      this.instance.connectedCallback?.();
-    }
-    disconnectedCallback(): void {
-      this.instance.connectedCallback?.();
-    }
-    attributeChangedCallback(name: string, oldValue: unknown, newValue: unknown): void {
-      this.instance.attributeChangedCallback?.(name, oldValue, newValue);
-    }
-    adoptedCallback(): void {
-      this.instance.adoptedCallback?.();
+      super(target);
     }
   };
-}
-
-function attachContext(element: HTMLElement): Context {
-  const context = new ElementContext();
-  context.dependencies.setInstance(HTMLElement, element);
-  return context;
 }

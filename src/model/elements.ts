@@ -17,11 +17,13 @@ export interface HTMLElementCallbacks {
   adoptedCallback(): void;
 }
 
+export type TargetCallbacks = Partial<HTMLElementCallbacks> & object; 
+
 export interface HTMLElementConstructor extends NoArgType<HTMLElement> {
   get observedAttributes(): string[];
   get target(): TargetConstructor;
 }
 
-export interface TargetConstructor extends NoArgType<Partial<HTMLElementCallbacks>> {
-  observedAttributes?: string[];
+export interface TargetConstructor extends NoArgType<TargetCallbacks> {
+  readonly observedAttributes?: string[];
 }

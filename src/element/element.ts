@@ -1,8 +1,8 @@
 import { ElementDecorator } from '../model/decorator';
-import { getBaseClass } from './base-element';
+import { getElementClass } from './base-element';
 
 export function Element(tagName: string): ElementDecorator {
   return function (target) {
-    customElements.define(tagName, getBaseClass(target));
+    customElements.define(tagName, getElementClass(target));
   };
 }
