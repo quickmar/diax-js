@@ -6,9 +6,13 @@ export interface ContextNode extends Node {
   readonly [CONTEXT]: Context;
 }
 
-export interface ContextElement extends ContextNode {}
+export interface ContextElement extends Element {
+  readonly [CONTEXT]: Context;
+}
 
-export interface ContextHTMLElement extends ContextElement {}
+export interface ContextHTMLElement extends HTMLElement {
+  readonly [CONTEXT]: Context;
+}
 
 export interface HTMLElementCallbacks {
   connectedCallback(): void;
@@ -17,7 +21,7 @@ export interface HTMLElementCallbacks {
   adoptedCallback(): void;
 }
 
-export type TargetCallbacks = Partial<HTMLElementCallbacks> & object; 
+export type TargetCallbacks = Partial<HTMLElementCallbacks> & object;
 
 export interface HTMLElementConstructor extends NoArgType<HTMLElement> {
   get observedAttributes(): string[];

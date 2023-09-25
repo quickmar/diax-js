@@ -4,17 +4,14 @@ import { ContextElement } from '../src/model/elements';
 
 export function createContextElement(tagName: keyof HTMLElementTagNameMap): ContextElement {
   const element = document.createElement(tagName);
-  Reflect.set(element, CONTEXT, new ElementContext());
-  return element as ContextElement;
+  return Object.assign(element, { [CONTEXT]: new ElementContext(element) });
 }
 
 export function createContextElementFromString(html: string, tagName: keyof HTMLElementTagNameMap): ContextElement {
   const element = createContextElement(tagName);
   element.innerHTML = html;
   for (const node of element.querySelectorAll('[context]')) {
-    const context = new ElementContext();
-    context.dependencies.setInstance(HTMLElement, node);
-    Reflect.set(node, CONTEXT, context);
+    Object.assign(element, { [CONTEXT]: new ElementContext(node) });
   }
-  return element as ContextElement;
+  return element;
 }
