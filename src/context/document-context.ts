@@ -6,9 +6,9 @@ let INSTANCE: DocumentContext;
 
 export class DocumentContext extends ElementContext {
   static {
-    if (document && !Reflect.has(document, CONTEXT)) {
+    if (document && !Object.hasOwn(document, CONTEXT)) {
       INSTANCE = new this();
-      Reflect.set(document, CONTEXT, DocumentContext.create());
+      Object.assign(document, { [CONTEXT]: DocumentContext.create() });
     }
   }
 
