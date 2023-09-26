@@ -11,12 +11,15 @@ import { CONTEXT } from '../context/context';
 import { useSelf } from '../context/use-self';
 import { useElement } from '../context/use-element';
 
-export class BaseElement extends HTMLElement implements ContextHTMLElement, HTMLElementCallbacks {
+export class BaseElement<T extends TargetCallbacks>
+  extends HTMLElement
+  implements ContextHTMLElement, HTMLElementCallbacks
+{
   [CONTEXT]: Context = new ElementContext(this);
 
-  protected instance: TargetCallbacks = {};
+  protected instance: T = {} as T;
 
-  constructor(ctor: TargetConstructor) {
+  constructor(ctor: TargetConstructor<T>) {
     super();
     useElement(this, () => {
       this.instance = useSelf(ctor);
@@ -45,8 +48,8 @@ export class BaseElement extends HTMLElement implements ContextHTMLElement, HTML
   }
 }
 
-export function getElementClass(target: TargetConstructor): HTMLElementConstructor {
-  return class extends BaseElement implements ContextHTMLElement, HTMLElementCallbacks {
+export function getElementClass(target: TargetConstructor<TargetCallbacks>): HTMLElementConstructor<TargetCallbacks> {
+  return class extends BaseElement<TargetCallbacks> {
     static get observedAttributes() {
       return target.observedAttributes ?? [];
     }
