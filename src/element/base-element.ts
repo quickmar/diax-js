@@ -8,8 +8,9 @@ import {
 } from '../model/elements';
 import { Context } from '../model/context';
 import { CONTEXT } from '../context/context';
-import { useSelf } from '../context/use-self';
 import { useElement } from '../context/use-element';
+import { Supplier } from '../model/common';
+import { useSelf } from '../elements';
 
 export class BaseElement<T extends TargetCallbacks>
   extends HTMLElement
@@ -19,10 +20,10 @@ export class BaseElement<T extends TargetCallbacks>
 
   protected instance: T = {} as T;
 
-  constructor(ctor: TargetConstructor<T>) {
+  constructor(supplier: Supplier<T>) {
     super();
     useElement(this, () => {
-      this.instance = useSelf(ctor);
+      this.instance = supplier();
     });
   }
 
@@ -59,7 +60,7 @@ export function getElementClass(target: TargetConstructor<TargetCallbacks>): HTM
     }
 
     constructor() {
-      super(target);
+      super(() => useSelf(target));
     }
   };
 }

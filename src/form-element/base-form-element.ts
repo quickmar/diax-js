@@ -1,5 +1,6 @@
 import { BaseElement } from '../element/base-element';
 import { useElement, useSelf, useSupplier } from '../elements';
+import { Supplier } from '../model/common';
 import {
   FormElement,
   FormElementCallbacks,
@@ -15,12 +16,10 @@ export class BaseFormElement extends BaseElement<FormTargetCallbacks> implements
 
   #internals!: ElementInternals;
 
-  constructor(ctor: TargetConstructor<FormTargetCallbacks>) {
-    super(ctor);
+  constructor(supplier: Supplier<FormTargetCallbacks>) {
+    super(supplier);
     useElement(this, () => {
-      this.#internals = useSupplier(ElementInternals, () => {
-        return useSelf(HTMLElement).attachInternals();
-      });
+      this.#internals = useSelf(ElementInternals);
     });
   }
   get name(): string {
@@ -80,7 +79,10 @@ export function getFormElementClass(target: TargetConstructor<FormTargetCallback
     }
 
     constructor() {
-      super(target);
+      super(() => {
+        useSupplier(ElementInternals, () => useSelf(HTMLElement).attachInternals());
+        return useSelf(target);
+      });
     }
   };
 }
