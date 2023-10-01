@@ -9,7 +9,7 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: true,
     lib: {
-      entry: './src/elements.ts',
+      entry: './main.ts',
       name: 'elements',
     },
   },

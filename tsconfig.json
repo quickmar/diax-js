@@ -28,7 +28,8 @@
     "src",
     "test",
     "./vitest.config.ts",
-    "./vite.config.ts"
+    "./vite.config.ts",
+    "./main.ts",
   ],
   "exclude": [
     "node_modules",
