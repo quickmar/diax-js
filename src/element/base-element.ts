@@ -52,7 +52,7 @@ export class BaseElement<T extends TargetCallbacks>
 export function getElementClass(target: TargetConstructor<TargetCallbacks>): HTMLElementConstructor<TargetCallbacks> {
   return class extends BaseElement<TargetCallbacks> {
     static get observedAttributes() {
-      return target.observedAttributes ?? [];
+      return target.observedAttributes;
     }
 
     static get target() {
