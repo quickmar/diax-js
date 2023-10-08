@@ -15,6 +15,10 @@ export interface ContextHTMLElement extends HTMLElement {
   readonly [CONTEXT]: Context;
 }
 
+export interface RenderingHTMLElement extends ContextHTMLElement, RenderingElementCallbacks {
+
+}
+
 export interface HTMLElementCallbacks {
   connectedCallback(): void;
   disconnectedCallback(): void;
