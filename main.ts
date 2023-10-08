@@ -1,3 +1,6 @@
+export { RenderingElement } from './src/rendering-element/rendering-element';
+export { BaseRenderingElement,getRenderingElementClass} from './src/rendering-element/base-rendering-element';
+
 export { FormElement } from './src/form-element/form-element';
 export { BaseFormElement, getFormElementClass } from './src/form-element/base-form-element';
 
