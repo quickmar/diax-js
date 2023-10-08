@@ -10,7 +10,7 @@ export function setState(element: Element, state?: RenderState): void {
 export function tryRender(element: RenderingHTMLElement): void {
   try {
     element.render();
-    setState(element, RenderState.RENDERED);
+    element.removeAttribute(Attributes.RENDER_STATE);
   } catch (error) {
     console.error(error);
     setState(element, RenderState.FAILED);

@@ -8,6 +8,7 @@ import {
   RenderingTargetCallbacks,
   TargetConstructor,
 } from '../model/elements';
+import { attachRendering } from '../rendering/observing';
 
 export class BaseRenderingElement extends BaseElement<RenderingTargetCallbacks> implements RenderingElementCallbacks {
   static get renderAssociated(): true {
@@ -39,6 +40,7 @@ export function getRenderingElementClass(
 
     constructor() {
       super(() => {
+        attachRendering();
         return useSelf(target);
       });
     }
