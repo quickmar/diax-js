@@ -10,7 +10,7 @@ import { Context } from '../model/context';
 import { CONTEXT } from '../context/context';
 import { useElement } from '../context/use-element';
 import { Supplier } from '../model/common';
-import { useSelf } from '../elements';
+import { useSelf } from '../context/use-self';
 
 export class BaseElement<T extends TargetCallbacks>
   extends HTMLElement

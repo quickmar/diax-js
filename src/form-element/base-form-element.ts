@@ -1,5 +1,7 @@
+import { useElement } from '../context/use-element';
+import { useSelf } from '../context/use-self';
+import { useSupplier } from '../context/use-supplier';
 import { BaseElement } from '../element/base-element';
-import { useElement, useSelf, useSupplier } from '../elements';
 import { Supplier } from '../model/common';
 import {
   FormElement,
@@ -32,7 +34,7 @@ export class BaseFormElement extends BaseElement<FormTargetCallbacks> implements
     return this.#internals.form;
   }
   get validity(): ValidityState {
-    return this.#internals?.validity;
+    return this.#internals.validity;
   }
   get validationMessage(): string {
     return this.#internals.validationMessage;
