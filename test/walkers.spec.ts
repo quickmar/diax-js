@@ -97,14 +97,15 @@ describe('walkers', () => {
     function testSkip(att: Attributes, value: string): void {
       element.innerHTML = `
         <test-rendering-element ${att}="${value}"></test-rendering-element>
+        <test-rendering-element ${att}="${value}"></test-rendering-element>
         `;
       vi.resetAllMocks();
 
       walker.walk(element);
 
       const elements = element.querySelectorAll(`[${att}]`);
-      elements.forEach((element) => {
-        useElement(element, () => {
+      elements.forEach((el) => {
+        useElement(el, () => {
           expect(useSelf(TestRenderingElement).spy).not.toBeCalled();
         });
       });
