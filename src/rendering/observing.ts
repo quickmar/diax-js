@@ -25,13 +25,13 @@ function checkMutations(mutations: MutationRecord[]): void {
     if (!hasPendingDetectionState(target)) continue;
     const strategy = target.getAttribute(Attributes.RENDER_STRATEGY);
     switch (strategy) {
-      case RenderStrategy.SUBTREE:
-        return subTreeWalker.walk(target);
       case RenderStrategy.SELF:
         return selfWalker.walk(target);
-      case RenderStrategy.APP:
-      default:
+      case RenderStrategy.document:
         return documentWalker.walk();
+      case RenderStrategy.SUBTREE:
+      default:
+        return subTreeWalker.walk(target);
     }
   }
 }

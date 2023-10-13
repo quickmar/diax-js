@@ -10,7 +10,7 @@ export function setState(element: Element, state?: RenderState): void {
 export function tryRender(element: RenderingHTMLElement): void {
   try {
     element.render();
-    element.removeAttribute(Attributes.RENDER_STATE);
+    setState(element, RenderState.RENDERED);
   } catch (error) {
     console.error(error);
     setState(element, RenderState.FAILED);
@@ -18,14 +18,17 @@ export function tryRender(element: RenderingHTMLElement): void {
 }
 
 export function shouldRejectNode(element: RenderingHTMLElement): boolean {
-  return !!element.getAttribute(RenderStrategy.SELF) || !!element.getAttribute(RenderState.DISABLED);
+  return (
+    element.getAttribute(Attributes.RENDER_STRATEGY) === RenderStrategy.SELF ||
+    element.getAttribute(Attributes.RENDER_STATE) === RenderState.DISABLED
+  );
 }
 
 export function canRender(node: object): node is RenderingHTMLElement {
   return Reflect.has(node.constructor, 'renderAssociated') && node instanceof HTMLElement;
 }
 
-export function hasPendingDetectionState(node: Node): node is Element{
+export function hasPendingDetectionState(node: Node): node is Element {
   if (node instanceof Element) {
     return node.getAttribute(Attributes.RENDER_STATE) === RenderState.PENDING;
   }

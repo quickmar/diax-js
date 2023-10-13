@@ -1,6 +1,6 @@
 export enum RenderState {
     PENDING = 'pending',
     DISABLED = 'disabled',
-    RENDERED = '',
+    RENDERED = 'rendered',
     FAILED = 'failed',
 }

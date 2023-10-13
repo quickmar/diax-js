@@ -1,5 +1,5 @@
 export enum RenderStrategy {
-    APP = 'app',
+    document = 'document',
     SUBTREE = 'subtree',
     SELF = 'self',
 }
