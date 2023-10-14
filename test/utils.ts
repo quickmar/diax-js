@@ -1,7 +1,12 @@
 import { Element, FormElement, RenderingElement } from '../main';
 import { CONTEXT } from '../src/context/context';
 import { ElementContext } from '../src/context/element-context';
-import { ContextElement, FormElementCallbacks, HTMLElementCallbacks, RenderingElementCallbacks } from '../src/model/elements';
+import {
+  ContextElement,
+  FormElementCallbacks,
+  HTMLElementCallbacks,
+  RenderingElementCallbacks,
+} from '../src/model/elements';
 
 @Element('test-element')
 export class TestElement implements HTMLElementCallbacks {
@@ -91,4 +96,8 @@ export function createContextElementFromString(html: string, tagName: keyof HTML
     Object.assign(element, { [CONTEXT]: new ElementContext(node) });
   }
   return element;
+}
+
+export async function flush() {
+  await new Promise((resolve) => setTimeout(resolve));
 }

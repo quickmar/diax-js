@@ -71,6 +71,17 @@ describe.each([
     assertSypCallTimes(1);
   });
 
+  it('should call adopted callback', () => {
+    const iframe = document.createElement('iframe');
+    iframe.setAttribute('src', './index.html');
+    document.body.appendChild(iframe);
+    vi.clearAllMocks();
+
+    // adoptedCallback
+    iframe.contentWindow?.document.adoptNode(element);
+    assertSypCallTimes(1);
+  });
+
   function assertSypCallTimes(times: number): void {
     useElement(element, () => {
       expect(useSelf(Ctor).spy).toBeCalledTimes(times);

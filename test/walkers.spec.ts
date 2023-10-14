@@ -58,12 +58,15 @@ describe('walkers', () => {
 
     it('should set failed attribute when error', () => {
       instance.spy.mockImplementationOnce(() => {
-        throw new Error('Expected error');
+        throw new Error();
       });
+
+      const consoleSpy = vi.spyOn(console, 'error').mockImplementationOnce((err) => expect(err).toEqual(new Error()));
 
       walker.walk(element);
 
       expect(element.getAttribute(Attributes.RENDER_STATE)).toBe(RenderState.FAILED);
+      expect(consoleSpy).toBeCalledTimes(1);
     });
   });
 
