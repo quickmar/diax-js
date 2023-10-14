@@ -1,7 +1,16 @@
 import { NoArgType } from '../model/common';
 import { Context, Dependencies } from '../model/context';
 
+let index = 0;
+
 export class ElementContext implements Context {
+  i = index++;
+
+  constructor(node?: Node) {
+    if (node instanceof HTMLElement) {
+      this.dependencies.setInstance(HTMLElement, node);
+    }
+  }
   readonly dependencies: Dependencies = new BaseDependencies();
 }
 

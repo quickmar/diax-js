@@ -1,10 +1,9 @@
 import { getCurrentContext } from '../src/context/context';
 import { useElement } from '../src/context/use-element';
-import { ContextNode } from '../src/model/elements';
 import { createContextElement } from './utils';
 
 describe('useElement', () => {
-  let element: ContextNode;
+  let element: Element;
 
   beforeEach(() => {
     element = createContextElement('div');

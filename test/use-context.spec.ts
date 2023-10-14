@@ -24,12 +24,16 @@ describe.each([ElementContext, DocumentContext])('useContext', (ContextCtor) => 
     );
   });
 
-  it('should not allow for nesting', () => {
-    const action = () =>
-      useContext(context, () => {
-        useContext(context, () => {});
+  it('should allow for nesting', () => {
+    const newContext = new ElementContext();
+    useContext(context, () => {
+      expect(getCurrentContext()).toBe(context);
+      useContext(newContext, () => {
+        expect(getCurrentContext()).toBe(newContext);
       });
+      expect(getCurrentContext()).toBe(context);
+    });
 
-    expect(action).toThrowError('Nesting is not allowed!');
+    expect(() => getCurrentContext()).toThrow();
   });
 });
