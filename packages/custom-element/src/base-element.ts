@@ -1,16 +1,5 @@
-import { ElementContext } from '../context/element-context';
-import {
-  ContextHTMLElement,
-  HTMLElementCallbacks,
-  HTMLElementConstructor,
-  TargetCallbacks,
-  TargetConstructor,
-} from '../model/elements';
-import { Context } from '../model/context';
-import { CONTEXT } from '../context/context';
-import { useElement } from '../context/use-element';
-import { Supplier } from '../model/common';
-import { useSelf } from '../context/use-self';
+import { CONTEXT, Context, ContextHTMLElement, HTMLElementCallbacks, HTMLElementConstructor, Supplier, TargetCallbacks, TargetConstructor } from "@items/common";
+import { ElementContext, useElement, useSelf } from "@items/context";
 
 export class BaseElement<T extends TargetCallbacks>
   extends HTMLElement

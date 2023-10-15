@@ -1,15 +1,6 @@
-import { useElement } from '../context/use-element';
-import { useSelf } from '../context/use-self';
-import { useSupplier } from '../context/use-supplier';
-import { BaseElement } from '../element/base-element';
-import { Supplier } from '../model/common';
-import {
-  FormElement,
-  FormElementCallbacks,
-  FormElementConstructor,
-  FormTargetCallbacks,
-  TargetConstructor,
-} from '../model/elements';
+import { FormTargetCallbacks, FormElementCallbacks, FormElement, Supplier, TargetConstructor, FormElementConstructor } from "@items/common";
+import { useElement, useSelf, useSupplier } from "@items/context";
+import { BaseElement } from "@items/custom-element";
 
 export class BaseFormElement extends BaseElement<FormTargetCallbacks> implements FormElementCallbacks, FormElement {
   static get formAssociated(): true {

@@ -1,7 +1,6 @@
-import { NoArgType } from '../model/common';
-import { Context } from '../model/context';
-import { hasContext, instantiate } from '../utils/util';
-import { CONTEXT, getCurrentContext } from './context';
+import { CONTEXT, Context, NoArgType } from '@items/common';
+import { getCurrentContext } from './context';
+import { hasContext, instantiate } from './utils/util';
 import { DocumentContext } from './document-context';
 
 export function useParent<T>(type: NoArgType<T>, skipSelf?: boolean): T {

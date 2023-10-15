@@ -2,12 +2,12 @@
   "name": "@items/context",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "devDependencies": {
+  "main": "./dist/index.js",
+  "dependencies": {
     "@items/common": "1.0.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc --build"
   },
   "keywords": [],
   "author": "Marek Miałkowski",

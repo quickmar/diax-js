@@ -1,42 +1,17 @@
 {
+  "includes": ["packages"],
+  "exclude": ["packages/test", "."],
   "compilerOptions": {
+    "incremental": true,
     "target": "ESNext",
-    "useDefineForClassFields": true,
     "module": "ESNext",
-    "lib": [
-      "ESNext",
-      "DOM",
-      "DOM.Iterable"
-    ],
-    "types": [
-      "vitest/globals"
-    ],
-    "skipLibCheck": true,
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    /* Linting */
+    "declaration": true,
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
   },
-  "include": [
-    "src",
-    "test",
-    "example",
-    "./vitest.config.ts",
-    "./vite.config.ts",
-    "./main.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "**/*.test.ts"
-  ],
   "references": [
     {
       "path": "./packages/common"
@@ -53,8 +28,8 @@
     {
       "path": "./packages/rendering-element"
     },
-    {
-      "path": "./packages/test"
-    }
+    // {
+    //   "path": "./packages/test"
+    // }
   ]
 }

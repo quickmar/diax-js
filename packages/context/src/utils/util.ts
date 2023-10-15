@@ -1,7 +1,4 @@
-import { CONTEXT } from '../context/context';
-import { NoArgType } from '../model/common';
-import { Context } from '../model/context';
-import { ContextNode } from '../model/elements';
+import { CONTEXT, Context, ContextNode, NoArgType } from "@items/common";
 
 export function throwNoContext(description: string): never {
   throw new Error(`${description}. Context is not defined!`);

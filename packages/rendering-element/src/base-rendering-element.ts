@@ -1,14 +1,7 @@
-import { useElement } from '../context/use-element';
-import { useSelf } from '../context/use-self';
-import { BaseElement } from '../element/base-element';
-import { Supplier } from '../model/common';
-import {
-  RenderingElementCallbacks,
-  RenderingElementConstructor,
-  RenderingTargetCallbacks,
-  TargetConstructor,
-} from '../model/elements';
-import { attachRendering } from '../rendering/observing';
+import { RenderingTargetCallbacks, RenderingElementCallbacks, Supplier, TargetConstructor, RenderingElementConstructor } from "@items/common";
+import { useElement, useSelf } from "@items/context";
+import { BaseElement } from "@items/custom-element";
+import { attachRendering } from "./rendering/observing";
 
 export class BaseRenderingElement extends BaseElement<RenderingTargetCallbacks> implements RenderingElementCallbacks {
   static get renderAssociated(): true {

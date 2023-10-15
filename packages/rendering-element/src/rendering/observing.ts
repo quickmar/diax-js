@@ -1,6 +1,4 @@
-import { useDocument } from '../context/use-document';
-import { useSelf } from '../context/use-self';
-import { useSupplier } from '../context/use-supplier';
+import { useSelf } from '@items/context';
 import { hasPendingDetectionState } from '../utils/rendering-util';
 import { Attributes } from './attributes/attribute-name';
 import { RenderStrategy } from './attributes/render-strategy';
@@ -12,12 +10,6 @@ const renderStateObserver: MutationObserver = new MutationObserver(checkMutation
 const selfWalker = new SelfWalker();
 const subTreeWalker = new SubTreeWalker();
 const documentWalker = new DocumentWalker();
-
-useDocument(() => {
-  useSupplier(SelfWalker, () => selfWalker);
-  useSupplier(SubTreeWalker, () => subTreeWalker);
-  useSupplier(DocumentWalker, () => documentWalker);
-});
 
 function checkMutations(mutations: MutationRecord[]): void {
   for (const record of mutations) {

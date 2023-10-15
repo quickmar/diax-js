@@ -1,5 +1,4 @@
-import { NoArgType } from '../model/common';
-import { Context, Dependencies } from '../model/context';
+import { Context, Dependencies, NoArgType } from "@items/common";
 
 let index = 0;
 

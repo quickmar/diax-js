@@ -1,6 +1,6 @@
 import { DetectionWalker } from './detection-walker';
 import { canRender, shouldRejectNode, tryRender } from '../../utils/rendering-util';
-import { RenderingHTMLElement } from '../../model/elements';
+import { RenderingHTMLElement } from '@items/common';
 
 export class SubTreeWalker implements DetectionWalker {
   walk(root: Node): void {

@@ -1,4 +1,4 @@
-import { RenderingElementDecorator } from "../model/decorator";
+import { RenderingElementDecorator } from "@items/common";
 import { getRenderingElementClass } from "./base-rendering-element";
 
 export function RenderingElement(tagName: string): RenderingElementDecorator {

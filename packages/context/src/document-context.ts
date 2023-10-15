@@ -1,6 +1,6 @@
-import { throwNoContext } from '../utils/util';
-import { CONTEXT } from './context';
+import { CONTEXT } from '@items/common';
 import { ElementContext } from './element-context';
+import { throwNoContext } from './utils/util';
 
 let INSTANCE: DocumentContext;
 

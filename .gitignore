@@ -12,6 +12,8 @@ dist
 example
 dist-ssr
 *.local
+*.d.ts
+*.js
 
 # Editor directories and files
 .vscode/*

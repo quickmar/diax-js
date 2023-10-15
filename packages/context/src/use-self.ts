@@ -1,6 +1,6 @@
-import { NoArgType } from '../model/common';
-import { instantiate } from '../utils/util';
+import { NoArgType } from '@items/common';
 import { getCurrentContext } from './context';
+import { instantiate } from './utils/util';
 
 export function useSelf<T>(type: NoArgType<T>): T {
   const context = getCurrentContext();

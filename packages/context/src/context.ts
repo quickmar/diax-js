@@ -1,5 +1,6 @@
-import { Context } from '../model/context';
-import { throwNoContext } from '../utils/util';
+import { Context } from "@items/common";
+import { throwNoContext } from "./utils/util";
+
 
 let currentContext: Context | null = null;
 
