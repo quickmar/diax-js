@@ -1,5 +1,7 @@
 import { NoArgType } from "./common";
 
+export const CONTEXT = Symbol('context');
+
 export interface Context {
   readonly dependencies: Dependencies;
 }

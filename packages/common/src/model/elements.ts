@@ -1,5 +1,4 @@
-import { CONTEXT } from '../context/context';
-import { FormElement } from '../form-element/form-element';
+import { CONTEXT } from './context';
 import { NoArgType } from './common';
 import { Context } from './context';
 

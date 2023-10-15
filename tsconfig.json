@@ -36,5 +36,25 @@
     "node_modules",
     "dist",
     "**/*.test.ts"
+  ],
+  "references": [
+    {
+      "path": "./packages/common"
+    },
+    {
+      "path": "./packages/context"
+    },
+    {
+      "path": "./packages/custom-element"
+    },
+    {
+      "path": "./packages/form-element"
+    },
+    {
+      "path": "./packages/rendering-element"
+    },
+    {
+      "path": "./packages/test"
+    }
   ]
 }

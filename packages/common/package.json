@@ -1,0 +1,12 @@
+{
+  "name": "@items/common",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc --build"
+  },
+  "keywords": [],
+  "author": "Marek Miałkowski",
+  "license": "ISC"
+}
