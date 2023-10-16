@@ -1,6 +1,6 @@
-import { getCurrentContext } from '../src/context/context';
-import { useElement } from '../src/context/use-element';
+import { useElement } from '@items/context';
 import { createContextElement } from './utils';
+import { getCurrentContext } from '@items/context/src/context';
 
 describe('useElement', () => {
   let element: Element;

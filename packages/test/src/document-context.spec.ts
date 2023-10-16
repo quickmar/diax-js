@@ -1,5 +1,5 @@
-import { CONTEXT } from '../src/context/context';
-import { DocumentContext } from '../src/context/document-context';
+import { CONTEXT } from "@items/common";
+import { DocumentContext } from "@items/context";
 
 describe('document context', () => {
   it('should document has context', () => {

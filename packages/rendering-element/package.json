@@ -2,14 +2,15 @@
   "name": "@items/rendering-element",
   "version": "1.0.0",
   "description": "",
-  "main": "./dist/index.js",
+  "main": "./index.js",
+  "types": "./index.d.ts",
   "dependencies": {
     "@items/common": "1.0.0",
     "@items/context": "1.0.0",
     "@items/custom-element": "1.0.0"
   },
   "scripts": {
-    "build": "tsc --build --verbose"
+    "build": "tsc --build"
   },
   "keywords": [],
   "author": "",

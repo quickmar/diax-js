@@ -1,12 +1,14 @@
-import { useElement, useSelf } from '../main';
-import { Attributes } from '../src/rendering/attributes/attribute-name';
-import { RenderState } from '../src/rendering/attributes/render-state';
-import { RenderStrategy } from '../src/rendering/attributes/render-strategy';
-import { DetectionWalker } from '../src/rendering/strategy/detection-walker';
-import { DocumentWalker } from '../src/rendering/strategy/document-walker';
-import { SelfWalker } from '../src/rendering/strategy/self-walker';
-import { SubTreeWalker } from '../src/rendering/strategy/sub-tree-walker';
+import {
+  Attributes,
+  DetectionWalker,
+  DocumentWalker,
+  RenderState,
+  RenderStrategy,
+  SelfWalker,
+  SubTreeWalker,
+} from '@items/rendering-element';
 import { TestRenderingElement } from './utils';
+import { useElement, useSelf } from '@items/context';
 
 describe('walkers', () => {
   let walker: DetectionWalker;

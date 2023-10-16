@@ -1,9 +1,6 @@
-import { useDocument } from '../src/context/use-document';
-import { useElement } from '../src/context/use-element';
-import { useParent } from '../src/context/use-parent';
-import { useSelf } from '../src/context/use-self';
-import { ContextElement } from '../src/model/elements';
+import { ContextElement } from '@items/common';
 import { createContextElementFromString } from './utils';
+import { useElement, useSelf, useDocument, useParent } from '@items/context';
 
 class DocumentService {}
 

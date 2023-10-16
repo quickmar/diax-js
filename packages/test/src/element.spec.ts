@@ -1,5 +1,5 @@
-import { useElement, useSelf } from '../main';
-import { TestElement, TestFormElement, TestRenderingElement } from './utils';
+import { useElement, useSelf } from "@items/context";
+import { TestElement, TestFormElement, TestRenderingElement } from "./utils";
 
 describe.each([
   [{ Ctor: TestElement, name: 'test-element' }],

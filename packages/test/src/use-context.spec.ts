@@ -1,7 +1,6 @@
-import { getCurrentContext, useContext } from '../src/context/context';
-import { DocumentContext } from '../src/context/document-context';
-import { ElementContext } from '../src/context/element-context';
-import { Context } from '../src/model/context';
+import { Context } from '@items/common';
+import { ElementContext, DocumentContext } from '@items/context';
+import { useContext, getCurrentContext } from '@items/context/src/context';
 
 describe.each([ElementContext, DocumentContext])('useContext', (ContextCtor) => {
   let context: Context;

@@ -1,19 +1,12 @@
 {
+    "extends": "../../tsconfig-package.json",
+    "include": [
+        "src",
+        "./index.ts",
+        "./package.json"
+    ],
     "compilerOptions": {
-        "lib": [
-            "DOM",
-        ],
-        "target": "ESNext",
-        "module": "ESNext",
-        "moduleResolution": "node",
-        "declaration": true,
-        "strict": true,
-        "incremental": true,
-        "esModuleInterop": true,
-        "skipLibCheck": true,
-        "forceConsistentCasingInFileNames": true,
-        "rootDir": ".",
-        "outDir": "./dist",
-        "composite": true
-    },
+        "rootDir": "./",
+        "outDir": "dist"
+    }
 }

@@ -1,8 +1,6 @@
-import { useContext } from '../src/context/context';
-import { DocumentContext } from '../src/context/document-context';
-import { ElementContext } from '../src/context/element-context';
-import { useSelf } from '../src/context/use-self';
-import { Context } from '../src/model/context';
+import { Context } from '@items/common';
+import { DocumentContext, ElementContext, useSelf } from '@items/context';
+import { useContext } from '@items/context/src/context';
 
 class TestService {}
 

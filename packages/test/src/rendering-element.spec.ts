@@ -1,8 +1,7 @@
-import { useElement, useSelf } from '../main';
-import { RenderingHTMLElement } from '../src/model/elements';
-import { Attributes } from '../src/rendering/attributes/attribute-name';
-import { RenderState } from '../src/rendering/attributes/render-state';
+import { RenderingHTMLElement } from '@items/common';
+import { useElement, useSelf } from '@items/context';
 import { TestRenderingElement, flush } from './utils';
+import { Attributes, RenderState } from '@items/rendering-element';
 
 declare global {
   interface HTMLElementTagNameMap {

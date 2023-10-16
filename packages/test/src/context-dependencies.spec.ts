@@ -1,5 +1,5 @@
-import { BaseDependencies } from '../src/context/element-context';
-import { Dependencies } from '../src/model/context';
+import { Dependencies } from '@items/common';
+import { BaseDependencies } from '@items/context';
 
 describe.each([BaseDependencies])('Dependencies', (DependenciesCtor) => {
   let dependencies: Dependencies;

@@ -1,12 +1,14 @@
-import { Element, FormElement, RenderingElement } from '../main';
-import { CONTEXT } from '../src/context/context';
-import { ElementContext } from '../src/context/element-context';
 import {
+  CONTEXT,
   ContextElement,
   FormElementCallbacks,
   HTMLElementCallbacks,
   RenderingElementCallbacks,
-} from '../src/model/elements';
+} from '@items/common';
+import { ElementContext } from '@items/context';
+import { RenderingElement } from '@items/rendering-element';
+import { FormElement } from '@items/form-element';
+import { Element } from '@items/custom-element';
 
 @Element('test-element')
 export class TestElement implements HTMLElementCallbacks {
