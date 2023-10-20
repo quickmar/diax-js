@@ -1,18 +1,20 @@
 {
-  "includes": ["packages"],
-  "exclude": ["packages/test", "."],
+  "includes": [
+    "packages"
+  ],
+  "exclude": [
+    "."
+  ],
   "compilerOptions": {
     "incremental": true,
-    "target": "ESNext",
-    "module": "ESNext",
+    "target": "ES2022",
+    "module": "ES2022",
     "declaration": true,
     "strict": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "rootDir": ".",
-    "outDir": "./dist",
   },
   "references": [
     {
@@ -30,8 +32,8 @@
     {
       "path": "./packages/rendering-element"
     },
-    // {
-    //   "path": "./packages/test"
-    // }
+    {
+      "path": "./packages/test"
+    }
   ]
 }

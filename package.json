@@ -4,10 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "example": "vite ./example",
     "build": "tsc --build --verbose",
-    "preview": "vite preview",
-    "test": "vitest",
+    "test": "npm run test --workspace ./packages/test",
     "lint": "eslint --ignore-path .eslintignore --ext .js,.ts ."
   },
   "devDependencies": {
@@ -18,12 +16,8 @@
     "eslint-plugin-n": "^16.1.0",
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-promise": "^6.1.1",
-    "jsdom": "^22.1.0",
     "prettier": "^3.0.3",
-    "typescript": "^5.0.2",
-    "vite": "^4.4.5",
-    "vite-plugin-dts": "^3.5.3",
-    "vitest": "^0.34.4"
+    "typescript": "^5.0.2"
   },
   "workspaces": [
     "packages/*"

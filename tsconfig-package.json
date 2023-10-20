@@ -5,8 +5,8 @@
             "DOM",
             "DOM.Iterable"
         ],
-        "target": "ESNext",
-        "module": "ESNext",
+        "target": "ES2022",
+        "module": "ES2022",
         "moduleResolution": "node",
         "declaration": true,
         "strict": true,
