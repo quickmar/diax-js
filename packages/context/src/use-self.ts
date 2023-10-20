@@ -1,4 +1,4 @@
-import { NoArgType } from '@items/common';
+import { NoArgType } from '@elementy/common';
 import { getCurrentContext } from './context';
 import { instantiate } from './utils/util';
 

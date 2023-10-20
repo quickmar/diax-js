@@ -1,4 +1,4 @@
-import { FormElementDecorator } from "@items/common";
+import { FormElementDecorator } from "@elementy/common";
 import { getFormElementClass } from "./base-form-element";
 
 export function FormElement(tagName: string): FormElementDecorator {

@@ -1,4 +1,4 @@
-import { ElementDecorator } from '@items/common';
+import { ElementDecorator } from '@elementy/common';
 import { getElementClass } from './base-element';
 
 export function Element(tagName: string): ElementDecorator {

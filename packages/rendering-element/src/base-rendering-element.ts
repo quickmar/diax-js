@@ -1,6 +1,6 @@
-import { RenderingTargetCallbacks, RenderingElementCallbacks, Supplier, TargetConstructor, RenderingElementConstructor } from "@items/common";
-import { useElement, useSelf } from "@items/context";
-import { BaseElement } from "@items/custom-element";
+import { RenderingTargetCallbacks, RenderingElementCallbacks, Supplier, TargetConstructor, RenderingElementConstructor } from "@elementy/common";
+import { useElement, useSelf } from "@elementy/context";
+import { BaseElement } from "@elementy/custom-element";
 import { attachRendering } from "./rendering/observing";
 
 export class BaseRenderingElement extends BaseElement<RenderingTargetCallbacks> implements RenderingElementCallbacks {

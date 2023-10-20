@@ -6,9 +6,9 @@ import {
   RenderStrategy,
   SelfWalker,
   SubTreeWalker,
-} from '@items/rendering-element';
+} from '@elementy/rendering-element';
 import { TestRenderingElement } from './utils';
-import { useElement, useSelf } from '@items/context';
+import { useElement, useSelf } from '@elementy/context';
 
 describe('walkers', () => {
   let walker: DetectionWalker;

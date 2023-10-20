@@ -1,4 +1,4 @@
-import { useSelf } from '@items/context';
+import { useSelf } from '@elementy/context';
 import { hasPendingDetectionState } from '../utils/rendering-util';
 import { Attributes } from './attributes/attribute-name';
 import { RenderStrategy } from './attributes/render-strategy';

@@ -1,4 +1,4 @@
-import { Context } from "@items/common";
+import { Context } from "@elementy/common";
 import { throwNoContext } from "./utils/util";
 
 

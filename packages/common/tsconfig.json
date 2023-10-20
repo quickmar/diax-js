@@ -7,6 +7,6 @@
     ],
     "compilerOptions": {
         "rootDir": "./",
-        "outDir": "dist"
+        "outDir": "dist",
     }
 }

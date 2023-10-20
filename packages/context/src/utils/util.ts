@@ -1,4 +1,4 @@
-import { CONTEXT, Context, ContextNode, NoArgType } from "@items/common";
+import { CONTEXT, Context, ContextNode, NoArgType } from "@elementy/common";
 
 export function throwNoContext(description: string): never {
   throw new Error(`${description}. Context is not defined!`);

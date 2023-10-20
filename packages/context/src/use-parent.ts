@@ -1,4 +1,4 @@
-import { CONTEXT, Context, NoArgType } from '@items/common';
+import { CONTEXT, Context, NoArgType } from '@elementy/common';
 import { getCurrentContext } from './context';
 import { hasContext, instantiate } from './utils/util';
 import { DocumentContext } from './document-context';

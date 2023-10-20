@@ -1,7 +1,7 @@
-import { RenderingHTMLElement } from '@items/common';
-import { useElement, useSelf } from '@items/context';
+import { RenderingHTMLElement } from '@elementy/common';
+import { useElement, useSelf } from '@elementy/context';
 import { TestRenderingElement, flush } from './utils';
-import { Attributes, RenderState } from '@items/rendering-element';
+import { Attributes, RenderState } from '@elementy/rendering-element';
 
 declare global {
   interface HTMLElementTagNameMap {

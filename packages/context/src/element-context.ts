@@ -1,4 +1,4 @@
-import { Context, Dependencies, NoArgType } from "@items/common";
+import { Context, Dependencies, NoArgType } from "@elementy/common";
 
 export class ElementContext implements Context {
   constructor(node?: Node) {

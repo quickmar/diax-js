@@ -1,5 +1,5 @@
-import { Context } from "@items/common";
-import { DocumentContext, ElementContext } from "@items/context";
+import { Context } from "@elementy/common";
+import { DocumentContext, ElementContext } from "@elementy/context";
 
 describe.each([ElementContext, DocumentContext])('Context', (ContextCtor) => {
   let context: Context;

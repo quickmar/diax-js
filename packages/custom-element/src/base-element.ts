@@ -1,5 +1,5 @@
-import { CONTEXT, Context, ContextHTMLElement, HTMLElementCallbacks, HTMLElementConstructor, Supplier, TargetCallbacks, TargetConstructor } from "@items/common";
-import { ElementContext, useElement, useSelf } from "@items/context";
+import { CONTEXT, Context, ContextHTMLElement, HTMLElementCallbacks, HTMLElementConstructor, Supplier, TargetCallbacks, TargetConstructor } from "@elementy/common";
+import { ElementContext, useElement, useSelf } from "@elementy/context";
 
 export class BaseElement<T extends TargetCallbacks>
   extends HTMLElement

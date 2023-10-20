@@ -1,6 +1,6 @@
-import { ContextElement } from '@items/common';
+import { ContextElement } from '@elementy/common';
 import { createContextElementFromString } from './utils';
-import { useElement, useSelf, useDocument, useParent } from '@items/context';
+import { useElement, useSelf, useDocument, useParent } from '@elementy/context';
 
 class DocumentService {}
 

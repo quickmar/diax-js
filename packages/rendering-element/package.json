@@ -1,13 +1,13 @@
 {
   "name": "@elementy/rendering-element",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "./index.js",
   "types": "./index.d.ts",
   "dependencies": {
-    "@items/common": "1.0.0",
-    "@items/context": "1.0.0",
-    "@items/custom-element": "1.0.0"
+    "@elementy/common": "0.0.1",
+    "@elementy/context": "0.0.1",
+    "@elementy/custom-element": "0.0.1"
   },
   "scripts": {
     "build": "tsc --build"

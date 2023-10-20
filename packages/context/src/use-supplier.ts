@@ -1,4 +1,4 @@
-import { Supplier, Type } from '@items/common';
+import { Supplier, Type } from '@elementy/common';
 import { getCurrentContext } from './context';
 
 export function useSupplier<T>(type: Type<T>, supplier: Supplier<T>): T {

@@ -4,11 +4,11 @@ import {
   FormElementCallbacks,
   HTMLElementCallbacks,
   RenderingElementCallbacks,
-} from '@items/common';
-import { ElementContext } from '@items/context';
-import { RenderingElement } from '@items/rendering-element';
-import { FormElement } from '@items/form-element';
-import { Element } from '@items/custom-element';
+} from '@elementy/common';
+import { ElementContext } from '@elementy/context';
+import { RenderingElement } from '@elementy/rendering-element';
+import { FormElement } from '@elementy/form-element';
+import { Element } from '@elementy/custom-element';
 
 @Element('test-element')
 export class TestElement implements HTMLElementCallbacks {
