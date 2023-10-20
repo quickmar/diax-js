@@ -1,6 +1,6 @@
-# .items{}
+# .elementy{}
 
-The `.items{}` is a library for creating Web Components with extended capabilities and with clean API.
+The `.elementy{}` is a library for creating Web Components with extended capabilities and with clean API.
 
 # How to use
 
@@ -15,9 +15,9 @@ and then create your first element simply by creating decorated class:
 class FirstElement {}
 ```
 
-This is all you need to do to define your first web component with `.items{}`.
+This is all you need to do to define your first web component with `.elementy{}`.
 
-# Features of custom elements by `.items{}`
+# Features of custom elements by `.elementy{}`
 
 ### Comparing to native solution provide simpler API surface
 
@@ -30,7 +30,7 @@ class MyElement extends HTMLElement{
 }
 
 
-// .items{}
+// .elementy{}
 @Element('my-element')
 class MyElement {
     constructor() {
