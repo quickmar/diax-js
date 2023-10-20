@@ -6,7 +6,7 @@ The `.elementy{}` is a library for creating Web Components with extended capabil
 
 Type in your console:
 
-`npm i items` TODO!
+`npm i @elementy/custom-element`
 
 and then create your first element simply by creating decorated class:
 
