@@ -1,45 +1,38 @@
-import { Context, Dependencies, NoArgType } from "@diax/common";
+import { Context, Dependencies, Token } from "@diax/common";
+import { autoAssignToken } from "./utils/util";
 
 export class ElementContext implements Context {
   constructor(node?: Node) {
     if (node instanceof HTMLElement) {
-      this.dependencies.setInstance(HTMLElement, node);
+      this.dependencies.setInstance(autoAssignToken(HTMLElement), node);
     }
   }
   readonly dependencies: Dependencies = new BaseDependencies();
 }
 
 export class BaseDependencies implements Dependencies {
-  #dependencies = new Map<NoArgType<unknown>, unknown>();
+  #dependencies = new Map<number, unknown>();
 
-  getInstance<T>(type: NoArgType<T>): T {
-    const instance = this.#dependencies.get(type);
-    if (instance === null) throw new ReferenceError(`Cyclic dependency detected! ${type}`);
-    if (!instance) throw new ReferenceError(`For type ${type} dependency is not defined`);
-    if (!(instance instanceof type)) {
-      this.throwNotInstanceOf(type, instance);
-    }
-    return instance;
+  getInstance<T>(token: Token<T>): T {
+    const instance = this.#dependencies.get(token.di_index);
+    if (instance === null) throw new ReferenceError(`Cyclic dependency detected! ${token.name}`);
+    if (!instance) throw new ReferenceError(`For type ${token.name} dependency is not defined`);
+    return instance as T;
   }
 
-  setInstance<T>(type: NoArgType<T>, instance: T | null): void {
-    if (!(instance instanceof type) && instance !== null) {
-      this.throwNotInstanceOf(type, instance);
-    }
-    if (!this.#dependencies.has(type)) {
-      this.#dependencies.set(type, instance);
+  setInstance<T>(token: Token<T>, instance: T | null): void {
+    if (!this.#dependencies.has(token.di_index)) {
+      this.#dependencies.set(token.di_index, instance);
+    } else if (instance === null) {
+      this.#dependencies.set(token.di_index, null);
     }
   }
 
-  hasInstance<T>(type: NoArgType<T>): boolean {
-    return this.#dependencies.has(type);
+  hasInstance<T>(token: Token<T>): boolean {
+    return this.#dependencies.has(token.di_index);
   }
 
-  removeInstance<T>(type: NoArgType<T>): void {
-    this.#dependencies.delete(type);
-  }
-
-  private throwNotInstanceOf(type: NoArgType<unknown>, instance: unknown): never {
-    throw new Error(`${instance} is not instanceof ${type}`);
+  removeInstance<T>(token: Token<T>): void {
+    this.#dependencies.delete(token.di_index);
   }
 }

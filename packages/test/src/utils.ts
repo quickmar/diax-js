@@ -95,7 +95,7 @@ export function createContextElementFromString(html: string, tagName: keyof HTML
   const element = createContextElement(tagName);
   element.innerHTML = html;
   for (const node of element.querySelectorAll('[context]')) {
-    Object.assign(element, { [CONTEXT]: new ElementContext(node) });
+    Object.assign(node, { [CONTEXT]: new ElementContext(node) });
   }
   return element;
 }

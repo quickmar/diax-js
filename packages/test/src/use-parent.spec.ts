@@ -1,13 +1,15 @@
-import { ContextElement } from '@diax/common';
+import { ContextElement, Type } from '@diax/common';
 import { createContextElementFromString } from './utils';
 import { useElement, useSelf, useDocument, useParent } from '@diax/context';
 
 class DocumentService {}
+class ElementService {}
+class Service {}
 
-describe.skip('useParent', () => {
+describe('useParent', () => {
   let element: ContextElement;
-  let object: object;
-  let documentService: DocumentService;
+  let documentInstance: DocumentService;
+  let elementInstance: ElementService;
 
   beforeEach(() => {
     element = createContextElementFromString(
@@ -22,30 +24,46 @@ describe.skip('useParent', () => {
       'div',
     );
 
-    useElement(element, () => {
-      object = useSelf(Object);
+    useDocument(() => {
+      documentInstance = useSelf(DocumentService);
     });
 
-    useDocument(() => {
-      documentService = useSelf(DocumentService);
+    useElement(element, () => {
+      elementInstance = useSelf(ElementService);
     });
   });
 
   it('should search dependency', () => {
-    const id2 = element.querySelector('#c') as Element;
-    expect(id2).toBeTruthy();
-
-    useElement(id2, () => {
-      expect(useParent(Object)).toBe(object);
-    });
+    testHasDependency(ElementService, elementInstance);
   });
 
   it('should search dependency up to document', () => {
+    testHasDependency(DocumentService, documentInstance);
+  });
+
+  it('should create instance when could not find in parent context', () => {
+    testSkipSelf(false);
+  });
+
+  it('should not create instance', () => {
+    testSkipSelf(false);
+  });
+
+  function testSkipSelf(skipSelf: boolean): void {
     const id2 = element.querySelector('#c') as Element;
     expect(id2).toBeTruthy();
 
     useElement(id2, () => {
-      expect(useParent(DocumentService)).toBe(documentService);
+      expect(!!useParent(Service, skipSelf)).toBe(!skipSelf);
     });
-  });
+  }
+
+  function testHasDependency(type: Type<object>, instantiate: object, skipSelf?: boolean): void {
+    const id2 = element.querySelector('#c') as Element;
+    expect(id2).toBeTruthy();
+
+    useElement(id2, () => {
+      expect(useParent(type, skipSelf)).toBe(instantiate);
+    });
+  }
 });

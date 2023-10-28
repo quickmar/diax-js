@@ -1,27 +1,28 @@
 import { CONTEXT, Context, NoArgType } from '@diax/common';
 import { getCurrentContext } from './context';
-import { hasContext, instantiate } from './utils/util';
+import { autoAssignToken, hasContext, instantiate } from './utils/util';
 import { DocumentContext } from './document-context';
 
-export function useParent<T>(type: NoArgType<T>, skipSelf?: boolean): T {
+export function useParent<T>(type: NoArgType<T>, skipSelf?: boolean): T | undefined {
   const currentContext = getCurrentContext();
+  const token = autoAssignToken(type);
   for (const context of contextIterator(currentContext, skipSelf)) {
-    if (context.dependencies.hasInstance(type)) {
-      return context.dependencies.getInstance(type);
+    if (context.dependencies.hasInstance(token)) {
+      return context.dependencies.getInstance(token);
     }
   }
-  return instantiate(currentContext, type);
+  return skipSelf ? undefined : instantiate(currentContext, token, () => new type());
 }
 
 function* contextIterator(context: Context, skipSelf = false) {
-  const hostElement = context.dependencies.getInstance(HTMLElement);
+  const hostElement = context.dependencies.getInstance(autoAssignToken(HTMLElement));
   let element = skipSelf ? hostElement.parentElement : hostElement;
   do {
     if (element && hasContext(element)) {
       yield element[CONTEXT];
     }
     element = element?.parentElement ?? null;
-  } while (element !== document.body);
+  } while (element);
   yield DocumentContext.create();
   return null;
 }
