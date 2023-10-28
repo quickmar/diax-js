@@ -1,15 +1,15 @@
 {
-  "name": "@elementy/test",
+  "name": "@diax/test",
   "private": "true",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "@elementy/common": "0.0.1",
-    "@elementy/context": "0.0.1",
-    "@elementy/custom-element": "0.0.1",
-    "@elementy/form-element": "0.0.1",
-    "@elementy/rendering-element": "0.0.1"
+    "@diax/common": "0.0.1",
+    "@diax/context": "0.0.1",
+    "@diax/custom-element": "0.0.1",
+    "@diax/form-element": "0.0.1",
+    "@diax/rendering-element": "0.0.1"
   },
   "devDependencies": {
     "jsdom": "22.1.0",
@@ -20,6 +20,6 @@
     "build": "tsc --build"
   },
   "keywords": [],
-  "author": "",
+  "author": "Marek Miałkowski",
   "license": "ISC"
 }

@@ -1,5 +1,5 @@
-import { CONTEXT } from "@elementy/common";
-import { DocumentContext } from "@elementy/context";
+import { CONTEXT } from "@diax/common";
+import { DocumentContext } from "@diax/context";
 
 describe('document context', () => {
   it('should document has context', () => {

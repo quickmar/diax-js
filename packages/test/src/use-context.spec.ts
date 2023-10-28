@@ -1,6 +1,6 @@
-import { Context } from '@elementy/common';
-import { ElementContext, DocumentContext } from '@elementy/context';
-import { useContext, getCurrentContext } from '@elementy/context/src/context';
+import { Context } from '@diax/common';
+import { ElementContext, DocumentContext } from '@diax/context';
+import { useContext, getCurrentContext } from '@diax/context/src/context';
 
 describe.each([ElementContext, DocumentContext])('useContext', (ContextCtor) => {
   let context: Context;

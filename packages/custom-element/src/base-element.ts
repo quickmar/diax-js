@@ -1,5 +1,5 @@
-import { CONTEXT, Context, ContextHTMLElement, HTMLElementCallbacks, HTMLElementConstructor, Supplier, TargetCallbacks, TargetConstructor } from "@elementy/common";
-import { ElementContext, useElement, useSelf } from "@elementy/context";
+import { CONTEXT, Context, ContextHTMLElement, HTMLElementCallbacks, HTMLElementConstructor, Supplier, TargetCallbacks, TargetConstructor } from "@diax/common";
+import { ElementContext, useElement, useSelf } from "@diax/context";
 
 export class BaseElement<T extends TargetCallbacks>
   extends HTMLElement

@@ -1,4 +1,4 @@
-import { NoArgType } from '@elementy/common';
+import { NoArgType } from '@diax/common';
 import { getCurrentContext } from './context';
 import { instantiate } from './utils/util';
 

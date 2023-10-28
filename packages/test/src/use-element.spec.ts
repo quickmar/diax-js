@@ -1,6 +1,6 @@
-import { useElement } from '@elementy/context';
+import { useElement } from '@diax/context';
 import { createContextElement } from './utils';
-import { getCurrentContext } from '@elementy/context/src/context';
+import { getCurrentContext } from '@diax/context/src/context';
 
 describe('useElement', () => {
   let element: Element;

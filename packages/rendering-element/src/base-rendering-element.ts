@@ -1,6 +1,6 @@
-import { RenderingTargetCallbacks, RenderingElementCallbacks, Supplier, TargetConstructor, RenderingElementConstructor } from "@elementy/common";
-import { useElement, useSelf } from "@elementy/context";
-import { BaseElement } from "@elementy/custom-element";
+import { RenderingTargetCallbacks, RenderingElementCallbacks, Supplier, TargetConstructor, RenderingElementConstructor } from "@diax/common";
+import { useElement, useSelf } from "@diax/context";
+import { BaseElement } from "@diax/custom-element";
 import { attachRendering } from "./rendering/observing";
 
 export class BaseRenderingElement extends BaseElement<RenderingTargetCallbacks> implements RenderingElementCallbacks {

@@ -1,4 +1,4 @@
-import { Context } from "@elementy/common";
+import { Context } from "@diax/common";
 import { throwNoContext } from "./utils/util";
 
 

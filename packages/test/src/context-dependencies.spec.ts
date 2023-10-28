@@ -1,5 +1,5 @@
-import { Dependencies } from '@elementy/common';
-import { BaseDependencies } from '@elementy/context';
+import { Dependencies } from '@diax/common';
+import { BaseDependencies } from '@diax/context';
 
 describe.each([BaseDependencies])('Dependencies', (DependenciesCtor) => {
   let dependencies: Dependencies;

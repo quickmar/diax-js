@@ -4,11 +4,11 @@ import {
   FormElementCallbacks,
   HTMLElementCallbacks,
   RenderingElementCallbacks,
-} from '@elementy/common';
-import { ElementContext } from '@elementy/context';
-import { RenderingElement } from '@elementy/rendering-element';
-import { FormElement } from '@elementy/form-element';
-import { Element } from '@elementy/custom-element';
+} from '@diax/common';
+import { ElementContext } from '@diax/context';
+import { RenderingElement } from '@diax/rendering-element';
+import { FormElement } from '@diax/form-element';
+import { Element } from '@diax/custom-element';
 
 @Element('test-element')
 export class TestElement implements HTMLElementCallbacks {

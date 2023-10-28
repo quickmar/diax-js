@@ -1,6 +1,6 @@
-import { ContextElement } from '@elementy/common';
+import { ContextElement } from '@diax/common';
 import { createContextElementFromString } from './utils';
-import { useElement, useSelf, useDocument, useParent } from '@elementy/context';
+import { useElement, useSelf, useDocument, useParent } from '@diax/context';
 
 class DocumentService {}
 

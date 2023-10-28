@@ -1,6 +1,6 @@
-import { FormTargetCallbacks, FormElementCallbacks, FormElement, Supplier, TargetConstructor, FormElementConstructor } from "@elementy/common";
-import { useElement, useSelf, useSupplier } from "@elementy/context";
-import { BaseElement } from "@elementy/custom-element";
+import { FormTargetCallbacks, FormElementCallbacks, FormElement, Supplier, TargetConstructor, FormElementConstructor } from "@diax/common";
+import { useElement, useSelf, useSupplier } from "@diax/context";
+import { BaseElement } from "@diax/custom-element";
 
 export class BaseFormElement extends BaseElement<FormTargetCallbacks> implements FormElementCallbacks, FormElement {
   static get formAssociated(): true {

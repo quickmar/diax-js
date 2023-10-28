@@ -1,6 +1,6 @@
-import { Context } from '@elementy/common';
-import { DocumentContext, ElementContext, useSelf } from '@elementy/context';
-import { useContext } from '@elementy/context/src/context';
+import { Context } from '@diax/common';
+import { DocumentContext, ElementContext, useSelf } from '@diax/context';
+import { useContext } from '@diax/context/src/context';
 
 class TestService {}
 

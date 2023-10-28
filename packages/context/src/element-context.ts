@@ -1,4 +1,4 @@
-import { Context, Dependencies, NoArgType } from "@elementy/common";
+import { Context, Dependencies, NoArgType } from "@diax/common";
 
 export class ElementContext implements Context {
   constructor(node?: Node) {

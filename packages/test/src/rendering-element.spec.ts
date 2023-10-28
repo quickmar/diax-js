@@ -1,7 +1,7 @@
-import { RenderingHTMLElement } from '@elementy/common';
-import { useElement, useSelf } from '@elementy/context';
+import { RenderingHTMLElement } from '@diax/common';
+import { useElement, useSelf } from '@diax/context';
 import { TestRenderingElement, flush } from './utils';
-import { Attributes, RenderState } from '@elementy/rendering-element';
+import { Attributes, RenderState } from '@diax/rendering-element';
 
 declare global {
   interface HTMLElementTagNameMap {

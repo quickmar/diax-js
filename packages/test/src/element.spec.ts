@@ -1,4 +1,4 @@
-import { useElement, useSelf } from "@elementy/context";
+import { useElement, useSelf } from "@diax/context";
 import { TestElement, TestFormElement, TestRenderingElement } from "./utils";
 
 describe.each([

@@ -6,9 +6,9 @@ import {
   RenderStrategy,
   SelfWalker,
   SubTreeWalker,
-} from '@elementy/rendering-element';
+} from '@diax/rendering-element';
 import { TestRenderingElement } from './utils';
-import { useElement, useSelf } from '@elementy/context';
+import { useElement, useSelf } from '@diax/context';
 
 describe('walkers', () => {
   let walker: DetectionWalker;
