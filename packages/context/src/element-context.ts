@@ -1,13 +1,15 @@
-import { Context, Dependencies, Token } from "@diax/common";
-import { autoAssignToken } from "./utils/util";
+import { Context, Dependencies, TargetCallbacks, Token } from '@diax/common';
+import { autoAssignToken } from './utils/util';
 
-export class ElementContext implements Context {
-  constructor(node?: Node) {
-    if (node instanceof HTMLElement) {
-      this.dependencies.setInstance(autoAssignToken(HTMLElement), node);
-    }
-  }
+export class ElementContext<T extends TargetCallbacks> implements Context<T> {
+  readonly host: HTMLElement;
+  readonly instance: T  = {} as T;
   readonly dependencies: Dependencies = new BaseDependencies();
+
+  constructor(node: HTMLElement) {
+    this.host = node;
+    this.dependencies.setInstance(autoAssignToken(HTMLElement), node);
+  }
 }
 
 export class BaseDependencies implements Dependencies {

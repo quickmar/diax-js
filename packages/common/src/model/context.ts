@@ -1,8 +1,11 @@
+import { TargetCallbacks } from "./elements";
 import { Token } from "./token";
 
 export const CONTEXT = Symbol.for('@@context');
 
-export interface Context {
+export interface Context<T extends TargetCallbacks = TargetCallbacks> {
+  instance: T;
+  readonly host: HTMLElement;
   readonly dependencies: Dependencies;
 }
 

@@ -1,8 +1,8 @@
-import { Type } from "./common";
+import { Type } from './common';
 
 export const DI_TOKEN = Symbol.for('@@token');
 
-export interface _Token<T> {
+interface _Token<T> {
   type: Type<T>;
   name: string;
   readonly di_index: number;

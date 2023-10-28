@@ -1,18 +1,29 @@
-import { CONTEXT, Context, ContextHTMLElement, HTMLElementCallbacks, HTMLElementConstructor, Supplier, TargetCallbacks, TargetConstructor } from "@diax/common";
-import { ElementContext, useElement, useSelf } from "@diax/context";
+import {
+  CONTEXT,
+  Context,
+  ContextHTMLElement,
+  HTMLElementCallbacks,
+  HTMLElementConstructor,
+  Supplier,
+  TargetCallbacks,
+  TargetConstructor,
+} from '@diax/common';
+import { ElementContext, useElement, useSelf } from '@diax/context';
 
 export class BaseElement<T extends TargetCallbacks>
   extends HTMLElement
   implements ContextHTMLElement, HTMLElementCallbacks
 {
-  [CONTEXT]: Context = new ElementContext(this);
+  [CONTEXT]: Context = new ElementContext<T>(this);
 
-  protected instance: T = {} as T;
+  get instance(): T {
+    return this[CONTEXT].instance as T;
+  }
 
   constructor(supplier: Supplier<T>) {
     super();
     useElement(this, () => {
-      this.instance = supplier();
+      this[CONTEXT].instance = supplier();
     });
   }
 

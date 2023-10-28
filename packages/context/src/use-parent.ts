@@ -15,8 +15,7 @@ export function useParent<T>(type: NoArgType<T>, skipSelf?: boolean): T | undefi
 }
 
 function* contextIterator(context: Context, skipSelf = false) {
-  const hostElement = context.dependencies.getInstance(autoAssignToken(HTMLElement));
-  let element = skipSelf ? hostElement.parentElement : hostElement;
+  let element = skipSelf ? context.host.parentElement : context.host;
   do {
     if (element && hasContext(element)) {
       yield element[CONTEXT];
