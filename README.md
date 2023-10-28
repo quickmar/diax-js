@@ -1,12 +1,12 @@
-# .items{}
+# diax.js
 
-The `.items{}` is a library for creating Web Components with extended capabilities and with clean API.
+The `diax.js` is a library for creating Web Components with extended capabilities and with clean API.
 
 # How to use
 
 Type in your console:
 
-`npm i items` TODO!
+`npm i @diax/custom-element`
 
 and then create your first element simply by creating decorated class:
 
@@ -15,9 +15,9 @@ and then create your first element simply by creating decorated class:
 class FirstElement {}
 ```
 
-This is all you need to do to define your first web component with `.items{}`.
+This is all you need to do to define your first web component with `diax.js`.
 
-# Features of custom elements by `.items{}`
+# Features of custom elements by `diax.js`
 
 ### Comparing to native solution provide simpler API surface
 
@@ -30,7 +30,7 @@ class MyElement extends HTMLElement{
 }
 
 
-// .items{}
+// diax.js
 @Element('my-element')
 class MyElement {
     constructor() {

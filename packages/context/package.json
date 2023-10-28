@@ -1,0 +1,16 @@
+{
+  "name": "@diax/context",
+  "version": "0.0.1",
+  "description": "",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "dependencies": {
+    "@diax/common": "0.0.1"
+  },
+  "scripts": {
+    "build": "tsc --build"
+  },
+  "keywords": [],
+  "author": "Marek Miałkowski",
+  "license": "ISC"
+}

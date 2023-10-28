@@ -1,0 +1,25 @@
+{
+  "name": "@diax/test",
+  "private": "true",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "@diax/common": "0.0.1",
+    "@diax/context": "0.0.1",
+    "@diax/custom-element": "0.0.1",
+    "@diax/form-element": "0.0.1",
+    "@diax/rendering-element": "0.0.1"
+  },
+  "devDependencies": {
+    "jsdom": "22.1.0",
+    "vitest": "0.34.4"
+  },
+  "scripts": {
+    "test": "vitest",
+    "build": "tsc --build"
+  },
+  "keywords": [],
+  "author": "Marek Miałkowski",
+  "license": "ISC"
+}

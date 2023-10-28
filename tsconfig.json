@@ -1,40 +1,39 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "useDefineForClassFields": true,
-    "module": "ESNext",
-    "lib": [
-      "ESNext",
-      "DOM",
-      "DOM.Iterable"
-    ],
-    "types": [
-      "vitest/globals"
-    ],
-    "skipLibCheck": true,
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
-  },
-  "include": [
-    "src",
-    "test",
-    "example",
-    "./vitest.config.ts",
-    "./vite.config.ts",
-    "./main.ts"
+  "includes": [
+    "packages"
   ],
   "exclude": [
-    "node_modules",
-    "dist",
-    "**/*.test.ts"
+    "."
+  ],
+  "compilerOptions": {
+    "incremental": true,
+    "target": "ES2022",
+    "module": "ES2022",
+    "declaration": true,
+    "strict": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+  },
+  "references": [
+    {
+      "path": "./packages/common"
+    },
+    {
+      "path": "./packages/context"
+    },
+    {
+      "path": "./packages/custom-element"
+    },
+    {
+      "path": "./packages/form-element"
+    },
+    {
+      "path": "./packages/rendering-element"
+    },
+    {
+      "path": "./packages/test"
+    }
   ]
 }
