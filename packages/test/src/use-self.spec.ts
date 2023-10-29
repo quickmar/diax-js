@@ -13,11 +13,13 @@ class TestServiceCyclic {
 }
 
 describe.each([ElementContext, DocumentContext])('useSelf', (ContextCtor) => {
+  let element: HTMLElement;
   let context: Context;
   let instance: TestService;
 
   beforeEach(() => {
-    context = new ContextCtor();
+    element = document.createElement('a');
+    context = new ContextCtor(element);
   });
 
   it('should create instance', () => {
