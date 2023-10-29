@@ -1,6 +1,5 @@
 import { Dependencies } from '@diax/common';
-import { BaseDependencies } from '@diax/context';
-import { autoAssignToken } from '@diax/context/src/utils/util';
+import { BaseDependencies, autoAssignToken } from '@diax/context';
 
 describe.each([BaseDependencies])('Dependencies', (DependenciesCtor) => {
   let dependencies: Dependencies;

@@ -5,7 +5,4 @@ export * from './src/use-element';
 export * from './src/use-parent';
 export * from './src/use-self';
 export * from './src/use-supplier';
-export * from './src/host/attach-listener';
-export * from './src/host/attach-shadow';
-export * from './src/host/event-dispatcher';
-export * from './src/host/use-host';
+export { autoAssignToken } from './src/utils/util';

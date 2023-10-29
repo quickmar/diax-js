@@ -3,6 +3,11 @@
   "version": "0.0.1",
   "description": "",
   "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./host": "./host.js"
+  },
+  "types": "./index.d.ts",
   "dependencies": {
     "@diax/common": "0.0.1"
   },

@@ -1,5 +1,6 @@
 import { FormTargetCallbacks, FormElementCallbacks, FormElement, Supplier, TargetConstructor, FormElementConstructor } from "@diax/common";
-import { useElement, useHost, useSelf, useSupplier } from "@diax/context";
+import { useElement, useSelf, useSupplier } from "@diax/context";
+import {useHost} from '@diax/context/host';
 import { BaseElement } from "@diax/custom-element";
 
 export class BaseFormElement extends BaseElement<FormTargetCallbacks> implements FormElementCallbacks, FormElement {
