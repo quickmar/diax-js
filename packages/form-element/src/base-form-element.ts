@@ -1,5 +1,5 @@
 import { FormTargetCallbacks, FormElementCallbacks, FormElement, Supplier, TargetConstructor, FormElementConstructor } from "@diax/common";
-import { useElement, useSelf, useSupplier } from "@diax/context";
+import { useElement, useHost, useSelf, useSupplier } from "@diax/context";
 import { BaseElement } from "@diax/custom-element";
 
 export class BaseFormElement extends BaseElement<FormTargetCallbacks> implements FormElementCallbacks, FormElement {
@@ -73,7 +73,7 @@ export function getFormElementClass(target: TargetConstructor<FormTargetCallback
 
     constructor() {
       super(() => {
-        useSupplier(ElementInternals, () => useSelf(HTMLElement).attachInternals());
+        useSupplier(ElementInternals, () => useHost().attachInternals());
         return useSelf(target);
       });
     }

@@ -1,4 +1,4 @@
-import { useSelf } from '@diax/context';
+import { useHost } from '@diax/context';
 import { hasPendingDetectionState } from '../utils/rendering-util';
 import { Attributes } from './attributes/attribute-name';
 import { RenderStrategy } from './attributes/render-strategy';
@@ -29,5 +29,5 @@ function checkMutations(mutations: MutationRecord[]): void {
 }
 
 export const attachRendering = () => {
-  renderStateObserver.observe(useSelf(HTMLElement), { attributeFilter: [Attributes.RENDER_STATE] });
+  renderStateObserver.observe(useHost(), { attributeFilter: [Attributes.RENDER_STATE] });
 };
