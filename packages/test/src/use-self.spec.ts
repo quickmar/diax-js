@@ -1,6 +1,5 @@
-import { Context } from '@diax/common';
-import { DocumentContext, ElementContext, useSelf } from '@diax/context';
-import { useContext } from '@diax/context/src/context';
+import { useElement, useSelf } from '@diax/context';
+import { createContextElement } from './utils';
 
 class TestService {}
 
@@ -12,18 +11,16 @@ class TestServiceCyclic {
   child = useSelf(TestServiceCyclic);
 }
 
-describe.each([ElementContext, DocumentContext])('useSelf', (ContextCtor) => {
-  let element: HTMLElement;
-  let context: Context;
+describe('useSelf', () => {
+  let element: Element;
   let instance: TestService;
 
   beforeEach(() => {
-    element = document.createElement('a');
-    context = new ContextCtor(element);
+    element = createContextElement('a');
   });
 
   it('should create instance', () => {
-    useContext(context, () => {
+    useElement(element, () => {
       instance = useSelf(TestService);
     });
 
@@ -31,7 +28,7 @@ describe.each([ElementContext, DocumentContext])('useSelf', (ContextCtor) => {
   });
 
   it('should return same instance', () => {
-    useContext(context, () => {
+    useElement(element, () => {
       instance = useSelf(TestService);
       const sameInstance = useSelf(TestService);
 
@@ -40,7 +37,7 @@ describe.each([ElementContext, DocumentContext])('useSelf', (ContextCtor) => {
   });
 
   it('should create deep relations', () => {
-    useContext(context, () => {
+    useElement(element, () => {
       const parent = useSelf(TestServiceParent);
       instance = useSelf(TestService);
 
@@ -50,7 +47,7 @@ describe.each([ElementContext, DocumentContext])('useSelf', (ContextCtor) => {
   });
 
   it('should throw when cyclic dependency detected', () => {
-    useContext(context, () => {
+    useElement(element, () => {
       const action = () => useSelf(TestServiceCyclic);
 
       expect(action).toThrowError();
