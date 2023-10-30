@@ -10,7 +10,7 @@
     "@diax/custom-element": "0.0.1"
   },
   "scripts": {
-    "build": "tsc --build"
+    "build": "tsc --build --verbose"
   },
   "keywords": [],
   "author": "Marek Miałkowski",
