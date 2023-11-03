@@ -24,8 +24,12 @@ export function shouldRejectNode(element: RenderingHTMLElement): boolean {
   );
 }
 
+export function isRenderAssociated(node: object): boolean {
+  return Reflect.has(node.constructor, 'renderAssociated');
+}
+
 export function canRender(node: object): node is RenderingHTMLElement {
-  return Reflect.has(node.constructor, 'renderAssociated') && node instanceof HTMLElement;
+  return isRenderAssociated(node) && node instanceof HTMLElement;
 }
 
 export function hasPendingDetectionState(node: Node): node is Element {

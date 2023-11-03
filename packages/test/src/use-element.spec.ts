@@ -1,6 +1,6 @@
 import { useElement } from '@diax/context';
 import { createContextElement } from './utils';
-import { getCurrentContext } from '@diax/context/src/context';
+import { useHost } from '@diax/context/host';
 
 describe('useElement', () => {
   let element: Element;
@@ -11,13 +11,13 @@ describe('useElement', () => {
 
   it('should use element context', () => {
     useElement(element, () => {
-      expect(getCurrentContext()).toBeTruthy();
+      expect(useHost()).toBeTruthy();
     });
   });
 
   it('should not use element context', () => {
     useElement(element, () => {});
-    expect(() => getCurrentContext()).toThrow();
+    expect(() => useHost()).toThrow();
   });
 
   it('should throw if element does not have context', () => {

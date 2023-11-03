@@ -1,10 +1,10 @@
-import { CONTEXT } from '@diax/common';
-import { ElementContext } from './element-context';
+import { CONTEXT, Context, Dependencies, TargetCallbacks } from '@diax/common';
+import { BaseDependencies } from './element-context';
 import { throwNoContext } from './utils/util';
 
 let INSTANCE: DocumentContext;
 
-export class DocumentContext extends ElementContext {
+export class DocumentContext implements Context {
   static {
     if (document && !Object.hasOwn(document, CONTEXT)) {
       INSTANCE = new this();
@@ -16,7 +16,9 @@ export class DocumentContext extends ElementContext {
     return INSTANCE ?? throwNoContext(document.nodeName);
   }
 
-  constructor() {
-    super();
+  get host(): never {
+    throw Error('Document Context has no host.');
   }
+  instance: TargetCallbacks = {};
+  dependencies: Dependencies = new BaseDependencies();
 }

@@ -1,5 +1,5 @@
 import { Dependencies } from '@diax/common';
-import { BaseDependencies } from '@diax/context';
+import { BaseDependencies, autoAssignToken } from '@diax/context';
 
 describe.each([BaseDependencies])('Dependencies', (DependenciesCtor) => {
   let dependencies: Dependencies;
@@ -13,57 +13,51 @@ describe.each([BaseDependencies])('Dependencies', (DependenciesCtor) => {
   });
 
   it('should add dependency', () => {
-    dependencies.setInstance(Object, {});
+    dependencies.setInstance(autoAssignToken(Object), {});
 
-    expect(dependencies.getInstance(Object)).toEqual({});
-  });
-
-  it('should not add dependency', () => {
-    const action = () => dependencies.setInstance(Object, 'Hello');
-
-    expect(action).toThrowError('Hello is not instanceof function Object() { [native code] }');
+    expect(dependencies.getInstance(autoAssignToken(Object))).toEqual({});
   });
 
   it('should not add dependency if already exist', () => {
-    dependencies.setInstance(Object, { test: 'TEST' });
-    dependencies.setInstance(Object, { test: 'TEST1' });
+    dependencies.setInstance(autoAssignToken(Object), { test: 'TEST' });
+    dependencies.setInstance(autoAssignToken(Object), { test: 'TEST1' });
 
-    expect(dependencies.getInstance(Object)).toEqual({ test: 'TEST' });
+    expect(dependencies.getInstance(autoAssignToken(Object))).toEqual({ test: 'TEST' });
   });
 
   it('should detect if has dependency', () => {
-    dependencies.setInstance(Object, { test: 'TEST' });
+    dependencies.setInstance(autoAssignToken(Object), { test: 'TEST' });
 
-    expect(dependencies.hasInstance(Object)).toBe(true);
+    expect(dependencies.hasInstance(autoAssignToken(Object))).toBe(true);
   });
 
   it('should detect if has no dependency', () => {
-    expect(dependencies.hasInstance(Object)).toBe(false);
+    expect(dependencies.hasInstance(autoAssignToken(Object))).toBe(false);
   });
 
   it('should detect if has no dependency', () => {
-    expect(dependencies.hasInstance(Object)).toBe(false);
+    expect(dependencies.hasInstance(autoAssignToken(Object))).toBe(false);
   });
 
   it('should throw when get null', () => {
-    dependencies.setInstance(Object, null);
+    dependencies.setInstance(autoAssignToken(Object), null);
 
-    expect(() => dependencies.getInstance(Object)).toThrowError(
-      'Cyclic dependency detected! function Object() { [native code] }',
+    expect(() => dependencies.getInstance(autoAssignToken(Object))).toThrowError(
+      'Cyclic dependency detected! Object',
     );
   });
 
   it('should throw when not defined', () => {
-    expect(() => dependencies.getInstance(Object)).toThrowError(
-      'For type function Object() { [native code] } dependency is not defined',
+    expect(() => dependencies.getInstance(autoAssignToken(Object))).toThrowError(
+      'For type Object dependency is not defined',
     );
   });
 
   it('should remove dependency', () => {
-    dependencies.setInstance(Object, {});
-    expect(dependencies.getInstance(Object)).toEqual({});
+    dependencies.setInstance(autoAssignToken(Object), {});
+    expect(dependencies.getInstance(autoAssignToken(Object))).toEqual({});
 
-    dependencies.removeInstance(Object);
-    expect(() => dependencies.getInstance(Object)).toThrow();
+    dependencies.removeInstance(autoAssignToken(Object));
+    expect(() => dependencies.getInstance(autoAssignToken(Object))).toThrow();
   });
 });

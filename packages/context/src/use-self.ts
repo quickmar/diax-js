@@ -1,12 +1,6 @@
 import { NoArgType } from '@diax/common';
-import { getCurrentContext } from './context';
-import { instantiate } from './utils/util';
+import { useSupplier } from './use-supplier';
 
 export function useSelf<T>(type: NoArgType<T>): T {
-  const context = getCurrentContext();
-  if (context.dependencies.hasInstance(type)) {
-    return context.dependencies.getInstance(type);
-  }
-  return instantiate(context, type);
+  return useSupplier(type, () => new type());
 }
-

@@ -7,19 +7,21 @@ export class SubTreeWalker implements DetectionWalker {
     const iterator = document.createNodeIterator(root, NodeFilter.SHOW_ELEMENT, this);
     let nextNode = iterator.nextNode() as RenderingHTMLElement | null;
     while (nextNode) {
-      tryRender(nextNode);
       if (nextNode.shadowRoot !== null) {
         this.walk(nextNode.shadowRoot);
+      } else {
+        tryRender(nextNode);
       }
       nextNode = iterator.nextNode() as RenderingHTMLElement | null;
     }
   }
 
-  acceptNode(node: Node): number {
+  acceptNode(node: Element): number {
     if (canRender(node)) {
       if (shouldRejectNode(node)) return NodeFilter.FILTER_REJECT;
       return NodeFilter.FILTER_ACCEPT;
     }
+    if (node.shadowRoot !== null) return NodeFilter.FILTER_ACCEPT;
     return NodeFilter.FILTER_SKIP;
   }
 }

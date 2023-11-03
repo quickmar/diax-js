@@ -1,12 +1,14 @@
 import { Context } from '@diax/common';
 import { ElementContext, DocumentContext } from '@diax/context';
-import { useContext, getCurrentContext } from '@diax/context/src/context';
+import { useContext, getCurrentContext } from '@diax/context';
 
 describe.each([ElementContext, DocumentContext])('useContext', (ContextCtor) => {
   let context: Context;
+  let element: HTMLElement;
 
   beforeEach(() => {
-    context = new ContextCtor();
+    element = document.createElement('a');
+    context = new ContextCtor(element);
   });
 
   it('should use context', () => {
@@ -24,7 +26,8 @@ describe.each([ElementContext, DocumentContext])('useContext', (ContextCtor) => 
   });
 
   it('should allow for nesting', () => {
-    const newContext = new ElementContext();
+    const newElement = document.createElement('a');
+    const newContext = new ElementContext(newElement);
     useContext(context, () => {
       expect(getCurrentContext()).toBe(context);
       useContext(newContext, () => {
