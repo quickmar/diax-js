@@ -27,54 +27,57 @@ describe('walkers', () => {
     });
   });
 
-  describe.each([DocumentWalker, SubTreeWalker, SelfWalker])('common walker behavior', (WalkerCtor) => {
-    beforeEach(() => {
-      walker = new WalkerCtor();
-    });
-
-    it('should create', () => {
-      expect(walker).toBeTruthy();
-    });
-
-    it('should walk when render associate', () => {
-      walker.walk(element);
-
-      expect(element.getAttribute(Attributes.RENDER_STATE)).toBe(RenderState.RENDERED);
-    });
-
-    it('should not walk when not render associate', () => {
-      const element = document.createElement('div');
-
-      walker.walk(element);
-
-      expect(element.getAttribute(Attributes.RENDER_STATE)).toBe(null);
-    });
-
-    it('should not walk when state is disabled', () => {
-      element.setAttribute(Attributes.RENDER_STATE, RenderState.DISABLED);
-
-      walker.walk(element);
-
-      expect(element.getAttribute(Attributes.RENDER_STATE)).toBe(RenderState.DISABLED);
-    });
-
-    it('should set failed attribute when error', () => {
-      instance.spy.mockImplementationOnce(() => {
-        throw new Error();
+  describe.each([new DocumentWalker(new SubTreeWalker()), new SubTreeWalker(), new SelfWalker()])(
+    'common walker behavior',
+    (walkerInstance) => {
+      beforeEach(() => {
+        walker = walkerInstance;
       });
 
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementationOnce((err) => expect(err).toEqual(new Error()));
+      it('should create', () => {
+        expect(walker).toBeTruthy();
+      });
 
-      walker.walk(element);
+      it('should walk when render associate', () => {
+        walker.walk(element);
 
-      expect(element.getAttribute(Attributes.RENDER_STATE)).toBe(RenderState.FAILED);
-      expect(consoleSpy).toBeCalledTimes(1);
-    });
-  });
+        expect(element.getAttribute(Attributes.RENDER_STATE)).toBe(RenderState.RENDERED);
+      });
 
-  describe.each([DocumentWalker, SubTreeWalker])('SubTree Walkers', (WalkerCtor) => {
+      it('should not walk when not render associate', () => {
+        const element = document.createElement('div');
+
+        walker.walk(element);
+
+        expect(element.getAttribute(Attributes.RENDER_STATE)).toBe(null);
+      });
+
+      it('should not walk when state is disabled', () => {
+        element.setAttribute(Attributes.RENDER_STATE, RenderState.DISABLED);
+
+        walker.walk(element);
+
+        expect(element.getAttribute(Attributes.RENDER_STATE)).toBe(RenderState.DISABLED);
+      });
+
+      it('should set failed attribute when error', () => {
+        instance.spy.mockImplementationOnce(() => {
+          throw new Error();
+        });
+
+        const consoleSpy = vi.spyOn(console, 'error').mockImplementationOnce((err) => expect(err).toEqual(new Error()));
+
+        walker.walk(element);
+
+        expect(element.getAttribute(Attributes.RENDER_STATE)).toBe(RenderState.FAILED);
+        expect(consoleSpy).toBeCalledTimes(1);
+      });
+    },
+  );
+
+  describe.each([new DocumentWalker(new SubTreeWalker()), new SubTreeWalker()])('SubTree Walkers', (walkerInstance) => {
     beforeEach(() => {
-      walker = new WalkerCtor();
+      walker = walkerInstance;
     });
 
     it('should walk every rendering element', () => {
