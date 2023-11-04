@@ -1,6 +1,6 @@
 # diax.js
 
-The `diax.js` is a library for creating Web Components with extended capabilities and with clean API.
+The `diax.js` is a library for creating Web Components with extended capabilities and clean API.
 
 # How to use
 
