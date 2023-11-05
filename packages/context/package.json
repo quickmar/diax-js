@@ -2,12 +2,13 @@
   "name": "@diax/context",
   "version": "0.0.1",
   "description": "",
-  "main": "./dist/index.js",
+  "main": "dist/index.js",
+  "module": "./dist/index.js",
   "exports": {
     ".": "./dist/index.js",
     "./host": "./dist/host.js"
   },
-  "types": "./dist/index.d.ts",
+  "types": "dist/index.d.ts",
   "dependencies": {
     "@diax/common": "0.0.1"
   },
