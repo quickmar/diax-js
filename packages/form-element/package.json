@@ -2,9 +2,9 @@
   "name": "@diax/form-element",
   "version": "0.0.1",
   "description": "",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "module": "./dist/index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.js",
   "dependencies": {
     "@diax/common": "0.0.1",
     "@diax/context": "0.0.1",

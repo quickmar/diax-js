@@ -11,8 +11,7 @@ node_modules
 example
 dist-ssr
 *.local
-*.d.ts
-*.js
+*.ts
 
 # Editor directories and files
 .vscode/*
