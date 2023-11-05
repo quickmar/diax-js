@@ -2,8 +2,8 @@
   "name": "@diax/common",
   "version": "0.0.1",
   "description": "",
-  "main": "./index.js",
-  "types": "./index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc --build --verbose"
   },
