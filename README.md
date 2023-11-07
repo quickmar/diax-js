@@ -1,6 +1,29 @@
 # diax.js
 
-The `diax.js` is a library for creating Web Components with extended capabilities and clean API.
+`Diax` a library for creating Web Components with extended capabilities and clean API.
+
+# Problem trying to solve
+### Context based behavior
+While developing HTML page often we would like to configure some behavior of component based on it parents. This means that parents are creating some context in witch our component exists and can derive behavior. <br>
+
+Visual representation of context depended behavior:
+
+```
+<body>
+    <enabling-parent>
+        <my-form>
+            ... content is editable
+        </my-form>
+    </enabling-parent>
+
+    <disabling-parent>
+        <my-form>
+            ... content is not editable
+        </my-form>
+    </disabling-parent>
+</body>
+```
+
 
 # How to use
 
