@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
+  "files": ["dist", "./LICENSE", "./package.json", "./README.md"],
   "dependencies": {
     "@diax/common": "0.0.1",
     "@diax/context": "0.0.1",

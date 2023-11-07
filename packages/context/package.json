@@ -8,6 +8,7 @@
     ".": "./dist/index.js",
     "./host": "./dist/host.js"
   },
+  "files": ["dist", "./LICENSE", "./package.json", "./README.md"],
   "types": "dist/index.d.ts",
   "dependencies": {
     "@diax/common": "0.0.1"
