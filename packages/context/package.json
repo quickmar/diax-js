@@ -1,6 +1,6 @@
 {
   "name": "@diax-js/context",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Core package for web component implementation by diax",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -13,7 +13,7 @@
   ],
   "types": "dist/index.d.ts",
   "dependencies": {
-    "@diax-js/common": "^0.0.1"
+    "@diax-js/common": "^0.0.2"
   },
   "scripts": {
     "build": "tsc --build --verbose"
