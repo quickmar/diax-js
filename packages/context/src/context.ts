@@ -1,4 +1,4 @@
-import { Context } from "@diax/common";
+import { Context } from "@diax-js/common";
 import { throwNoContext } from "./utils/util";
 
 

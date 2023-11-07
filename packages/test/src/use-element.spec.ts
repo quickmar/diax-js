@@ -1,6 +1,6 @@
-import { useElement } from '@diax/context';
+import { useElement } from '@diax-js/context';
 import { createContextElement } from './utils';
-import { useHost } from '@diax/context/host';
+import { useHost } from '@diax-js/context/host';
 
 describe('useElement', () => {
   let element: Element;

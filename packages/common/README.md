@@ -1,4 +1,4 @@
-# `@diax/common`
+# `@diax-js/common`
 
 This package contains all general types definitions, symbols ect. on witch other packages will be based.
 
@@ -6,6 +6,6 @@ This package contains all general types definitions, symbols ect. on witch other
 
 Type in your console:
 
-`npm i @diax/common`
+`npm i @diax-js/common`
 
 Warning: No need to use it directly.

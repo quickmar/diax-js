@@ -1,4 +1,4 @@
-import { Supplier, Type } from '@diax/common';
+import { Supplier, Type } from '@diax-js/common';
 import { useToken } from './use-token';
 import { autoAssignToken } from './utils/util';
 

@@ -1,7 +1,7 @@
-import { FormTargetCallbacks, FormElementCallbacks, FormElement, Supplier, TargetConstructor, FormElementConstructor } from "@diax/common";
-import { useElement, useSelf, useSupplier } from "@diax/context";
-import {useHost} from '@diax/context/host';
-import { BaseElement } from "@diax/custom-element";
+import { FormTargetCallbacks, FormElementCallbacks, FormElement, Supplier, TargetConstructor, FormElementConstructor } from "@diax-js/common";
+import { useElement, useSelf, useSupplier } from "@diax-js/context";
+import {useHost} from '@diax-js/context/host';
+import { BaseElement } from "@diax-js/custom-element";
 
 export class BaseFormElement extends BaseElement<FormTargetCallbacks> implements FormElementCallbacks, FormElement {
   static get formAssociated(): true {

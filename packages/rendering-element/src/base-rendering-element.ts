@@ -1,6 +1,6 @@
-import { RenderingTargetCallbacks, RenderingElementCallbacks, Supplier, TargetConstructor, RenderingElementConstructor } from "@diax/common";
-import { useElement, useSelf } from "@diax/context";
-import { BaseElement } from "@diax/custom-element";
+import { RenderingTargetCallbacks, RenderingElementCallbacks, Supplier, TargetConstructor, RenderingElementConstructor } from "@diax-js/common";
+import { useElement, useSelf } from "@diax-js/context";
+import { BaseElement } from "@diax-js/custom-element";
 import { attachRendering } from "./rendering/observing";
 
 export class BaseRenderingElement extends BaseElement<RenderingTargetCallbacks> implements RenderingElementCallbacks {

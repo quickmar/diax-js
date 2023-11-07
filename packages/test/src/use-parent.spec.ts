@@ -1,6 +1,6 @@
-import { ContextElement, Type } from '@diax/common';
+import { ContextElement, Type } from '@diax-js/common';
 import { createContextElementFromString } from './utils';
-import { useElement, useSelf, useDocument, useParent } from '@diax/context';
+import { useElement, useSelf, useDocument, useParent } from '@diax-js/context';
 
 class DocumentService {}
 class ElementService {}

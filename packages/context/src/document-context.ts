@@ -1,4 +1,4 @@
-import { CONTEXT, Context, Dependencies, TargetCallbacks } from '@diax/common';
+import { CONTEXT, Context, Dependencies, TargetCallbacks } from '@diax-js/common';
 import { BaseDependencies } from './element-context';
 import { throwNoContext } from './utils/util';
 

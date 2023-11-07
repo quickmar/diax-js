@@ -1,4 +1,4 @@
-import { RenderingHTMLElement } from '@diax/common';
+import { RenderingHTMLElement } from '@diax-js/common';
 import { Attributes } from '../rendering/attributes/attribute-name';
 import { RenderState } from '../rendering/attributes/render-state';
 import { RenderStrategy } from '../rendering/attributes/render-strategy';

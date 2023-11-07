@@ -1,6 +1,6 @@
-import { Context } from '@diax/common';
-import { ElementContext, DocumentContext } from '@diax/context';
-import { useContext, getCurrentContext } from '@diax/context';
+import { Context } from '@diax-js/common';
+import { ElementContext, DocumentContext } from '@diax-js/context';
+import { useContext, getCurrentContext } from '@diax-js/context';
 
 describe.each([ElementContext, DocumentContext])('useContext', (ContextCtor) => {
   let context: Context;

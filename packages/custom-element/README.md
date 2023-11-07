@@ -1,4 +1,4 @@
-# `@diax/custom-element`
+# `@diax-js/custom-element`
 
 Base implementation of custom element.
 
@@ -6,13 +6,13 @@ Base implementation of custom element.
 
 Type in your console:
 
-`npm i @diax/custom-element`
+`npm i @diax-js/custom-element`
 
 Component definition:
 
 ### 1. Using Decorators:
 ```
-    import {Element} from '@diax/custom-element'
+    import {Element} from '@diax-js/custom-element'
 
     @Element('my-element')
     class MyElement {
@@ -34,7 +34,7 @@ Component definition:
 ### 2. Plain JS:
 
 ```
-    import {getElementClass} from '@diax/custom-element';
+    import {getElementClass} from '@diax-js/custom-element';
 
     class MyElement {
         ... as above

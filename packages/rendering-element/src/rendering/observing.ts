@@ -1,4 +1,4 @@
-import { useHost } from '@diax/context/host';
+import { useHost } from '@diax-js/context/host';
 import { hasPendingDetectionState, isRenderAssociated } from '../utils/rendering-util';
 import { Attributes } from './attributes/attribute-name';
 import { RenderStrategy } from './attributes/render-strategy';

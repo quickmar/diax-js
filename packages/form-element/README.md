@@ -1,4 +1,4 @@
-# `@diax/form-element`
+# `@diax-js/form-element`
 
 Base implementation of custom element that can be associated with forms.
 
@@ -6,14 +6,14 @@ Base implementation of custom element that can be associated with forms.
 
 Type in your console:
 
-`npm i @diax/form-element`
+`npm i @diax-js/form-element`
 
 Component definition:
 
 ### 1. Using Decorators:
 
 ```
-    import {FormElement} from '@diax/form-element'
+    import {FormElement} from '@diax-js/form-element'
 
     @FormElement('my-element')
     class MyFormElement {
@@ -31,7 +31,7 @@ Component definition:
 ### 2. Plain JS:
 
 ```
-    import {getFormElementClass} from '@diax/form-element';
+    import {getFormElementClass} from '@diax-js/form-element';
 
     class MyFormElement {
         ... as above

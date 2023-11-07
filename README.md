@@ -29,7 +29,7 @@ Visual representation of context depended behavior:
 
 Type in your console:
 
-`npm i @diax/custom-element`
+`npm i @diax-js/custom-element`
 
 and then create your first element simply by creating decorated class:
 

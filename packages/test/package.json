@@ -1,5 +1,5 @@
 {
-  "name": "@diax/test",
+  "name": "@diax-js/test",
   "private": "true",
   "version": "0.0.1",
   "description": "Unit test for Diax.",
@@ -8,11 +8,11 @@
     "dist"
   ],
   "dependencies": {
-    "@diax/common": "0.0.1",
-    "@diax/context": "0.0.1",
-    "@diax/custom-element": "0.0.1",
-    "@diax/form-element": "0.0.1",
-    "@diax/rendering-element": "0.0.1"
+    "@diax-js/common": "^0.0.1",
+    "@diax-js/context": "^0.0.1",
+    "@diax-js/custom-element": "^0.0.1",
+    "@diax-js/form-element": "^0.0.1",
+    "@diax-js/rendering-element": "^0.0.1"
   },
   "devDependencies": {
     "jsdom": "22.1.0",

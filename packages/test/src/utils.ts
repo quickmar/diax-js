@@ -4,11 +4,11 @@ import {
   FormElementCallbacks,
   HTMLElementCallbacks,
   RenderingElementCallbacks,
-} from '@diax/common';
-import { ElementContext } from '@diax/context';
-import { RenderingElement } from '@diax/rendering-element';
-import { FormElement } from '@diax/form-element';
-import { Element } from '@diax/custom-element';
+} from '@diax-js/common';
+import { ElementContext } from '@diax-js/context';
+import { RenderingElement } from '@diax-js/rendering-element';
+import { FormElement } from '@diax-js/form-element';
+import { Element } from '@diax-js/custom-element';
 
 @Element('test-element')
 export class TestElement implements HTMLElementCallbacks {

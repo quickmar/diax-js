@@ -1,5 +1,5 @@
-import { CONTEXT } from "@diax/common";
-import { DocumentContext } from "@diax/context";
+import { CONTEXT } from "@diax-js/common";
+import { DocumentContext } from "@diax-js/context";
 
 describe('document context', () => {
   it('should document has context', () => {

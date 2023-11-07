@@ -1,5 +1,5 @@
 {
-  "name": "@diax/form-element",
+  "name": "@diax-js/form-element",
   "version": "0.0.1",
   "description": "Simple implementation of Form Associated Custom Elements.",
   "main": "dist/index.js",
@@ -9,9 +9,9 @@
     "dist"
   ],
   "dependencies": {
-    "@diax/common": "0.0.1",
-    "@diax/context": "0.0.1",
-    "@diax/custom-element": "0.0.1"
+    "@diax-js/common": "^0.0.1",
+    "@diax-js/context": "^0.0.1",
+    "@diax-js/custom-element": "^0.0.1"
   },
   "scripts": {
     "build": "tsc --build --verbose"
@@ -31,10 +31,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/quickmar/diax.git"
+    "url": "https://github.com/quickmar/diax-js.git"
   },
   "bugs": {
-    "url": "hhttps://github.com/quickmar/diax/issues"
+    "url": "hhttps://github.com/quickmar/diax-js/issues"
   },
-  "homepage": "https://github.com/quickmar/diax/tree/main/packages/form-element"
+  "homepage": "https://github.com/quickmar/diax-js/tree/main/packages/form-element"
 }

@@ -1,4 +1,4 @@
-import { Context, Dependencies, TargetCallbacks, Token } from '@diax/common';
+import { Context, Dependencies, TargetCallbacks, Token } from '@diax-js/common';
 import { autoAssignToken } from './utils/util';
 
 export class ElementContext<T extends TargetCallbacks> implements Context<T> {

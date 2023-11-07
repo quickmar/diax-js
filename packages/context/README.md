@@ -1,12 +1,12 @@
-# `@diax/context`
+# `@diax-js/context`
 
-This package is core for all functionalities implemented by `@diax`. The main idea of this package is to provide implementation of `interface Context` and helper functions to work with.
+This package is core for all functionalities implemented by `@diax-js`. The main idea of this package is to provide implementation of `interface Context` and helper functions to work with.
 
 # How to use
 
 Type in your console:
 
-`npm i @diax/context`
+`npm i @diax-js/context`
 
 Basic usage of context:
 
@@ -16,7 +16,7 @@ const context = ...;
 useContext(context, () => {...});
 ```
 
-But for `diax` better is use functions like:
+But for `diax-js` better is use functions like:
 
 ```
 useDocument(() => {...});
@@ -53,6 +53,6 @@ So idea of `Context` is to create object that could be shared between differed f
     })
 ```
 
-### `@diax` usage of context
+### `@diax-js` usage of context
 
-`@diax` is designed to build web components so `Context` is base concept for dependency sharing system or dependency injection system. But could be used to build more features in the future.
+`@diax-js` is designed to build web components so `Context` is base concept for dependency sharing system or dependency injection system. But could be used to build more features in the future.

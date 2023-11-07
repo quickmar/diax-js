@@ -1,4 +1,4 @@
-# `@diax/rendering-element`
+# `@diax-js/rendering-element`
 
 Base implementation of custom element that can render content.
 
@@ -6,14 +6,14 @@ Base implementation of custom element that can render content.
 
 Type in your console:
 
-`npm i @diax/rendering-element`
+`npm i @diax-js/rendering-element`
 
 Component definition:
 
 ### 1. Using Decorators:
 
 ```
-    import {RenderingElement, Attributes, RenderState} from '@diax/rendering-element'
+    import {RenderingElement, Attributes, RenderState} from '@diax-js/rendering-element'
 
     @RenderingElement('my-element')
     class MyRenderingElement {
@@ -39,7 +39,7 @@ Component definition:
 ### 2. Plain JS:
 
 ```
-    import {getRenderingElementClass} from '@diax/rendering-element';
+    import {getRenderingElementClass} from '@diax-js/rendering-element';
 
     class MyRenderingElement {
         ... as above

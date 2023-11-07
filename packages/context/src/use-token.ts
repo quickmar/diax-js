@@ -1,4 +1,4 @@
-import { Supplier, Token } from '@diax/common';
+import { Supplier, Token } from '@diax-js/common';
 import { getCurrentContext } from './context';
 import { instantiate } from './utils/util';
 

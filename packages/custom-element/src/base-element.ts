@@ -7,8 +7,8 @@ import {
   Supplier,
   TargetCallbacks,
   TargetConstructor,
-} from '@diax/common';
-import { ElementContext, useElement, useSelf } from '@diax/context';
+} from '@diax-js/common';
+import { ElementContext, useElement, useSelf } from '@diax-js/context';
 
 export class BaseElement<T extends TargetCallbacks>
   extends HTMLElement
