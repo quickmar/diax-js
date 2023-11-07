@@ -28,7 +28,7 @@ Component definition:
     }
 ```
 
-### 2. Definition im plain js:
+### 2. Plain JS:
 
 ```
     import {getFormElementClass} from '@diax/form-element';

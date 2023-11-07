@@ -31,7 +31,7 @@ Component definition:
         }
     }
 ```
-### 2. Definition im plain js:
+### 2. Plain JS:
 
 ```
     import {getElementClass} from '@diax/custom-element';

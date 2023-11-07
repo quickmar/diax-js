@@ -1,6 +1,6 @@
 # `@diax/common`
 
-This package aim to contains all general types definitions, symbols ect. on witch other packgages will be build on.
+This package contains all general types definitions, symbols ect. on witch other packages will be based.
 
 # How to use
 
