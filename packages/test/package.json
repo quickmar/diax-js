@@ -2,9 +2,14 @@
   "name": "@diax/test",
   "private": "true",
   "version": "0.0.1",
-  "description": "",
+  "description": "Unit test for Diax.",
   "main": "index.js",
-  "files": ["dist", "./LICENSE", "./package.json", "./README.md"],
+  "files": [
+    "dist",
+    "./LICENSE",
+    "./package.json",
+    "./README.md"
+  ],
   "dependencies": {
     "@diax/common": "0.0.1",
     "@diax/context": "0.0.1",
@@ -22,5 +27,13 @@
   },
   "keywords": [],
   "author": "Marek Miałkowski",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/quickmar/diax.git"
+  },
+  "bugs": {
+    "url": "hhttps://github.com/quickmar/diax/issues"
+  },
+  "homepage": "https://github.com/quickmar/diax/tree/main/packages/test-element"
 }

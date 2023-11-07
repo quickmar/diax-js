@@ -1,14 +1,19 @@
 {
   "name": "@diax/context",
   "version": "0.0.1",
-  "description": "",
+  "description": "Core package for web component implementation by diax",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "exports": {
     ".": "./dist/index.js",
     "./host": "./dist/host.js"
   },
-  "files": ["dist", "./LICENSE", "./package.json", "./README.md"],
+  "files": [
+    "dist",
+    "./LICENSE",
+    "./package.json",
+    "./README.md"
+  ],
   "types": "dist/index.d.ts",
   "dependencies": {
     "@diax/common": "0.0.1"
@@ -16,7 +21,24 @@
   "scripts": {
     "build": "tsc --build --verbose"
   },
-  "keywords": [],
+  "keywords": [
+    "web",
+    "components",
+    "js",
+    "custom",
+    "element",
+    "context",
+    "dependency",
+    "injection"
+  ],
   "author": "Marek Miałkowski",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/quickmar/diax.git"
+  },
+  "bugs": {
+    "url": "hhttps://github.com/quickmar/diax/issues"
+  },
+  "homepage": "https://github.com/quickmar/diax/tree/main/packages/context"
 }

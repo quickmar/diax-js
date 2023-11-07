@@ -1,15 +1,35 @@
 {
   "name": "@diax/common",
   "version": "0.0.1",
-  "description": "",
+  "description": "Common package for diax implementation.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/index.ts",
-  "files": ["dist", "./LICENSE", "./package.json", "./README.md"],
+  "files": [
+    "dist",
+    "./LICENSE",
+    "./package.json",
+    "./README.md"
+  ],
   "scripts": {
     "build": "tsc --build --verbose"
   },
-  "keywords": [],
+  "keywords": [
+    "web",
+    "components",
+    "js",
+    "custom",
+    "element",
+    "common"
+  ],
   "author": "Marek Miałkowski",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/quickmar/diax.git"
+  },
+  "bugs": {
+    "url": "hhttps://github.com/quickmar/diax/issues"
+  },
+  "homepage": "https://github.com/quickmar/diax/tree/main/packages/common"
 }
