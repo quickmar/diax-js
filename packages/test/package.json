@@ -5,10 +5,7 @@
   "description": "Unit test for Diax.",
   "main": "index.js",
   "files": [
-    "dist",
-    "./LICENSE",
-    "./package.json",
-    "./README.md"
+    "dist"
   ],
   "dependencies": {
     "@diax/common": "0.0.1",

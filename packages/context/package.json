@@ -9,10 +9,7 @@
     "./host": "./dist/host.js"
   },
   "files": [
-    "dist",
-    "./LICENSE",
-    "./package.json",
-    "./README.md"
+    "dist"
   ],
   "types": "dist/index.d.ts",
   "dependencies": {
