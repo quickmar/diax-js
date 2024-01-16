@@ -21,4 +21,7 @@ export class DocumentContext implements Context {
   }
   instance: TargetCallbacks = {};
   dependencies: Dependencies = new BaseDependencies();
+  contextId = 1;
 }
+
+

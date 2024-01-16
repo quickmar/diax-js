@@ -17,6 +17,9 @@
       "path": "./packages/rendering-element"
     },
     {
+      "path": "./packages/state"
+    },
+    {
       "path": "./packages/test"
     }
   ]

@@ -5,6 +5,7 @@ export class ElementContext<T extends TargetCallbacks> implements Context<T> {
   readonly host: HTMLElement;
   readonly instance: T  = {} as T;
   readonly dependencies: Dependencies = new BaseDependencies();
+  readonly contextId = 2;
 
   constructor(node: HTMLElement) {
     this.host = node;
@@ -38,3 +39,4 @@ export class BaseDependencies implements Dependencies {
     this.#dependencies.delete(token.di_index);
   }
 }
+

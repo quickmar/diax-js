@@ -10,14 +10,14 @@ interface _Token<T> {
 
 export interface Token<T> extends Omit<_Token<T>, 'type'> {}
 
-const index = diIndexGenerator();
+const diIndex = IndexGenerator();
 
 export function newToken<T>(name: string): Token<T> {
-  return Object.freeze(Object.assign(Object.create(null), { name, di_index: index.next().value }));
+  return Object.freeze(Object.assign(Object.create(null), { name, di_index: diIndex.next().value }));
 }
 
-function* diIndexGenerator() {
-  let i = 0;
+function* IndexGenerator() {
+  let i = Number.MIN_SAFE_INTEGER;
   while (true) {
     yield i++;
   }

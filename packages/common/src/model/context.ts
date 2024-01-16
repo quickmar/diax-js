@@ -7,6 +7,7 @@ export interface Context<T extends TargetCallbacks = TargetCallbacks> {
   instance: T;
   readonly host: HTMLElement;
   readonly dependencies: Dependencies;
+  readonly contextId: number;
 }
 
 export interface Dependencies {
