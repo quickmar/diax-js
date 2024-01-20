@@ -1,18 +1,22 @@
-import { TargetCallbacks } from "./elements";
-import { Token } from "./token";
+import { SubscriptionMode } from '../state/state';
+import { TargetCallbacks } from './elements';
+import { Token } from './token';
 
 export const CONTEXT = Symbol.for('@@context');
 
 export interface Context<T extends TargetCallbacks = TargetCallbacks> {
   instance: T;
+  subscriptionMode: SubscriptionMode | null;
+  subscription: VoidFunction | null;
+  readonly disposables: Set<VoidFunction>;
   readonly host: HTMLElement;
   readonly dependencies: Dependencies;
   readonly contextId: number;
 }
 
 export interface Dependencies {
-    getInstance<T>(index: Token<T>): T;
-    setInstance<T>(index: Token<T>, instance: T | null): void;
-    hasInstance<T>(index: Token<T>): boolean;
-    removeInstance<T>(index: Token<T>): void;
+  getInstance<T>(index: Token<T>): T;
+  setInstance<T>(index: Token<T>, instance: T | null): void;
+  hasInstance<T>(index: Token<T>): boolean;
+  removeInstance<T>(index: Token<T>): void;
 }

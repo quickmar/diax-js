@@ -1,4 +1,4 @@
-import { CONTEXT, Context, Dependencies, TargetCallbacks } from '@diax-js/common';
+import { CONTEXT, Context, Dependencies, TargetCallbacks, newContextID } from '@diax-js/common';
 import { BaseDependencies } from './element-context';
 import { throwNoContext } from './utils/util';
 
@@ -19,9 +19,10 @@ export class DocumentContext implements Context {
   get host(): never {
     throw Error('Document Context has no host.');
   }
-  instance: TargetCallbacks = {};
-  dependencies: Dependencies = new BaseDependencies();
-  contextId = 1;
+  readonly instance: TargetCallbacks = {};
+  readonly dependencies: Dependencies = new BaseDependencies();
+  readonly contextId = newContextID();
+  readonly disposables = new Set<VoidFunction>();
+  subscriptionMode = null;
+  subscription = null;
 }
-
-

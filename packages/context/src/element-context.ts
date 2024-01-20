@@ -1,11 +1,14 @@
-import { Context, Dependencies, TargetCallbacks, Token } from '@diax-js/common';
+import { Context, Dependencies, TargetCallbacks, Token, newContextID } from '@diax-js/common';
 import { autoAssignToken } from './utils/util';
 
 export class ElementContext<T extends TargetCallbacks> implements Context<T> {
   readonly host: HTMLElement;
-  readonly instance: T  = {} as T;
+  readonly instance: T = {} as T;
   readonly dependencies: Dependencies = new BaseDependencies();
-  readonly contextId = 2;
+  readonly contextId = newContextID();
+  readonly disposables = new Set<VoidFunction>();
+  subscriptionMode = null;
+  subscription = null;
 
   constructor(node: HTMLElement) {
     this.host = node;
@@ -39,4 +42,3 @@ export class BaseDependencies implements Dependencies {
     this.#dependencies.delete(token.di_index);
   }
 }
-
