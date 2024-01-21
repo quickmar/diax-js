@@ -1,4 +1,4 @@
-import { CONTEXT, Context, Dependencies, TargetCallbacks, newContextID } from '@diax-js/common';
+import { CONTEXT, Context, Dependencies, State, TargetCallbacks, newContextID } from '@diax-js/common';
 import { BaseDependencies } from './element-context';
 import { throwNoContext } from './utils/util';
 
@@ -22,7 +22,7 @@ export class DocumentContext implements Context {
   readonly instance: TargetCallbacks = {};
   readonly dependencies: Dependencies = new BaseDependencies();
   readonly contextId = newContextID();
-  readonly disposables = new Set<VoidFunction>();
+  readonly observables = new Set<State<unknown>>();
+  observer = null;
   subscriptionMode = null;
-  subscription = null;
 }

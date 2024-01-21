@@ -1,51 +1,32 @@
-import { Context, State, StateHandler, SubscriptionMode, UseState, newStateID } from '@diax-js/common';
+import { Context, SUBSCRIPTIONS, State, StateHandler, SubscriptionMode, UseState, newStateID } from '@diax-js/common';
 import { getCurrentContext, useDocument, useSupplier } from '@diax-js/context';
-
-interface StateEventInit<T> extends EventInit {
-  previousState: T;
-  contextId: number;
-  stateId: number;
-}
-
-class StateEvent<T> extends Event implements StateEventInit<T> {
-  previousState: T;
-  contextId: number;
-  stateId: number;
-  constructor(eventInitDict: StateEventInit<T>) {
-    super('state', eventInitDict);
-    this.previousState = eventInitDict.previousState;
-    this.contextId = eventInitDict.contextId;
-    this.stateId = eventInitDict.stateId;
-  }
-}
 
 class GlobalState implements Record<number, object> {
   [x: number]: Record<number, unknown>;
   readonly eventBus: EventTarget = new EventTarget();
-  readonly listeners = new Set<VoidFunction>();
-  readonly stateListeners = new Map<number, Set<VoidFunction>>();
+  private listeners = new Set<VoidFunction>();
+  private execute = () => {
+    if (this.listeners.size === 0) return;
+    for (const lister of this.listeners) {
+      try {
+        lister();
+      } catch (err) {
+        setTimeout(() => {
+          throw err;
+        });
+      }
+    }
+    this.listeners.clear();
+  };
 
-  constructor() {
-    const execute = () => {
-      if (this.listeners.size === 0) return;
-      for (const lister of this.listeners) {
-        try {
-          lister();
-        } catch (err) {
-          setTimeout(() => {
-            throw err;
-          });
-        }
-      }
-      this.listeners.clear();
-    };
-    this.eventBus.addEventListener('state', (e) => {
-      const { stateId } = e as StateEvent<unknown>;
-      for (const lister of this.stateListeners.get(stateId) ?? []) {
-        this.listeners.add(lister);
-      }
-      queueMicrotask(execute);
-    });
+  constructor() {}
+
+  scheduleExecute(): void {
+    queueMicrotask(this.execute);
+  }
+
+  addSubscription(subscription: VoidFunction): void {
+    this.listeners.add(subscription);
   }
 }
 
@@ -74,7 +55,7 @@ class StateHandlerImpl<T> implements StateHandler<T> {
 
   set(target: State<T>, property: string | symbol, newValue: T, receiver: StateHandler<T>): boolean {
     let stateToUpdate: State<unknown> | null = null;
- if (!Reflect.has(target, property)) {
+    if (!Reflect.has(target, property)) {
       const childStateIndex = newStateID();
       stateToUpdate = new StateImpl(getCurrentContext(), childStateIndex);
       Reflect.set(target, property, stateToUpdate, receiver);
@@ -93,32 +74,23 @@ const getContext = (myContext: Context) => {
     return myContext;
   }
 };
+
 class StateImpl<T> implements State<T> {
   set value(value: T) {
     const state: GlobalState[0] = globalState[this.owningContextId];
-    const previousValue = state[this.myIndex];
     state[this.myIndex] = value;
-    globalState.eventBus.dispatchEvent(
-      new StateEvent({
-        contextId: this.owningContextId,
-        stateId: this.myIndex,
-        previousState: previousValue,
-      }),
-    );
+    const subscriptions = Reflect.get(this, SUBSCRIPTIONS) as Set<VoidFunction>;
+    if (subscriptions) {
+      for (const subscription of subscriptions) {
+        globalState.addSubscription(subscription);
+      }
+      globalState.scheduleExecute();
+    }
   }
   get value() {
     const context = getContext(this.owningContext);
     if (context.subscriptionMode !== null) {
-      let listeners = globalState.stateListeners.get(this.myIndex);
-      if (!listeners) {
-        listeners = new Set();
-        globalState.stateListeners.set(this.myIndex, listeners);
-      }
-      const subscription = context.subscription!;
-      listeners.add(subscription);
-      context.disposables.add(() => {
-        listeners?.delete(subscription);
-      });
+      context.observables.add(this);
     }
     const state: GlobalState[0] = globalState[this.owningContextId];
     return state[this.myIndex] as T;
@@ -147,20 +119,33 @@ export const useState: UseState = <T>(initialValue: T) => {
 export const useEffect = (subscription: VoidFunction) => {
   const context = getCurrentContext();
   const previousSubscriptionMode = context.subscriptionMode;
+  context.observer = subscription;
   context.subscriptionMode = SubscriptionMode.EFFECT;
-  context.subscription = subscription;
+  const observables = context.observables;
+  const previousObservables = [...observables];
+  let currentObservables: State<unknown>[] = [];
   try {
+    observables.clear();
     subscription();
+    currentObservables = [...observables];
+    for (const observable of currentObservables) {
+      let subscriptions: Set<VoidFunction> = Reflect.get(observable, SUBSCRIPTIONS);
+      if (!subscriptions) {
+        subscriptions = new Set();
+        Reflect.set(observable, SUBSCRIPTIONS, subscriptions);
+      }
+      subscriptions.add(subscription);
+    }
   } finally {
     context.subscriptionMode = previousSubscriptionMode;
-    context.subscription = null;
+    context.observer = null;
+    context.observables.clear();
+    previousObservables.forEach(context.observables.add.bind(context.observables));
   }
-  const disposables = [...context.disposables];
-  context.disposables.clear();
   return () => {
-    for (const disposable of disposables) {
-      disposable();
+    for (const observable of currentObservables) {
+      const subscriptions: Set<VoidFunction> = Reflect.get(observable, SUBSCRIPTIONS);
+      subscriptions.delete(subscription);
     }
-    disposables.length = 0;
   };
 };

@@ -9,3 +9,5 @@ export interface StateHandler<T> extends ProxyHandler<State<T>> {}
 export enum SubscriptionMode {
   EFFECT,
 }
+
+export const SUBSCRIPTIONS = Symbol.for('@@subscriptions');
