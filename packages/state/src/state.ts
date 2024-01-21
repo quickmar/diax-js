@@ -1,8 +1,11 @@
 import { Context, SUBSCRIPTIONS, State, StateHandler, SubscriptionMode, UseState, newStateID } from '@diax-js/common';
 import { getCurrentContext, useDocument, useSupplier } from '@diax-js/context';
 
-class GlobalState implements Record<number, object> {
-  [x: number]: Record<number, unknown>;
+interface ContextStateHolder extends Record<number, { value: unknown; readonly [SUBSCRIPTIONS]: Set<VoidFunction> }> {}
+
+class GlobalState implements Record<number, ContextStateHolder> {
+  [contextId: number]: ContextStateHolder;
+
   readonly eventBus: EventTarget = new EventTarget();
   private listeners = new Set<VoidFunction>();
   private execute = () => {
@@ -28,6 +31,20 @@ class GlobalState implements Record<number, object> {
   addSubscription(subscription: VoidFunction): void {
     this.listeners.add(subscription);
   }
+
+  defineContextRecord(contextId: number): void {
+    if (!Object.hasOwn(this, contextId)) {
+      this[contextId] = {};
+    }
+  }
+
+  defineStateRecord(contextId: number, stateId: number): void {
+    this.defineContextRecord(contextId);
+    this[contextId];
+    if (!Object.hasOwn(this[contextId], stateId)) {
+      this[contextId][stateId] = { value: undefined, [SUBSCRIPTIONS]: new Set() };
+    }
+  }
 }
 
 const globalState = new GlobalState();
@@ -44,8 +61,8 @@ class StateHandlerImpl<T> implements StateHandler<T> {
     this.owningContext = new WeakRef(owningContext);
     this.owningContextID = owningContext.contextId;
     this.myIndex = myIndex;
-    !Object.hasOwn(globalState, this.owningContextID) && (globalState[this.owningContextID] = {});
   }
+
   get(target: State<T>, property: string | symbol, receiver: unknown) {
     if (!Reflect.has(target, property)) {
       Reflect.set(target, property, new StateImpl(getCurrentContext(), newStateID()), receiver);
@@ -67,43 +84,47 @@ class StateHandlerImpl<T> implements StateHandler<T> {
   }
 }
 
-const getContext = (myContext: Context) => {
+const getContext = (myContext: WeakRef<Context>) => {
   try {
     return getCurrentContext();
-  } catch (_err) {
-    return myContext;
+  } catch (err) {
+    const context = myContext.deref();
+    if (context) {
+      return context;
+    }
+    throw err;
   }
 };
 
 class StateImpl<T> implements State<T> {
   set value(value: T) {
-    const state: GlobalState[0] = globalState[this.owningContextId];
-    state[this.myIndex] = value;
-    const subscriptions = Reflect.get(this, SUBSCRIPTIONS) as Set<VoidFunction>;
-    if (subscriptions) {
-      for (const subscription of subscriptions) {
-        globalState.addSubscription(subscription);
-      }
-      globalState.scheduleExecute();
+    const stateHolder: GlobalState[0][0] = globalState[this.owningContextId][this.myIndex];
+    stateHolder.value = value;
+    const subscriptions = stateHolder[SUBSCRIPTIONS];
+    for (const subscription of subscriptions) {
+      globalState.addSubscription(subscription);
     }
+    globalState.scheduleExecute();
   }
+
   get value() {
     const context = getContext(this.owningContext);
     if (context.subscriptionMode !== null) {
       context.observables.add(this);
     }
-    const state: GlobalState[0] = globalState[this.owningContextId];
-    return state[this.myIndex] as T;
+    const stateHolder: GlobalState[0][0] = globalState[this.owningContextId][this.myIndex];
+    return stateHolder.value as T;
   }
 
-  private owningContext: Context;
+  private owningContext: WeakRef<Context>;
   private owningContextId: number;
   private myIndex: number;
 
   constructor(owningContext: Context, myIndex: number) {
-    this.owningContext = owningContext;
+    this.owningContext = new WeakRef(owningContext);
     this.owningContextId = owningContext.contextId;
     this.myIndex = myIndex;
+    globalState.defineStateRecord(this.owningContextId, this.myIndex);
   }
 }
 
@@ -123,18 +144,19 @@ export const useEffect = (subscription: VoidFunction) => {
   context.subscriptionMode = SubscriptionMode.EFFECT;
   const observables = context.observables;
   const previousObservables = [...observables];
-  let currentObservables: State<unknown>[] = [];
+  const disposables: VoidFunction[] = [];
   try {
     observables.clear();
     subscription();
-    currentObservables = [...observables];
-    for (const observable of currentObservables) {
-      let subscriptions: Set<VoidFunction> = Reflect.get(observable, SUBSCRIPTIONS);
-      if (!subscriptions) {
-        subscriptions = new Set();
-        Reflect.set(observable, SUBSCRIPTIONS, subscriptions);
-      }
+    for (const observable of observables) {
+      const myIndex: number = Reflect.get(observable, 'myIndex');
+      const owningContextId: number = Reflect.get(observable, 'owningContextId');
+      const stateHolder = globalState[owningContextId][myIndex];
+      const subscriptions = stateHolder[SUBSCRIPTIONS];
       subscriptions.add(subscription);
+      disposables.push(() => {
+        subscriptions.delete(subscription);
+      });
     }
   } finally {
     context.subscriptionMode = previousSubscriptionMode;
@@ -143,9 +165,8 @@ export const useEffect = (subscription: VoidFunction) => {
     previousObservables.forEach(context.observables.add.bind(context.observables));
   }
   return () => {
-    for (const observable of currentObservables) {
-      const subscriptions: Set<VoidFunction> = Reflect.get(observable, SUBSCRIPTIONS);
-      subscriptions.delete(subscription);
+    for (const dispose of disposables) {
+      dispose();
     }
   };
 };
