@@ -11,7 +11,6 @@ export interface Context<T extends TargetCallbacks = TargetCallbacks> {
   readonly observables: Set<State<unknown>>;
   readonly host: HTMLElement;
   readonly dependencies: Dependencies;
-  readonly contextId: number;
 }
 
 export interface Dependencies {
