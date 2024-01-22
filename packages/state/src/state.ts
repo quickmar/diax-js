@@ -1,19 +1,7 @@
-import { Context, SUBSCRIPTIONS, State, StateHandler, SubscriptionMode, UseState } from '@diax-js/common';
+import { Context, SUBSCRIPTIONS, State, SubscriptionMode, Supplier, UseState } from '@diax-js/common';
 import { getCurrentContext, useDocument, useSupplier } from '@diax-js/context';
 
 let globalState: GlobalState;
-
-const getContext = (myContext: WeakRef<Context>) => {
-  try {
-    return getCurrentContext();
-  } catch (err) {
-    const context = myContext.deref();
-    if (context) {
-      return context;
-    }
-    throw err;
-  }
-};
 
 class GlobalState {
   static {
@@ -46,27 +34,6 @@ class GlobalState {
   }
 }
 
-class StateHandlerImpl<T> implements StateHandler<T> {
-  get(target: State<T>, property: string | symbol, receiver: unknown) {
-    if (!Reflect.has(target, property)) {
-      Reflect.set(target, property, new StateImpl(getCurrentContext()), receiver);
-    }
-    return Reflect.get(target, property, receiver);
-  }
-
-  set(target: State<T>, property: string | symbol, newValue: T, receiver: StateHandler<T>): boolean {
-    let stateToUpdate: State<unknown> | null = null;
-    if (!Reflect.has(target, property)) {
-      stateToUpdate = new StateImpl(getCurrentContext());
-      Reflect.set(target, property, stateToUpdate, receiver);
-    } else {
-      stateToUpdate = Reflect.get(target, property, receiver) as State<T>;
-    }
-    stateToUpdate.value = newValue;
-    return true;
-  }
-}
-
 class StateImpl<T> implements State<T> {
   set value(value: T) {
     this.#value = value;
@@ -74,7 +41,7 @@ class StateImpl<T> implements State<T> {
   }
 
   get value() {
-    const context = getContext(this.owningContext);
+    const context = this.getContext();
     if (context.subscriptionMode !== null) {
       context.observables.add(this);
     }
@@ -82,47 +49,66 @@ class StateImpl<T> implements State<T> {
   }
 
   #value!: T;
-  private owningContext: WeakRef<Context>;
+  #owningContext: Context;
   private [SUBSCRIPTIONS]: Set<VoidFunction>;
 
   constructor(owningContext: Context) {
-    this.owningContext = new WeakRef(owningContext);
+    this.#owningContext = owningContext;
     this[SUBSCRIPTIONS] = new Set();
+  }
+
+  private getContext() {
+    try {
+      return getCurrentContext();
+    } catch (_err) {
+      return this.#owningContext;
+    }
+  }
+}
+
+class ReadOnlyState<T> implements State<T> {
+  get value() {
+    return this.#state.value;
+  }
+
+  #state: State<T>;
+
+  constructor(state: State<T>) {
+    this.#state = state;
   }
 }
 
 export const useState: UseState = <T>(initialValue: T) => {
   const context = getCurrentContext();
   const state = new StateImpl<T>(context);
-  const proxy = new Proxy(state, new StateHandlerImpl());
-  Object.assign(proxy, initialValue);
-  return proxy as unknown as Record<PropertyKey, State<T[keyof T]>>;
+  state.value = initialValue;
+  return state;
 };
 
-export const useEffect = (subscription: VoidFunction) => {
+export const useEffect = (effectFn: VoidFunction) => {
   const context = getCurrentContext();
   const previousSubscriptionMode = context.subscriptionMode;
-  context.observer = subscription;
+  context.observer = effectFn;
   context.subscriptionMode = SubscriptionMode.EFFECT;
   const observables = context.observables;
   const previousObservables = [...observables];
   const disposables: VoidFunction[] = [];
+  observables.clear();
   try {
-    observables.clear();
-    subscription();
+    effectFn();
     for (const observable of observables) {
       const subscriptions = Reflect.get(observable, SUBSCRIPTIONS) as Set<VoidFunction>;
-      subscriptions.add(subscription);
+      subscriptions.add(effectFn);
       disposables.push(() => {
-        subscriptions.delete(subscription);
+        subscriptions.delete(effectFn);
       });
     }
   } finally {
     context.subscriptionMode = previousSubscriptionMode;
     context.observer = null;
     observables.clear();
-    for (const observable of previousObservables) {
-      observables.add(observable);
+    while (previousObservables.length) {
+      observables.add(previousObservables.pop()!);
     }
   }
   return () => {
@@ -130,4 +116,16 @@ export const useEffect = (subscription: VoidFunction) => {
       dispose();
     }
   };
+};
+
+export const useComputed = <T>(supplier: Supplier<T>) => {
+  let state: State<T> | null = null;
+  useEffect(() => {
+    if (!state) {
+      state = useState(supplier());
+    } else {
+      state.value = supplier();
+    }
+  });
+  return new ReadOnlyState(state!);
 };
