@@ -5,7 +5,9 @@ export interface State<T> {
 }
 
 export enum SubscriptionMode {
+  SUBSCRIPTION,
   EFFECT,
+  COMPUTED,
 }
 
 export const SUBSCRIPTIONS = Symbol.for('@@subscriptions');

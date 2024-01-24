@@ -1,5 +1,5 @@
-import { Context, SUBSCRIPTIONS, State, SubscriptionMode, Supplier, UseState } from '@diax-js/common';
-import { getCurrentContext, useDocument, useSupplier } from '@diax-js/context';
+import { SUBSCRIPTIONS, State, SubscriptionMode, Supplier, UseState } from '@diax-js/common';
+import { useContext, useDocument, useSupplier, _getCurrentContext, getCurrentContext } from '@diax-js/context';
 
 let globalState: GlobalState;
 
@@ -12,6 +12,7 @@ class GlobalState {
   }
 
   private listeners = new Set<VoidFunction>();
+
   private execute = () => {
     if (this.listeners.size === 0) return;
     for (const lister of this.listeners) {
@@ -26,7 +27,7 @@ class GlobalState {
     this.listeners.clear();
   };
 
-  scheduleExecute(subscriptions: Set<VoidFunction>): void {
+  scheduleExecute(subscriptions: Iterable<VoidFunction>): void {
     for (const subscription of subscriptions) {
       this.listeners.add(subscription);
     }
@@ -35,61 +36,59 @@ class GlobalState {
 }
 
 class StateImpl<T> implements State<T> {
+  #value!: T;
+  #subscriptions: Set<VoidFunction> = new Set();
+
   set value(value: T) {
     this.#value = value;
     globalState.scheduleExecute(this[SUBSCRIPTIONS]);
   }
 
   get value() {
-    const context = this.getContext();
-    if (context.subscriptionMode !== null) {
+    const context = _getCurrentContext();
+    if (context && context.subscriptionMode !== null) {
       context.observables.add(this);
     }
     return this.#value;
   }
 
-  #value!: T;
-  #owningContext: Context;
-  private [SUBSCRIPTIONS]: Set<VoidFunction>;
-
-  constructor(owningContext: Context) {
-    this.#owningContext = owningContext;
-    this[SUBSCRIPTIONS] = new Set();
-  }
-
-  private getContext() {
-    try {
-      return getCurrentContext();
-    } catch (_err) {
-      return this.#owningContext;
-    }
+  private get [SUBSCRIPTIONS]() {
+    return this.#subscriptions;
   }
 }
 
-class ReadOnlyState<T> implements State<T> {
+class ComputedState<T> implements State<T> {
+  #state: State<T>;
+  #dispose: VoidFunction;
+
   get value() {
     return this.#state.value;
   }
 
-  #state: State<T>;
-
-  constructor(state: State<T>) {
+  constructor(state: State<T>, dispose: VoidFunction) {
     this.#state = state;
+    this.#dispose = dispose;
+  }
+
+  dispose(): void {
+    this.#dispose();
   }
 }
 
 export const useState: UseState = <T>(initialValue: T) => {
-  const context = getCurrentContext();
-  const state = new StateImpl<T>(context);
+  const state = new StateImpl<T>();
   state.value = initialValue;
   return state;
 };
 
-export const useEffect = (effectFn: VoidFunction) => {
+export const useEffect = (fn: VoidFunction) => {
   const context = getCurrentContext();
+  const effectFn = () => {
+    useContext(context, fn);
+  };
+  context.observer = effectFn; //TODO: REMOVE
+  context.subscriptionMode = SubscriptionMode.SUBSCRIPTION;
   const previousSubscriptionMode = context.subscriptionMode;
-  context.observer = effectFn;
-  context.subscriptionMode = SubscriptionMode.EFFECT;
   const observables = context.observables;
   const previousObservables = [...observables];
   const disposables: VoidFunction[] = [];
@@ -112,20 +111,23 @@ export const useEffect = (effectFn: VoidFunction) => {
     }
   }
   return () => {
-    for (const dispose of disposables) {
-      dispose();
+    while (disposables.length) {
+      disposables.pop()?.();
     }
   };
 };
 
 export const useComputed = <T>(supplier: Supplier<T>) => {
   let state: State<T> | null = null;
-  useEffect(() => {
+  const compute = () => {
+    state!.value = supplier();
+  };
+  const dispose = useEffect(() => {
     if (!state) {
       state = useState(supplier());
     } else {
-      state.value = supplier();
+      queueMicrotask(compute);
     }
   });
-  return new ReadOnlyState(state!);
+  return new ComputedState(state!, dispose);
 };
