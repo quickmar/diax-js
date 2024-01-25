@@ -120,13 +120,16 @@ export const useEffect = (fn: VoidFunction) => {
 export const useComputed = <T>(supplier: Supplier<T>) => {
   let state: State<T> | null = null;
   const compute = () => {
-    state!.value = supplier();
+    const value = supplier();
+    if (state!.value !== value) {
+      state!.value = value;
+    }
   };
   const dispose = useEffect(() => {
     if (!state) {
       state = useState(supplier());
     } else {
-      queueMicrotask(compute);
+      globalState.scheduleExecute([compute]);
     }
   });
   return new ComputedState(state!, dispose);
