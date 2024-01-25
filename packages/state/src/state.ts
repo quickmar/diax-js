@@ -1,47 +1,18 @@
-import { SUBSCRIPTIONS, State, SubscriptionMode, Supplier, UseState } from '@diax-js/common';
-import { useContext, useDocument, useSupplier, _getCurrentContext, getCurrentContext } from '@diax-js/context';
+import { SUBSCRIPTIONS, State, Subscription, SubscriptionMode, Supplier, UseState } from '@diax-js/common';
+import { useContext, _getCurrentContext, getCurrentContext } from '@diax-js/context';
+import { ComputationSubscription, EffectSubscription } from './subscription';
 
-let globalState: GlobalState;
-
-class GlobalState {
-  static {
-    globalState = new GlobalState();
-    useDocument(() => {
-      useSupplier(GlobalState, () => globalState);
-    });
-  }
-
-  private listeners = new Set<VoidFunction>();
-
-  private execute = () => {
-    if (this.listeners.size === 0) return;
-    for (const lister of this.listeners) {
-      try {
-        lister();
-      } catch (err) {
-        setTimeout(() => {
-          throw err;
-        });
-      }
-    }
-    this.listeners.clear();
-  };
-
-  scheduleExecute(subscriptions: Iterable<VoidFunction>): void {
-    for (const subscription of subscriptions) {
-      this.listeners.add(subscription);
-    }
-    queueMicrotask(this.execute);
-  }
-}
+const getSubscription = (state: State<unknown>) => Reflect.get(state, SUBSCRIPTIONS) as Set<Subscription>;
 
 class StateImpl<T> implements State<T> {
   #value!: T;
-  #subscriptions: Set<VoidFunction> = new Set();
+  #subscriptions: Set<Subscription> = new Set();
 
   set value(value: T) {
     this.#value = value;
-    globalState.scheduleExecute(this[SUBSCRIPTIONS]);
+    for (const subscription of this.#subscriptions) {
+      subscription.schedule();
+    }
   }
 
   get value() {
@@ -81,34 +52,34 @@ export const useState: UseState = <T>(initialValue: T) => {
   return state;
 };
 
-export const useEffect = (fn: VoidFunction) => {
+const useEffectInternal_ = (fn: VoidFunction, subscriptionMode: SubscriptionMode) => {
   const context = getCurrentContext();
   const effectFn = () => {
     useContext(context, fn);
   };
-  context.observer = effectFn; //TODO: REMOVE
-  context.subscriptionMode = SubscriptionMode.SUBSCRIPTION;
+
+  const subscription =
+    subscriptionMode === SubscriptionMode.EFFECT
+      ? new EffectSubscription(effectFn)
+      : new ComputationSubscription(effectFn);
   const previousSubscriptionMode = context.subscriptionMode;
-  const observables = context.observables;
-  const previousObservables = [...observables];
+  const previousObservables = context.observables;
+  context.subscriptionMode = subscriptionMode;
+  context.observables = new Set();
   const disposables: VoidFunction[] = [];
-  observables.clear();
   try {
     effectFn();
-    for (const observable of observables) {
-      const subscriptions = Reflect.get(observable, SUBSCRIPTIONS) as Set<VoidFunction>;
-      subscriptions.add(effectFn);
+    for (const observable of context.observables) {
+      const subscriptions = getSubscription(observable);
+      subscriptions.add(subscription);
       disposables.push(() => {
-        subscriptions.delete(effectFn);
+        subscriptions.delete(subscription);
+        subscription.clear();
       });
     }
   } finally {
     context.subscriptionMode = previousSubscriptionMode;
-    context.observer = null;
-    observables.clear();
-    while (previousObservables.length) {
-      observables.add(previousObservables.pop()!);
-    }
+    context.observables = previousObservables;
   }
   return () => {
     while (disposables.length) {
@@ -117,20 +88,22 @@ export const useEffect = (fn: VoidFunction) => {
   };
 };
 
+export const useEffect = (fn: VoidFunction) => {
+  return useEffectInternal_(fn, SubscriptionMode.EFFECT);
+};
+
 export const useComputed = <T>(supplier: Supplier<T>) => {
   let state: State<T> | null = null;
   const compute = () => {
-    const value = supplier();
-    if (state!.value !== value) {
-      state!.value = value;
+    if (state) {
+      const value = supplier();
+      if (state.value !== value) {
+        state.value = value;
+      }
+    } else {
+      state = useState(supplier());
     }
   };
-  const dispose = useEffect(() => {
-    if (!state) {
-      state = useState(supplier());
-    } else {
-      globalState.scheduleExecute([compute]);
-    }
-  });
+  const dispose = useEffectInternal_(compute, SubscriptionMode.COMPUTED);
   return new ComputedState(state!, dispose);
 };

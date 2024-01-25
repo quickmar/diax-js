@@ -5,9 +5,21 @@ export interface State<T> {
 }
 
 export enum SubscriptionMode {
-  SUBSCRIPTION,
   EFFECT,
   COMPUTED,
+}
+
+export interface Subscription {
+  readonly subscriptionMode: SubscriptionMode;
+  readonly callable: VoidFunction;
+
+  clear(): void;
+  schedule(): void;
+}
+
+export interface StateQueue<T extends Subscription> {
+  put(subscription: T): void;
+  execute(): void;
 }
 
 export const SUBSCRIPTIONS = Symbol.for('@@subscriptions');

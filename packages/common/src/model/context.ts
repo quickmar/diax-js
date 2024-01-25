@@ -7,8 +7,11 @@ export const CONTEXT = Symbol.for('@@context');
 export interface Context<T extends TargetCallbacks = TargetCallbacks> {
   instance: T;
   subscriptionMode: SubscriptionMode | null;
+  /**
+   * @deprecated
+   */
   observer: VoidFunction | null;
-  readonly observables: Set<State<unknown>>;
+  observables: Set<State<unknown>>;
   readonly host: HTMLElement;
   readonly dependencies: Dependencies;
 }
