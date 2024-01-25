@@ -18,8 +18,7 @@ export interface Subscription {
 }
 
 export interface StateQueue<T extends Subscription> {
-  put(subscription: T): void;
-  execute(): void;
+  schedule(subscription: T): void;
 }
 
 export const SUBSCRIPTIONS = Symbol.for('@@subscriptions');

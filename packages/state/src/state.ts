@@ -31,6 +31,7 @@ class StateImpl<T> implements State<T> {
 class ComputedState<T> implements State<T> {
   #state: State<T>;
   #dispose: VoidFunction;
+  private isCleared = false;
 
   get value() {
     return this.#state.value;
@@ -42,7 +43,11 @@ class ComputedState<T> implements State<T> {
   }
 
   dispose(): void {
-    this.#dispose();
+    if (!this.isCleared) {
+      this.#dispose();
+      this.#dispose = () => {};
+      this.isCleared = true;
+    }
   }
 }
 
