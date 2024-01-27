@@ -31,7 +31,7 @@ describe('@RenderingElement', () => {
   it('should render', () => {
     element.render();
 
-    expect(instance.spy).toHaveBeenCalledOnce();
+    expect(instance.spy).toHaveBeenCalledTimes(1);
   });
 
   it('should render after rendering attribute is set', async () => {
@@ -41,7 +41,7 @@ describe('@RenderingElement', () => {
     element.setAttribute(Attributes.RENDER_STATE, RenderState.PENDING);
     await flush();
 
-    expect(instance.spy).toHaveBeenCalledOnce();
+    expect(instance.spy).toHaveBeenCalledTimes(1);
     document.body.removeChild(element);
   });
 });

@@ -13,7 +13,8 @@
     "@diax-js/context": "^0.0.2"
   },
   "scripts": {
-    "build": "tsc --build --verbose"
+    "build": "tsc --build --verbose",
+    "test": "jest"
   },
   "keywords": [
     "web",

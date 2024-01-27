@@ -65,7 +65,9 @@ describe('walkers', () => {
           throw new Error();
         });
 
-        const consoleSpy = vi.spyOn(console, 'error').mockImplementationOnce((err) => expect(err).toEqual(new Error()));
+        const consoleSpy = jest
+          .spyOn(console, 'error')
+          .mockImplementationOnce((err) => expect(err).toEqual(new Error()));
 
         walker.walk(element);
 
@@ -107,7 +109,7 @@ describe('walkers', () => {
         <test-rendering-element ${att}="${value}"></test-rendering-element>
         <test-rendering-element ${att}="${value}"></test-rendering-element>
         `;
-      vi.resetAllMocks();
+      jest.resetAllMocks();
 
       walker.walk(element);
 

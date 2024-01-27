@@ -14,7 +14,7 @@ import { Element } from '@diax-js/custom-element';
 export class TestElement implements HTMLElementCallbacks {
   static observedAttributes = ['test'];
 
-  spy = vi.fn();
+  spy = jest.fn();
 
   connectedCallback(): void {
     this.spy();
@@ -34,7 +34,7 @@ export class TestElement implements HTMLElementCallbacks {
 export class TestFormElement implements HTMLElementCallbacks, FormElementCallbacks {
   static observedAttributes = ['test'];
 
-  spy = vi.fn();
+  spy = jest.fn();
 
   connectedCallback(): void {
     this.spy();
@@ -66,7 +66,7 @@ export class TestFormElement implements HTMLElementCallbacks, FormElementCallbac
 export class TestRenderingElement implements RenderingElementCallbacks {
   static observedAttributes = ['test'];
 
-  spy = vi.fn();
+  spy = jest.fn();
 
   connectedCallback(): void {
     this.spy();

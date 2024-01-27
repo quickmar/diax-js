@@ -75,7 +75,7 @@ describe.each([
     const iframe = document.createElement('iframe');
     iframe.setAttribute('src', './index.html');
     document.body.appendChild(iframe);
-    vi.clearAllMocks();
+    jest.clearAllMocks();
 
     // adoptedCallback
     iframe.contentWindow?.document.adoptNode(element);
@@ -85,7 +85,7 @@ describe.each([
   function assertSypCallTimes(times: number): void {
     useElement(element, () => {
       expect(useSelf(Ctor).spy).toBeCalledTimes(times);
-      vi.clearAllMocks();
+      jest.clearAllMocks();
     });
   }
 });

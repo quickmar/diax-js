@@ -14,10 +14,6 @@
     "@diax-js/form-element": "^0.0.2",
     "@diax-js/rendering-element": "^0.0.2"
   },
-  "devDependencies": {
-    "jsdom": "22.1.0",
-    "vitest": "0.34.4"
-  },
   "scripts": {
     "test": "vitest",
     "build": "tsc --build"
