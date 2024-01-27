@@ -1,5 +1,5 @@
 import { ActionQueue, Action } from '@diax-js/common';
-import { ComputationAction, EffectAction } from './subscription';
+import { ComputationAction, EffectAction } from './actions';
 
 export abstract class AbstractStateQueue<T extends Action> implements ActionQueue<T> {
   protected actions: Set<Action> = new Set();

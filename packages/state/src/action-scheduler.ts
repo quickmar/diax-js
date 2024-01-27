@@ -1,6 +1,6 @@
 import { useSelf } from '@diax-js/context';
-import { ComputationAction, EffectAction } from './subscription';
-import { ComputationQueue, EffectQueue } from './queue';
+import { ComputationAction, EffectAction } from './actions';
+import { ComputationQueue, EffectQueue } from './queues';
 
 export class ActionScheduler {
   private effectQueue;

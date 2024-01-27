@@ -11,7 +11,7 @@ import {
   UseEffect,
 } from '@diax-js/common';
 import { useContext, _getCurrentContext, getCurrentContext } from '@diax-js/context';
-import { ComputationAction, EffectAction } from './subscription';
+import { ComputationAction, EffectAction } from './actions';
 
 const getActions = (state: ISignal<unknown>) => Reflect.get(state, ACTIONS) as Set<Action>;
 
