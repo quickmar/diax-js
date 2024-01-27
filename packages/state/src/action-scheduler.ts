@@ -1,5 +1,5 @@
 import { useSelf } from '@diax-js/context';
-import { ComputationSubscription, EffectSubscription } from './subscription';
+import { ComputationAction, EffectAction } from './subscription';
 import { ComputationQueue, EffectQueue } from './queue';
 
 export class ActionScheduler {
@@ -10,11 +10,11 @@ export class ActionScheduler {
     this.computationQueue = useSelf(ComputationQueue);
   }
 
-  scheduleEffect(effect: EffectSubscription): void {
+  scheduleEffect(effect: EffectAction): void {
     this.effectQueue.schedule(effect);
   }
 
-  scheduleComputation(computation: ComputationSubscription): void {
+  scheduleComputation(computation: ComputationAction): void {
     this.computationQueue.schedule(computation);
   }
 }

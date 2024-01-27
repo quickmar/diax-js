@@ -1,12 +1,11 @@
-import { Context, Dependencies, State, TargetCallbacks, Token } from '@diax-js/common';
+import { Context, Dependencies, Signal, TargetCallbacks, Token } from '@diax-js/common';
 import { autoAssignToken } from './utils/util';
 
 export class ElementContext<T extends TargetCallbacks> implements Context<T> {
   readonly host: HTMLElement;
   readonly instance: T = {} as T;
   readonly dependencies: Dependencies = new BaseDependencies();
-  readonly observables = new Set<State<unknown>>();
-  observer = null;
+  observables = new Set<Signal<unknown>>();
   subscriptionMode = null;
 
   constructor(node: HTMLElement) {

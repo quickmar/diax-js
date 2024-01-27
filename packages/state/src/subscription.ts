@@ -1,4 +1,4 @@
-import { Subscription, SubscriptionMode } from '@diax-js/common';
+import { Action, SubscriptionMode } from '@diax-js/common';
 import { ActionScheduler } from './action-scheduler';
 import { useDocument, useSelf } from '@diax-js/context';
 
@@ -8,21 +8,22 @@ useDocument(() => {
   scheduler = useSelf(ActionScheduler);
 });
 
-export abstract class AbstractSubscription implements Subscription {
+export abstract class AbstractAction implements Action {
   private isStopped: boolean = false;
-
-  readonly subscriptionMode: SubscriptionMode;
   #callable: VoidFunction;
-  get callable() {
+
+  get call() {
     return this.#callable;
   }
+  readonly subscriptionMode: SubscriptionMode;
+
 
   constructor(callable: VoidFunction, subscriptionMode: SubscriptionMode) {
     this.#callable = callable;
     this.subscriptionMode = subscriptionMode;
   }
 
-  clear(): void {
+  unsubscribe(): void {
     if (!this.isStopped) {
       this.#callable = () => {};
       this.isStopped = true;
@@ -32,7 +33,7 @@ export abstract class AbstractSubscription implements Subscription {
   abstract schedule(): void;
 }
 
-export class EffectSubscription extends AbstractSubscription {
+export class EffectAction extends AbstractAction {
   constructor(callable: VoidFunction) {
     super(callable, SubscriptionMode.EFFECT);
   }
@@ -42,7 +43,7 @@ export class EffectSubscription extends AbstractSubscription {
   }
 }
 
-export class ComputationSubscription extends AbstractSubscription {
+export class ComputationAction extends AbstractAction {
   constructor(callable: VoidFunction) {
     super(callable, SubscriptionMode.COMPUTED);
   }

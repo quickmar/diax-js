@@ -1,7 +1,15 @@
-export type UseState = <T>(init: T) => State<T>;
+import { Supplier } from '../model/common';
 
-export interface State<T> {
+export type UseSignal = <T>(init: T) => Signal<T>;
+export type UseComputed = <T>(supplier: Supplier<T>) => ReadonlySignal<T>;
+export type UseEffect = (fn: VoidFunction) => void;
+
+export interface Signal<T> {
   value: T;
+}
+
+export interface ReadonlySignal<T> extends Signal<T> {
+  readonly value: T;
 }
 
 export enum SubscriptionMode {
@@ -9,16 +17,19 @@ export enum SubscriptionMode {
   COMPUTED,
 }
 
-export interface Subscription {
+export interface Action extends Subscription {
   readonly subscriptionMode: SubscriptionMode;
-  readonly callable: VoidFunction;
+  readonly call: VoidFunction;
 
-  clear(): void;
   schedule(): void;
 }
 
-export interface StateQueue<T extends Subscription> {
-  schedule(subscription: T): void;
+export interface Subscription {
+  unsubscribe(): void;
 }
 
-export const SUBSCRIPTIONS = Symbol.for('@@subscriptions');
+export interface ActionQueue<T extends Action> {
+  schedule(action: T): void;
+}
+
+export const ACTIONS = Symbol.for('@@actions');

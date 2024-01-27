@@ -1,17 +1,28 @@
-import { SUBSCRIPTIONS, State, Subscription, SubscriptionMode, Supplier, UseState } from '@diax-js/common';
+import {
+  ACTIONS,
+  Signal as ISignal,
+  Action,
+  SubscriptionMode,
+  Supplier,
+  UseSignal,
+  ReadonlySignal,
+  Subscription,
+  UseComputed,
+  UseEffect,
+} from '@diax-js/common';
 import { useContext, _getCurrentContext, getCurrentContext } from '@diax-js/context';
-import { ComputationSubscription, EffectSubscription } from './subscription';
+import { ComputationAction, EffectAction } from './subscription';
 
-const getSubscription = (state: State<unknown>) => Reflect.get(state, SUBSCRIPTIONS) as Set<Subscription>;
+const getActions = (state: ISignal<unknown>) => Reflect.get(state, ACTIONS) as Set<Action>;
 
-class StateImpl<T> implements State<T> {
+class Signal<T> implements ISignal<T> {
   #value!: T;
-  #subscriptions: Set<Subscription> = new Set();
+  #actions: Set<Action> = new Set();
 
   set value(value: T) {
     this.#value = value;
-    for (const subscription of this.#subscriptions) {
-      subscription.schedule();
+    for (const action of this.#actions) {
+      action.schedule();
     }
   }
 
@@ -23,64 +34,63 @@ class StateImpl<T> implements State<T> {
     return this.#value;
   }
 
-  private get [SUBSCRIPTIONS]() {
-    return this.#subscriptions;
+  private get [ACTIONS]() {
+    return this.#actions;
   }
 }
 
-class ComputedState<T> implements State<T> {
-  #state: State<T>;
+class ComputedSignal<T> implements ReadonlySignal<T>, Subscription {
+  #signal: ISignal<T>;
   #dispose: VoidFunction;
-  private isCleared = false;
+  private isStopt = false;
 
   get value() {
-    return this.#state.value;
+    return this.#signal.value;
   }
 
-  constructor(state: State<T>, dispose: VoidFunction) {
-    this.#state = state;
+  constructor(state: ISignal<T>, dispose: VoidFunction) {
+    this.#signal = state;
     this.#dispose = dispose;
   }
 
-  dispose(): void {
-    if (!this.isCleared) {
+  unsubscribe(): void {
+    if (!this.isStopt) {
       this.#dispose();
+      getActions(this.#signal).clear();
       this.#dispose = () => {};
-      this.isCleared = true;
+      this.isStopt = true;
     }
   }
 }
 
-export const useState: UseState = <T>(initialValue: T) => {
-  const state = new StateImpl<T>();
-  state.value = initialValue;
-  return state;
-};
-
-const useEffectInternal_ = (fn: VoidFunction, subscriptionMode: SubscriptionMode) => {
+const subscribe_ = (fn: VoidFunction, subscriptionMode: SubscriptionMode) => {
   const context = getCurrentContext();
-  const effectFn = () => {
+  const callable = () => {
     useContext(context, fn);
   };
 
-  const subscription =
-    subscriptionMode === SubscriptionMode.EFFECT
-      ? new EffectSubscription(effectFn)
-      : new ComputationSubscription(effectFn);
+  const action =
+    subscriptionMode === SubscriptionMode.EFFECT ? new EffectAction(callable) : new ComputationAction(callable);
   const previousSubscriptionMode = context.subscriptionMode;
   const previousObservables = context.observables;
   context.subscriptionMode = subscriptionMode;
   context.observables = new Set();
-  const disposables: VoidFunction[] = [];
+  const disposables: Subscription[] = [];
   try {
-    effectFn();
+    callable();
     for (const observable of context.observables) {
-      const subscriptions = getSubscription(observable);
-      subscriptions.add(subscription);
-      disposables.push(() => {
-        subscriptions.delete(subscription);
-        subscription.clear();
-      });
+      const actions = getActions(observable);
+      actions.add(action);
+      const subscription = {
+        actions,
+        action,
+        unsubscribe() {
+          this.actions.delete(this.action);
+          this.action.unsubscribe();
+          Object.assign(this, { action: null, actions: null });
+        },
+      };
+      disposables.push(subscription);
     }
   } finally {
     context.subscriptionMode = previousSubscriptionMode;
@@ -88,27 +98,33 @@ const useEffectInternal_ = (fn: VoidFunction, subscriptionMode: SubscriptionMode
   }
   return () => {
     while (disposables.length) {
-      disposables.pop()?.();
+      disposables.pop()?.unsubscribe();
     }
   };
 };
 
-export const useEffect = (fn: VoidFunction) => {
-  return useEffectInternal_(fn, SubscriptionMode.EFFECT);
+export const signal: UseSignal = <T>(initialValue: T) => {
+  const state = new Signal<T>();
+  state.value = initialValue;
+  return state;
 };
 
-export const useComputed = <T>(supplier: Supplier<T>) => {
-  let state: State<T> | null = null;
+export const useEffect: UseEffect = (fn: VoidFunction) => {
+  return subscribe_(fn, SubscriptionMode.EFFECT);
+};
+
+export const computed: UseComputed = <T>(supplier: Supplier<T>) => {
+  let _signal: ISignal<T> | null = null;
   const compute = () => {
-    if (state) {
+    if (_signal) {
       const value = supplier();
-      if (state.value !== value) {
-        state.value = value;
+      if (_signal.value !== value) {
+        _signal.value = value;
       }
     } else {
-      state = useState(supplier());
+      _signal = signal(supplier());
     }
   };
-  const dispose = useEffectInternal_(compute, SubscriptionMode.COMPUTED);
-  return new ComputedState(state!, dispose);
+  const dispose = subscribe_(compute, SubscriptionMode.COMPUTED);
+  return new ComputedSignal(_signal!, dispose);
 };

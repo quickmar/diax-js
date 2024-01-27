@@ -1,47 +1,47 @@
-import { StateQueue, Subscription } from '@diax-js/common';
-import { ComputationSubscription, EffectSubscription } from './subscription';
+import { ActionQueue, Action } from '@diax-js/common';
+import { ComputationAction, EffectAction } from './subscription';
 
-export abstract class AbstractStateQueue<T extends Subscription> implements StateQueue<T> {
-  protected subscriptions: Set<Subscription> = new Set();
+export abstract class AbstractStateQueue<T extends Action> implements ActionQueue<T> {
+  protected actions: Set<Action> = new Set();
 
-  abstract schedule(subscription: T): void;
+  abstract schedule(action: T): void;
 
   protected execute(): void {
-    if (this.subscriptions.size === 0) return;
-    for (const subscription of this.subscriptions) {
+    if (this.actions.size === 0) return;
+    for (const action of this.actions) {
       try {
-        subscription.callable();
+        action.call();
       } catch (err) {
         setTimeout(() => {
           throw err;
         });
       }
     }
-    const subscriptions = this.subscriptions;
-    this.subscriptions = new Set();
-    requestIdleCallback(() => subscriptions.clear());
+    const actions = this.actions;
+    this.actions = new Set();
+    requestIdleCallback(() => actions.clear());
   }
 
-  protected put(subscription: T): void {
-    this.subscriptions.add(subscription);
+  protected put(action: T): void {
+    this.actions.add(action);
   }
 }
 
-export class ComputationQueue extends AbstractStateQueue<ComputationSubscription> {
-  override schedule(subscription: ComputationSubscription): void {
-    this.put(subscription);
+export class ComputationQueue extends AbstractStateQueue<ComputationAction> {
+  override schedule(action: ComputationAction): void {
+    this.put(action);
     this.execute();
   }
 }
 
-export class EffectQueue extends AbstractStateQueue<EffectSubscription> {
+export class EffectQueue extends AbstractStateQueue<EffectAction> {
   constructor() {
     super();
     this.execute = this.execute.bind(this);
   }
 
-  override schedule(subscription: EffectSubscription): void {
-    this.put(subscription);
+  override schedule(action: EffectAction): void {
+    this.put(action);
     queueMicrotask(this.execute);
   }
 }
