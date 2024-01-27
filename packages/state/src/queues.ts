@@ -28,9 +28,26 @@ export abstract class AbstractStateQueue<T extends Action> implements ActionQueu
 }
 
 export class ComputationQueue extends AbstractStateQueue<ComputationAction> {
+  private readonly computationBudged = 1000;
+  private currentComputation = 0;
   override schedule(action: ComputationAction): void {
-    this.put(action);
-    this.execute();
+    this.currentComputation++;
+    try {
+      this.put(action);
+      this.execute();
+    } catch (error) {
+      this.actions.clear();
+      throw error;
+    } finally {
+      this.currentComputation = 0;
+    }
+  }
+
+  protected override put(action: ComputationAction): void {
+    if (this.computationBudged === this.currentComputation) {
+      throw new Error('Possible computation cycle detected');
+    }
+    super.put(action);
   }
 }
 

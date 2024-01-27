@@ -8,7 +8,7 @@ export interface Signal<T> {
   value: T;
 }
 
-export interface ReadonlySignal<T> extends Signal<T> {
+export interface ReadonlySignal<T> extends Signal<T>, Subscription {
   readonly value: T;
 }
 

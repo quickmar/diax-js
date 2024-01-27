@@ -39,10 +39,10 @@ class Signal<T> implements ISignal<T> {
   }
 }
 
-class ComputedSignal<T> implements ReadonlySignal<T>, Subscription {
+class ComputedSignal<T> implements ReadonlySignal<T> {
   #signal: ISignal<T>;
   #dispose: VoidFunction;
-  private isStopt = false;
+  private close = false;
 
   get value() {
     return this.#signal.value;
@@ -54,11 +54,11 @@ class ComputedSignal<T> implements ReadonlySignal<T>, Subscription {
   }
 
   unsubscribe(): void {
-    if (!this.isStopt) {
+    if (!this.close) {
       this.#dispose();
       getActions(this.#signal).clear();
       this.#dispose = () => {};
-      this.isStopt = true;
+      this.close = true;
     }
   }
 }

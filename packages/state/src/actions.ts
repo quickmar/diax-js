@@ -9,7 +9,7 @@ useDocument(() => {
 });
 
 export abstract class AbstractAction implements Action {
-  private isStopped: boolean = false;
+  private close: boolean = false;
   #callable: VoidFunction;
 
   get call() {
@@ -24,9 +24,9 @@ export abstract class AbstractAction implements Action {
   }
 
   unsubscribe(): void {
-    if (!this.isStopped) {
+    if (!this.close) {
       this.#callable = () => {};
-      this.isStopped = true;
+      this.close = true;
     }
   }
 
