@@ -8,17 +8,15 @@ export abstract class AbstractStateQueue<T extends Action> implements ActionQueu
 
   protected execute(): void {
     if (this.actions.size === 0) return;
-    for (const action of this.actions) {
+    const actions = this.actions;
+    this.actions = new Set();
+    for (const action of actions) {
       try {
         action.call();
       } catch (err) {
-        setTimeout(() => {
-          throw err;
-        });
+        reportError(err);
       }
     }
-    const actions = this.actions;
-    this.actions = new Set();
     requestIdleCallback(() => actions.clear());
   }
 
@@ -30,6 +28,7 @@ export abstract class AbstractStateQueue<T extends Action> implements ActionQueu
 export class ComputationQueue extends AbstractStateQueue<ComputationAction> {
   private readonly computationBudged = 1000;
   private currentComputation = 0;
+
   override schedule(action: ComputationAction): void {
     this.currentComputation++;
     try {

@@ -2,11 +2,16 @@
     "extends": "../../tsconfig-package.json",
     "include": [
         "src",
+        "test",
         "./index.ts",
         "./package.json"
     ],
     "compilerOptions": {
         "rootDir": "./",
         "outDir": "dist"
-    }
+    },
+    "types": [
+        "vitest/globals",
+        "node"
+    ]
 }

@@ -9,14 +9,13 @@ useDocument(() => {
 });
 
 export abstract class AbstractAction implements Action {
-  private close: boolean = false;
+  protected close: boolean = false;
   #callable: VoidFunction;
 
   get call() {
     return this.#callable;
   }
   readonly subscriptionMode: SubscriptionMode;
-
 
   constructor(callable: VoidFunction, subscriptionMode: SubscriptionMode) {
     this.#callable = callable;
@@ -39,7 +38,7 @@ export class EffectAction extends AbstractAction {
   }
 
   override schedule(): void {
-    scheduler.scheduleEffect(this);
+    if (!this.close) scheduler.scheduleEffect(this);
   }
 }
 
@@ -49,6 +48,6 @@ export class ComputationAction extends AbstractAction {
   }
 
   override schedule(): void {
-    scheduler.scheduleComputation(this);
+    if (!this.close) scheduler.scheduleComputation(this);
   }
 }

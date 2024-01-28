@@ -14,7 +14,7 @@
   },
   "scripts": {
     "build": "tsc --build --verbose",
-    "test": "jest"
+    "test": "vitest"
   },
   "keywords": [
     "web",
