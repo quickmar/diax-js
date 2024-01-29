@@ -1,19 +1,19 @@
 import { useDocument, useSelf } from '@diax-js/context';
-import { ComputationQueue, EffectQueue } from '../src/queues';
+import { ComputationProcessor, EffectProcessor } from '../src/processors';
 import { ComputationAction, EffectAction } from '../src/actions';
 import { Action, SubscriptionMode } from '@diax-js/common';
 import { MockInstance } from 'vitest';
 
 describe('Actions', () => {
-  let computationSchedule: MockInstance<[ComputationAction], void>;
-  let effectSchedule: MockInstance<[EffectAction], void>;
+  let computationProcessor: MockInstance<[ComputationAction], void>;
+  let effectProcessor: MockInstance<[EffectAction], void>;
 
   beforeAll(() => {
     useDocument(() => {
-      const computationQueue = useSelf(ComputationQueue);
-      const effectQueue = useSelf(EffectQueue);
-      computationSchedule = vi.spyOn(computationQueue, 'schedule');
-      effectSchedule = vi.spyOn(effectQueue, 'schedule');
+      const computationQueue = useSelf(ComputationProcessor);
+      const effectQueue = useSelf(EffectProcessor);
+      computationProcessor = vi.spyOn(computationQueue, 'process');
+      effectProcessor = vi.spyOn(effectQueue, 'process');
     });
   });
 
@@ -47,8 +47,8 @@ describe('Actions', () => {
       expect(callable).toBeCalledTimes(1);
     });
 
-    it('should put on the queue', () => {
-      const scheduleSpy = getQueueSpy(subscriptionMode);
+    it('should put on the processor', () => {
+      const scheduleSpy = getProcessorSpy(subscriptionMode);
       scheduleSpy.mockImplementationOnce(() => {});
 
       action.schedule();
@@ -64,8 +64,8 @@ describe('Actions', () => {
       expect(callable).not.toBeCalled();
     });
 
-    it('should not put on the queue', () => {
-      const scheduleSpy = getQueueSpy(subscriptionMode);
+    it('should not put on the processor', () => {
+      const scheduleSpy = getProcessorSpy(subscriptionMode);
       scheduleSpy.mockImplementationOnce(() => {});
       action.unsubscribe();
 
@@ -75,12 +75,12 @@ describe('Actions', () => {
     });
   });
 
-  function getQueueSpy(subscriptionMode: SubscriptionMode) {
+  function getProcessorSpy(subscriptionMode: SubscriptionMode) {
     switch (subscriptionMode) {
       case SubscriptionMode.COMPUTED:
-        return computationSchedule;
+        return computationProcessor;
       case SubscriptionMode.EFFECT:
-        return effectSchedule;
+        return effectProcessor;
     }
   }
 });

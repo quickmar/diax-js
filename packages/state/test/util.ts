@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Context, Dependencies, Signal, SubscriptionMode, TargetCallbacks } from '@diax-js/common';
+import { ACTIONS, Action, Context, Dependencies, Signal, SubscriptionMode, TargetCallbacks } from '@diax-js/common';
 import { BaseDependencies, autoAssignToken, useContext } from '@diax-js/context';
 import { createTaskCollector, getCurrentSuite } from 'vitest/suite';
 
@@ -31,7 +31,7 @@ type MockingFn = VoidFunction;
 
 /**
  * Helper function that wrap provided function and run it in {@link beforeEach} hook.
- * This call is wrap in {@link useContext} adding mock {@link Context}.
+ * This call is wrap in {@link useContext} adding mocked {@link Context}.
  * It let user to do mocking using diax API.
  * After all it tear down diax {@link Context} in {@link afterEach} hook.
  * @param fn callable that do mocking
@@ -60,7 +60,7 @@ export function useMockContext(fn: MockingFn): void {
  */
 export const testInCtx = createTaskCollector(function (this: any, name, fn, timeout) {
   getCurrentSuite().task(name, {
-    ...this, // so "todo"/"skip"/... is tracked correctly
+    ...this,
     meta: {
       customPropertyToDifferentiateTask: true,
     },
@@ -77,4 +77,14 @@ export const testInCtx = createTaskCollector(function (this: any, name, fn, time
 
 export function asAny<T>(obj: T): any {
   return obj;
+}
+
+export async function flush(ms: number = 0): Promise<void> {
+  await new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+export function getActions(signal: Signal<unknown>): Set<Action> {
+  return Reflect.get(signal, ACTIONS);
 }

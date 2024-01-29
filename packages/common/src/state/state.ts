@@ -28,8 +28,8 @@ export interface Subscription {
   unsubscribe(): void;
 }
 
-export interface ActionQueue<T extends Action> {
-  schedule(action: T): void;
+export interface ActionProcessor<T extends Action> {
+  process(action: T): void;
 }
 
 export const ACTIONS = Symbol.for('@@actions');

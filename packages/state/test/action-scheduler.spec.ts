@@ -1,16 +1,16 @@
 import { useSelf, useSupplier } from '@diax-js/context';
 import { ActionScheduler } from '../src/action-scheduler';
 import { useMockContext } from './util';
-import { ComputationQueue, EffectQueue } from '../src/queues';
+import { ComputationProcessor, EffectProcessor } from '../src/processors';
 
 describe('ActionScheduler', () => {
-  let mockComputationQueue: ComputationQueue;
-  let mockEffectQueue: EffectQueue;
+  let mockComputationQueue: ComputationProcessor;
+  let mockEffectQueue: EffectProcessor;
   let actionScheduler: ActionScheduler;
 
   useMockContext(() => {
-    mockComputationQueue = useSupplier(ComputationQueue, () => Object({ schedule: vi.fn() }));
-    mockEffectQueue = useSupplier(EffectQueue, () => Object({ schedule: vi.fn() }));
+    mockComputationQueue = useSupplier(ComputationProcessor, () => Object({ process: vi.fn() }));
+    mockEffectQueue = useSupplier(EffectProcessor, () => Object({ process: vi.fn() }));
     actionScheduler = useSelf(ActionScheduler);
   });
 
@@ -21,12 +21,12 @@ describe('ActionScheduler', () => {
   it('should schedule on computation queue', () => {
     actionScheduler.scheduleComputation(Object({}));
 
-    expect(mockComputationQueue.schedule).toBeCalledTimes(1);
+    expect(mockComputationQueue.process).toBeCalledTimes(1);
   });
 
   it('should schedule on effect queue', () => {
     actionScheduler.scheduleEffect(Object({}));
 
-    expect(mockEffectQueue.schedule).toBeCalledTimes(1);
+    expect(mockEffectQueue.process).toBeCalledTimes(1);
   });
 });

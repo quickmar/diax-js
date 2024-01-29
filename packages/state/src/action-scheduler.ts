@@ -1,20 +1,20 @@
 import { useSelf } from '@diax-js/context';
 import { ComputationAction, EffectAction } from './actions';
-import { ComputationQueue, EffectQueue } from './queues';
+import { ComputationProcessor, EffectProcessor } from './processors';
 
 export class ActionScheduler {
-  private effectQueue;
-  private computationQueue;
+  private effectProcessor;
+  private computationProcessor;
   constructor() {
-    this.effectQueue = useSelf(EffectQueue);
-    this.computationQueue = useSelf(ComputationQueue);
+    this.effectProcessor = useSelf(EffectProcessor);
+    this.computationProcessor = useSelf(ComputationProcessor);
   }
 
   scheduleEffect(effect: EffectAction): void {
-    this.effectQueue.schedule(effect);
+    this.effectProcessor.process(effect);
   }
 
   scheduleComputation(computation: ComputationAction): void {
-    this.computationQueue.schedule(computation);
+    this.computationProcessor.process(computation);
   }
 }

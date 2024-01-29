@@ -1,12 +1,12 @@
 import { Mock } from 'vitest';
 import { EffectAction } from '../src/actions';
-import { EffectQueue } from '../src/queues';
-import { asAny } from './util';
+import { EffectProcessor } from '../src/processors';
+import { asAny, flush } from './util';
 
-describe('EffectQueue', () => {
+describe('EffectProcessor', () => {
   let callable: Mock<[]>;
   let effectAction: EffectAction;
-  let effectQueue: EffectQueue;
+  let effectProcessor: EffectProcessor;
 
   beforeAll(() => {
     vi.stubGlobal('requestIdleCallback', (fn: VoidFunction) => fn());
@@ -17,24 +17,24 @@ describe('EffectQueue', () => {
     vi.resetAllMocks();
     callable = vi.fn();
     effectAction = new EffectAction(callable);
-    effectQueue = new EffectQueue();
+    effectProcessor = new EffectProcessor();
   });
 
   it('should create', () => {
-    expect(effectQueue).toBeTruthy();
+    expect(effectProcessor).toBeTruthy();
   });
 
-  it('should put on the queue', () => {
-    const spy = vi.spyOn(asAny(effectQueue), 'put');
+  it('should put on the processor', () => {
+    const spy = vi.spyOn(asAny(effectProcessor), 'put');
 
-    effectQueue.schedule(effectAction);
+    effectProcessor.process(effectAction);
 
     expect(spy).toBeCalledTimes(1);
     expect(spy).toBeCalledWith(effectAction);
   });
 
   it('should execute on microTaskQueue', async () => {
-    effectQueue.schedule(effectAction);
+    effectProcessor.process(effectAction);
 
     expect(callable).not.toBeCalled();
 
@@ -48,7 +48,7 @@ describe('EffectQueue', () => {
       throw new Error();
     });
 
-    effectQueue.schedule(effectAction);
+    effectProcessor.process(effectAction);
 
     await Promise.resolve();
 
@@ -62,12 +62,42 @@ describe('EffectQueue', () => {
       throw new Error();
     });
 
-    effectQueue.schedule(errorAction);
-    effectQueue.schedule(effectAction);
+    effectProcessor.process(errorAction);
+    effectProcessor.process(effectAction);
 
     await Promise.resolve();
 
     expect(callable).toBeCalledTimes(1);
     expect(reportError).toBeCalledTimes(1);
+  });
+
+  it('should not execute action twice', async () => {
+    effectProcessor.process(effectAction);
+    effectProcessor.process(effectAction);
+
+    await Promise.resolve();
+
+    expect(callable).toBeCalledTimes(1);
+  });
+
+  it('should not execute action twice (microTask)', async () => {
+    effectProcessor.process(effectAction);
+    effectProcessor.process(effectAction);
+    await Promise.resolve();
+    Promise.resolve().then(() => effectProcessor.process(effectAction));
+
+    await Promise.resolve();
+
+    expect(callable).toBeCalledTimes(1);
+  });
+
+  it('should  execute action twice (macroTask)', async () => {
+    effectProcessor.process(effectAction);
+    effectProcessor.process(effectAction);
+
+    setTimeout(() => effectProcessor.process(effectAction));
+    await flush();
+
+    expect(callable).toBeCalledTimes(2);
   });
 });
