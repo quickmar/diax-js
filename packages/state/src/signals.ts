@@ -5,7 +5,7 @@ import {
   SubscriptionMode,
   Supplier,
   UseSignal,
-  ReadonlySignal,
+  ComputedSignal as IComputedSignal,
   Subscription,
   UseComputed,
   UseEffect,
@@ -39,7 +39,7 @@ class Signal<T> implements ISignal<T> {
   }
 }
 
-class ComputedSignal<T> implements ReadonlySignal<T> {
+class ComputedSignal<T> implements IComputedSignal<T> {
   #signal: ISignal<T>;
   #dispose: VoidFunction;
   private close = false;

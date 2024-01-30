@@ -1,5 +1,5 @@
-import { Action, Signal, SubscriptionMode } from '@diax-js/common';
-import { flush, getActions, testInCtx, useMockContext } from './util';
+import { Signal, SubscriptionMode } from '@diax-js/common';
+import { flush, getActions, getFirstAction, testInCtx, useMockContext } from './util';
 import { signal, useEffect } from '../src/signals';
 import { Mock } from 'vitest';
 
@@ -65,10 +65,7 @@ describe('useEffect', () => {
       negative.value;
     });
 
-    const action = getFirstAction(positive);
-    const action1 = getFirstAction(negative);
-
-    expect(action).toBe(action1);
+    expect(getFirstAction(positive)).toBe(getFirstAction(negative));
   });
 
   testInCtx('should call fn when subscribing', async () => {
@@ -161,9 +158,7 @@ describe('useEffect', () => {
     await testRunTwice(2);
   });
 
-  function getFirstAction(sig: Signal<unknown>): Action {
-    return [...getActions(sig)][0];
-  }
+
 
   function useEffectHelper(fn: VoidFunction) {
     const dispose = useEffect(fn);

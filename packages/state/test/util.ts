@@ -88,3 +88,11 @@ export async function flush(ms: number = 0): Promise<void> {
 export function getActions(signal: Signal<unknown>): Set<Action> {
   return Reflect.get(signal, ACTIONS);
 }
+
+export function identity<T>(value: T): T {
+  return value;
+}
+
+export function getFirstAction(sig: Signal<unknown>): Action {
+  return [...getActions(sig)][0];
+}
