@@ -1,5 +1,5 @@
 import { Action, Signal, SubscriptionMode } from '@diax-js/common';
-import { getActions, testInCtx, useMockContext } from './util';
+import { flush, getActions, testInCtx, useMockContext } from './util';
 import { signal, useEffect } from '../src/signals';
 import { Mock } from 'vitest';
 
@@ -180,6 +180,8 @@ describe('useEffect', () => {
     await Promise.resolve().then(() => {
       positive.value = secondValue;
     });
+    
+    await flush();
 
     expect(spyP).toBeCalledTimes(2);
   }
