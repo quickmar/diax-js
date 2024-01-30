@@ -80,7 +80,7 @@ describe('ComputationProcessor', () => {
       const cyclicActon = action1;
       expect(() => computationProcessor.process(cyclicActon)).not.toThrow();
       expect(reportError).toBeCalledTimes(1);
-      expect(reportError).toBeCalledWith(new Error('Possible computation cycle detected'));
+      expect(reportError).toBeCalledWith(new RangeError('Computation budged (1000) exceeded.'));
     } else fail();
   });
 

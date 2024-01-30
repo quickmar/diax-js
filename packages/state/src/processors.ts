@@ -37,7 +37,7 @@ export class ComputationProcessor extends AbstractActionProcessor<ComputationAct
   protected override put(action: ComputationAction): void {
     this.currentComputation++;
     if (this.computationBudged === this.currentComputation) {
-      throw new Error('Possible computation cycle detected');
+      throw new RangeError(`Computation budged (${this.computationBudged}) exceeded.`);
     }
     this.currentAction = action;
   }
@@ -62,11 +62,11 @@ export class EffectProcessor extends AbstractActionProcessor<EffectAction> {
 
   protected execute(): void {
     if (this.actions.size === 0) return;
-    const actions = this.actions;
-    this.actions = new Set();
-    for (const action of actions) {
+    for (const action of this.actions) {
       this.callSafe(action);
     }
+    const actions = this.actions;
+    this.actions = new Set();
     requestIdleCallback(() => actions.clear());
   }
 

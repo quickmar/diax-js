@@ -2,7 +2,7 @@ import { Supplier } from '../model/common';
 
 export type UseSignal = <T>(init: T) => Signal<T>;
 export type UseComputed = <T>(supplier: Supplier<T>) => ReadonlySignal<T>;
-export type UseEffect = (fn: VoidFunction) => void;
+export type UseEffect = (fn: VoidFunction) => VoidFunction;
 
 export interface Signal<T> {
   value: T;
