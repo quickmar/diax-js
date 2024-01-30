@@ -1,7 +1,7 @@
-import { ActionProcessor, Action } from '@diax-js/common';
+import { ActionProcessor as IActionProcessor, Action } from '@diax-js/common';
 import { ComputationAction, EffectAction } from './actions';
 
-export abstract class AbstractActionProcessor<T extends Action> implements ActionProcessor<T> {
+export abstract class ActionProcessor<T extends Action> implements IActionProcessor<T> {
   abstract process(action: T): void;
 
   protected abstract execute(): void;
@@ -17,7 +17,7 @@ export abstract class AbstractActionProcessor<T extends Action> implements Actio
   }
 }
 
-export class ComputationProcessor extends AbstractActionProcessor<ComputationAction> {
+export class ComputationProcessor extends ActionProcessor<ComputationAction> {
   private readonly computationBudged = 1000;
   private currentComputation = 0;
 
@@ -43,11 +43,14 @@ export class ComputationProcessor extends AbstractActionProcessor<ComputationAct
   }
 
   protected override execute(): void {
-    if (this.currentAction) this.callSafe(this.currentAction);
+    if (this.currentAction) {
+      this.callSafe(this.currentAction);
+    }
+    this.currentComputation--;
   }
 }
 
-export class EffectProcessor extends AbstractActionProcessor<EffectAction> {
+export class EffectProcessor extends ActionProcessor<EffectAction> {
   private actions: Set<EffectAction> = new Set();
 
   constructor() {
