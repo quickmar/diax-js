@@ -10,8 +10,4 @@
         "rootDir": "./",
         "outDir": "dist"
     },
-    "types": [
-        "vitest/globals",
-        "node"
-    ]
 }

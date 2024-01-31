@@ -1,7 +1,9 @@
 import { RenderingHTMLElement } from '@diax-js/common';
 import { useElement, useSelf } from '@diax-js/context';
-import { TestRenderingElement, flush } from './utils';
-import { Attributes, RenderState } from '@diax-js/rendering-element';
+import { flush } from '@diax-js/test';
+import { RenderState } from '../src/rendering/attributes/render-state';
+import { Attributes } from '../src/rendering/attributes/attribute-name';
+import { TestRenderingElement } from './utils';
 
 declare global {
   interface HTMLElementTagNameMap {

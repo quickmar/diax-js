@@ -1,14 +1,12 @@
-import {
-  Attributes,
-  DetectionWalker,
-  DocumentWalker,
-  RenderState,
-  RenderStrategy,
-  SelfWalker,
-  SubTreeWalker,
-} from '@diax-js/rendering-element';
-import { TestRenderingElement } from './utils';
 import { useElement, useSelf } from '@diax-js/context';
+import { TestRenderingElement } from './utils';
+import { DetectionWalker } from '../src/rendering/strategy/detection-walker';
+import { Attributes } from '../src/rendering/attributes/attribute-name';
+import { RenderState } from '../src/rendering/attributes/render-state';
+import { RenderStrategy } from '../src/rendering/attributes/render-strategy';
+import { DocumentWalker } from '../src/rendering/strategy/document-walker';
+import { SelfWalker } from '../src/rendering/strategy/self-walker';
+import { SubTreeWalker } from '../src/rendering/strategy/sub-tree-walker';
 
 describe('walkers', () => {
   let walker: DetectionWalker;
@@ -65,9 +63,7 @@ describe('walkers', () => {
           throw new Error();
         });
 
-        const consoleSpy = jest
-          .spyOn(console, 'error')
-          .mockImplementationOnce((err) => expect(err).toEqual(new Error()));
+        const consoleSpy = vi.spyOn(console, 'error').mockImplementationOnce((err) => expect(err).toEqual(new Error()));
 
         walker.walk(element);
 
@@ -109,7 +105,6 @@ describe('walkers', () => {
         <test-rendering-element ${att}="${value}"></test-rendering-element>
         <test-rendering-element ${att}="${value}"></test-rendering-element>
         `;
-      jest.resetAllMocks();
 
       walker.walk(element);
 

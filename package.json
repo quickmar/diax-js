@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc --build --verbose",
-    "test": "jest",
+    "test": "vitest",
     "lint": "eslint --ignore-path .eslintignore --ext .js,.ts ."
   },
   "devDependencies": {

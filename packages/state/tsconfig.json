@@ -8,10 +8,6 @@
     ],
     "compilerOptions": {
         "rootDir": "./",
-        "outDir": "dist",
-        "types": [
-            "vitest/globals",
-            "node"
-        ]
+        "outDir": "dist"
     }
 }

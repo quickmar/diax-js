@@ -15,8 +15,12 @@
   "dependencies": {
     "@diax-js/common": "^0.0.2"
   },
+  "devDependencies": {
+    "@diax-js/test": "../test"
+  },
   "scripts": {
-    "build": "tsc --build --verbose"
+    "build": "tsc --build --verbose",
+    "test": "vitest"
   },
   "keywords": [
     "web",

@@ -1,5 +1,5 @@
 import { useElement, useSelf } from '@diax-js/context';
-import { createContextElement } from './utils';
+import { createContextElement } from '@diax-js/test';
 
 class TestService {}
 

@@ -2,6 +2,7 @@
     "extends": "../../tsconfig-package.json",
     "include": [
         "src",
+        "test",
         "./host.ts",
         "./index.ts",
         "./package.json",

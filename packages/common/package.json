@@ -9,7 +9,11 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc --build --verbose"
+    "build": "tsc --build --verbose",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "@diax-js/test": "../test"
   },
   "keywords": [
     "web",

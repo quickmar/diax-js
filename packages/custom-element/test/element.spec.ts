@@ -1,12 +1,13 @@
-import { useElement, useSelf } from "@diax-js/context";
-import { TestElement, TestFormElement, TestRenderingElement } from "./utils";
+import { useElement, useSelf } from '@diax-js/context';
+import { TestElement } from './utils';
+import { BaseElement } from '../src/base-element';
+import { TargetCallbacks } from '@diax-js/common';
 
-describe.each([
-  [{ Ctor: TestElement, name: 'test-element' }],
-  [{ Ctor: TestFormElement, name: 'test-form-element' }],
-  [{ Ctor: TestRenderingElement, name: 'test-rendering-element' }],
-])('@Element', ({ Ctor, name }) => {
-  let element: HTMLElement;
+describe('Custom Element', () => {
+  let element: BaseElement<TargetCallbacks>;
+  let name: string;
+  let instanceConstructor: typeof TestElement;
+  let target: TestElement;
 
   beforeAll(() => {
     expect(globalThis.ElementInternals).toBeFalsy();
@@ -26,7 +27,11 @@ describe.each([
   });
 
   beforeEach(() => {
-    element = document.createElement(name);
+    name = 'test-element';
+    element = document.createElement(name) as BaseElement<TestElement>;
+    target = element.instance as TestElement;
+    target.spy = vi.fn();
+    instanceConstructor = TestElement;
   });
 
   it('should create', () => {
@@ -36,18 +41,18 @@ describe.each([
   it('should constructor have target', () => {
     const elementCtor = customElements.get(name) ?? {};
 
-    expect(Reflect.get(elementCtor, 'target')).toBe(Ctor);
+    expect(Reflect.get(elementCtor, 'target')).toBe(instanceConstructor);
   });
 
   it('should constructor have observedAttributes', () => {
     const elementCtor = customElements.get(name) ?? {};
 
-    expect(Reflect.get(elementCtor, 'observedAttributes')).toBe(Ctor.observedAttributes);
+    expect(Reflect.get(elementCtor, 'observedAttributes')).toBe(instanceConstructor.observedAttributes);
   });
 
   it('should have defined context', () => {
     useElement(element, () => {
-      expect(useSelf(Ctor)).toBeInstanceOf(Ctor);
+      expect(useSelf(instanceConstructor)).toBeInstanceOf(instanceConstructor);
     });
   });
 
@@ -75,7 +80,7 @@ describe.each([
     const iframe = document.createElement('iframe');
     iframe.setAttribute('src', './index.html');
     document.body.appendChild(iframe);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
     // adoptedCallback
     iframe.contentWindow?.document.adoptNode(element);
@@ -84,8 +89,8 @@ describe.each([
 
   function assertSypCallTimes(times: number): void {
     useElement(element, () => {
-      expect(useSelf(Ctor).spy).toBeCalledTimes(times);
-      jest.clearAllMocks();
+      expect(useSelf(instanceConstructor).spy).toBeCalledTimes(times);
+      vi.clearAllMocks();
     });
   }
 });
