@@ -1,5 +1,7 @@
 import { Signal, SubscriptionMode } from '@diax-js/common';
-import { flush, getActions, getFirstAction, testInCtx, useMockContext } from './util';
+import { useMockContext, testInCtx, flush } from '@diax-js/test';
+import { useContext } from '@diax-js/context';
+import { getActions, getFirstAction } from './util';
 import { signal, useEffect } from '../src/signals';
 import { Mock } from 'vitest';
 
@@ -20,7 +22,7 @@ describe('useEffect', () => {
     spyP = vi.fn();
     spyN = vi.fn();
     disposables = [];
-  });
+  }, useContext);
 
   afterEach(() => {
     while (disposables.length) {
@@ -158,8 +160,6 @@ describe('useEffect', () => {
     await testRunTwice(2);
   });
 
-
-
   function useEffectHelper(fn: VoidFunction) {
     const dispose = useEffect(fn);
     disposables.push(dispose);
@@ -175,7 +175,7 @@ describe('useEffect', () => {
     await Promise.resolve().then(() => {
       positive.value = secondValue;
     });
-    
+
     await flush();
 
     expect(spyP).toBeCalledTimes(2);

@@ -1,7 +1,7 @@
+import { asAny, flush } from '@diax-js/test';
 import { Mock } from 'vitest';
 import { ComputationAction } from '../src/actions';
 import { ComputationProcessor } from '../src/processors';
-import { asAny, flush } from './util';
 import { fail } from 'assert';
 
 describe('ComputationProcessor', () => {

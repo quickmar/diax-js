@@ -1,6 +1,6 @@
-import { useSelf, useSupplier } from '@diax-js/context';
+import { useContext, useSelf, useSupplier } from '@diax-js/context';
+import { useMockContext } from '@diax-js/test';
 import { ActionScheduler } from '../src/action-scheduler';
-import { useMockContext } from './util';
 import { ComputationProcessor, EffectProcessor } from '../src/processors';
 
 describe('ActionScheduler', () => {
@@ -12,7 +12,7 @@ describe('ActionScheduler', () => {
     mockComputationQueue = useSupplier(ComputationProcessor, () => Object({ process: vi.fn() }));
     mockEffectQueue = useSupplier(EffectProcessor, () => Object({ process: vi.fn() }));
     actionScheduler = useSelf(ActionScheduler);
-  });
+  }, useContext);
 
   it('should create', () => {
     expect(actionScheduler).toBeTruthy();

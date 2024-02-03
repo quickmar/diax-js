@@ -1,14 +1,15 @@
 import { Signal, SubscriptionMode } from '@diax-js/common';
+import { useMockContext, asAny, testInCtx } from '@diax-js/test';
+import { getCurrentContext, useContext } from '@diax-js/context';
 import { signal } from '../src/signals';
-import { asAny, getActions, testInCtx, useMockContext } from './util';
-import { getCurrentContext } from '@diax-js/context';
+import { getActions } from './util';
 
 describe('Signal', () => {
   let s: Signal<number>;
 
   useMockContext(() => {
     s = signal(0);
-  });
+  }, useContext);
 
   it('should create', () => {
     expect(s).toBeTruthy();

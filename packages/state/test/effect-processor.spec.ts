@@ -1,7 +1,7 @@
+import { asAny, flush } from '@diax-js/test';
 import { Mock } from 'vitest';
 import { EffectAction } from '../src/actions';
 import { EffectProcessor } from '../src/processors';
-import { asAny, flush } from './util';
 
 describe('EffectProcessor', () => {
   let callable: Mock<[]>;
