@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build": "tsc --build --verbose",
+    "clean": "rimraf -g \"packages/**/dist\" \"packages/**/*.tsbuildinfo\"",
+    "build": "tsc --build tsconfig.build.json --verbose",
     "test": "vitest",
     "lint": "eslint --ignore-path .eslintignore --ext .js,.ts ."
   },

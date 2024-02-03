@@ -17,7 +17,7 @@
     "@diax-js/test": "../test"
   },
   "scripts": {
-    "build": "tsc --build --verbose",
+    "build": "tsc --build tsconfig.build.json --verbose",
     "test": "vitest"
   },
   "keywords": [

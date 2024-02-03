@@ -1,14 +1,15 @@
 {
-    "extends": "../../tsconfig-package.json",
+    "extends": "../../tsconfig.package.json",
     "include": [
         "src",
         "test",
-        "./host.ts",
         "./index.ts",
         "./package.json",
+        "./LICENSE",
+        "./README.md"
     ],
     "compilerOptions": {
         "rootDir": "./",
-        "outDir": "dist"
+        "outDir": "dist",
     }
 }

@@ -1,0 +1,26 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./packages/common/tsconfig.build.json"
+    },
+    {
+      "path": "./packages/context/tsconfig.build.json"
+    },
+    {
+      "path": "./packages/custom-element/tsconfig.build.json"
+    },
+    {
+      "path": "./packages/form-element/tsconfig.build.json"
+    },
+    {
+      "path": "./packages/rendering-element/tsconfig.build.json"
+    },
+    {
+      "path": "./packages/state/tsconfig.build.json"
+    },
+    {
+      "path": "./packages/test/tsconfig.build.json"
+    }
+  ]
+}
