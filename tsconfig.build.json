@@ -19,8 +19,5 @@
     {
       "path": "./packages/state/tsconfig.build.json"
     },
-    {
-      "path": "./packages/test/tsconfig.build.json"
-    }
   ]
 }

@@ -4,5 +4,10 @@
         "dist",
         "test",
         "**/*spec.ts"
-    ]
+    ],
+    "compilerOptions": {
+        "types": [
+            "node"
+        ]
+    }
 }
