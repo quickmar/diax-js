@@ -4,12 +4,16 @@
   "description": "Common package for diax implementation.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "module": "dist/index.ts",
+  "module": "dist/index.js",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsc --build --verbose"
+    "build": "tsc --build tsconfig.build.json --verbose",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "@diax-js/test": "../test"
   },
   "keywords": [
     "web",

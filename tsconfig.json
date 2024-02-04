@@ -2,7 +2,7 @@
   "files": [],
   "references": [
     {
-      "path": "./packages/common"
+      "path": "./packages/common/"
     },
     {
       "path": "./packages/context"
@@ -15,6 +15,9 @@
     },
     {
       "path": "./packages/rendering-element"
+    },
+    {
+      "path": "./packages/state"
     },
     {
       "path": "./packages/test"

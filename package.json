@@ -4,20 +4,25 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build": "tsc --build --verbose",
-    "test": "npm run test --workspace ./packages/test",
+    "clean": "rimraf -g \"packages/**/dist\" \"packages/**/*.tsbuildinfo\"",
+    "build": "tsc --build tsconfig.build.json --verbose",
+    "test": "vitest",
     "lint": "eslint --ignore-path .eslintignore --ext .js,.ts ."
   },
   "devDependencies": {
-    "eslint": "^8.49.0",
-    "@typescript-eslint/eslint-plugin": "^6.7.2",
+    "@types/node": "^20.11.9",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-import": "^2.28.1",
     "eslint-plugin-n": "^16.1.0",
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-promise": "^6.1.1",
-    "prettier": "^3.0.3",
-    "typescript": "^5.0.2"
+    "jsdom": "^23.0.1",
+    "prettier": "^3.1.1",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.12",
+    "vitest": "^1.2.2"
   },
   "workspaces": [
     "packages/*"

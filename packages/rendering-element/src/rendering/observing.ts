@@ -13,6 +13,15 @@ const documentWalker = new DocumentWalker(subTreeWalker);
 renderStateObserver.observe(document.body, { attributeFilter: [Attributes.RENDER_STATE] });
 
 function checkMutations(mutations: MutationRecord[]): void {
+  mutations.sort((curr, prev) => {
+    const currTarget = curr.target;
+    const prevTarget = prev.target;
+    if( currTarget === prevTarget) return 0;
+    if( currTarget.compareDocumentPosition(prevTarget) & Node.DOCUMENT_POSITION_PRECEDING) {
+        return 1;
+    }
+    return -1;
+  });
   for (const record of mutations) {
     const { target } = record;
     if (!hasPendingDetectionState(target)) continue;
