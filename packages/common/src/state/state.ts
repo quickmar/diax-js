@@ -17,6 +17,7 @@ export interface ComputedSignal<T> extends ReadonlySignal<T>, Subscription {}
 export enum SubscriptionMode {
   EFFECT,
   COMPUTED,
+  RENDER,
 }
 
 export interface Action extends Subscription {

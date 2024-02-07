@@ -2,18 +2,15 @@ import {
   ACTIONS,
   Signal as ISignal,
   Action,
-  SubscriptionMode,
   Supplier,
   UseSignal,
   ComputedSignal as IComputedSignal,
-  Subscription,
   UseComputed,
   UseEffect,
 } from '@diax-js/common';
-import { useContext, _getCurrentContext, getCurrentContext } from '@diax-js/context';
+import { _getCurrentContext } from '@diax-js/context';
+import { getActions, subscribe } from './support/subscribe';
 import { ComputationAction, EffectAction } from './actions';
-
-const getActions = (state: ISignal<unknown>) => Reflect.get(state, ACTIONS) as Set<Action>;
 
 class Signal<T> implements ISignal<T> {
   #value!: T;
@@ -63,45 +60,8 @@ class ComputedSignal<T> implements IComputedSignal<T> {
   }
 }
 
-const subscribe_ = (fn: VoidFunction, subscriptionMode: SubscriptionMode) => {
-  const context = getCurrentContext();
-  const callable = () => {
-    useContext(context, fn);
-  };
-
-  const action =
-    subscriptionMode === SubscriptionMode.EFFECT ? new EffectAction(callable) : new ComputationAction(callable);
-  const previousSubscriptionMode = context.subscriptionMode;
-  const previousObservables = context.observables;
-  context.subscriptionMode = subscriptionMode;
-  context.observables = new Set();
-  const disposables: Subscription[] = [];
-  try {
-    callable();
-    for (const observable of context.observables) {
-      const actions = getActions(observable);
-      actions.add(action);
-      const subscription = {
-        actions,
-        action,
-        unsubscribe() {
-          this.actions.delete(this.action);
-          this.action.unsubscribe();
-          Object.assign(this, { action: null, actions: null });
-        },
-      };
-      disposables.push(subscription);
-    }
-  } finally {
-    context.subscriptionMode = previousSubscriptionMode;
-    context.observables = previousObservables;
-  }
-  return () => {
-    while (disposables.length) {
-      disposables.pop()?.unsubscribe();
-    }
-  };
-};
+const produceEffectAction = (callable: VoidFunction) => new EffectAction(callable);
+const produceComputationAction = (callable: VoidFunction) => new ComputationAction(callable);
 
 export const signal: UseSignal = <T>(initialValue: T) => {
   const state = new Signal<T>();
@@ -110,7 +70,7 @@ export const signal: UseSignal = <T>(initialValue: T) => {
 };
 
 export const useEffect: UseEffect = (fn: VoidFunction) => {
-  return subscribe_(fn, SubscriptionMode.EFFECT);
+  return subscribe(fn, produceEffectAction);
 };
 
 export const computed: UseComputed = <T>(supplier: Supplier<T>) => {
@@ -125,6 +85,6 @@ export const computed: UseComputed = <T>(supplier: Supplier<T>) => {
       _signal = signal(supplier());
     }
   };
-  const dispose = subscribe_(compute, SubscriptionMode.COMPUTED);
+  const dispose = subscribe(compute, produceComputationAction);
   return new ComputedSignal(_signal!, dispose);
 };

@@ -4,6 +4,7 @@
         "src",
         "test",
         "./index.ts",
+        "./support.ts",
         "./package.json",
         "./LICENSE",
         "./README.md"

@@ -1,6 +1,6 @@
 import { DetectionWalker } from './detection-walker';
 import { canRender, shouldRejectNode, tryRender } from '../../utils/rendering-util';
-import { RenderingHTMLElement } from '@diax-js/common';
+import { RenderingHTMLElement } from '@diax-js/common/rendering';
 
 export class SubTreeWalker implements DetectionWalker {
   walk(root: Node): void {
