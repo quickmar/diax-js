@@ -42,6 +42,16 @@ export class EffectAction extends AbstractAction {
   }
 }
 
+export class RenderingAction extends AbstractAction {
+  constructor(callable: VoidFunction) {
+    super(callable, SubscriptionMode.RENDER);
+  }
+
+  override schedule(): void {
+    if (!this.close) scheduler.scheduleRender(this);
+  }
+}
+
 export class ComputationAction extends AbstractAction {
   constructor(callable: VoidFunction) {
     super(callable, SubscriptionMode.COMPUTED);

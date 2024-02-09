@@ -9,7 +9,7 @@ export function setState(element: Element, state?: RenderState): void {
 
 export function tryRender(element: RenderingHTMLElement): void {
   try {
-    element.render();
+    // element.render();
     setState(element, RenderState.RENDERED);
   } catch (error) {
     console.error(error);

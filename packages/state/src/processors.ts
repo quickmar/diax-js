@@ -1,5 +1,5 @@
 import { ActionProcessor as IActionProcessor, Action } from '@diax-js/common';
-import { ComputationAction, EffectAction } from './actions';
+import { ComputationAction, EffectAction, RenderingAction } from './actions';
 
 export abstract class ActionProcessor<T extends Action> implements IActionProcessor<T> {
   abstract process(action: T): void;
@@ -50,17 +50,12 @@ export class ComputationProcessor extends ActionProcessor<ComputationAction> {
   }
 }
 
-export class EffectProcessor extends ActionProcessor<EffectAction> {
-  private actions: Set<EffectAction> = new Set();
+abstract class AbstractEffectProcessor<T extends Action> extends ActionProcessor<T> {
+  private actions: Set<T> = new Set();
 
   constructor() {
     super();
     this.execute = this.execute.bind(this);
-  }
-
-  override process(action: EffectAction): void {
-    this.put(action);
-    queueMicrotask(this.execute);
   }
 
   protected execute(): void {
@@ -73,7 +68,21 @@ export class EffectProcessor extends ActionProcessor<EffectAction> {
     requestIdleCallback(() => actions.clear());
   }
 
-  protected put(action: EffectAction): void {
+  protected put(action: T): void {
     this.actions.add(action);
+  }
+}
+
+export class EffectProcessor extends AbstractEffectProcessor<EffectAction> {
+  override process(action: EffectAction): void {
+    this.put(action);
+    queueMicrotask(this.execute);
+  }
+}
+
+export class RenderingProcessor extends AbstractEffectProcessor<RenderingAction> {
+  override process(action: EffectAction): void {
+    this.put(action);
+    setTimeout(this.execute);
   }
 }

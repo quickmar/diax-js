@@ -4,10 +4,11 @@
         "src",
         "test",
         "./index.ts",
+        "./uhtml.d.ts",
+        "./uhtml-rendering.ts",
         "./package.json",
         "./LICENSE",
         "./README.md",
-        "./uhtml.d.ts"
     ],
     "compilerOptions": {
         "rootDir": "./",

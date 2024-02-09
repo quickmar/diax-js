@@ -8,4 +8,3 @@ export * from './src/rendering/strategy/detection-walker';
 export * from './src/rendering/strategy/document-walker';
 export * from './src/rendering/strategy/self-walker';
 export * from './src/rendering/strategy/sub-tree-walker';
-export { html } from './src/rendering/rendering';
