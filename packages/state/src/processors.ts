@@ -59,12 +59,15 @@ abstract class AbstractEffectProcessor<T extends Action> extends ActionProcessor
     this.execute = this.execute.bind(this);
   }
 
+  protected abstract prepareActions(actions: Set<T>): Iterable<T>;
+  protected abstract test(action: T): boolean;
+
   protected execute(): void {
     if (this.currentEffect === 1) {
       const actions = this.actions;
       this.actions = new Set();
-      for (const action of actions) {
-        this.callSafe(action);
+      for (const action of this.prepareActions(actions)) {
+        if (this.test(action)) this.callSafe(action);
       }
       requestIdleCallback(() => actions.clear());
     }
@@ -82,11 +85,42 @@ export class EffectProcessor extends AbstractEffectProcessor<EffectAction> {
     this.put(action);
     queueMicrotask(this.execute);
   }
+
+  protected override prepareActions(actions: Set<EffectAction>): Iterable<EffectAction> {
+    // does nothing
+    return actions;
+  }
+
+  protected override test(_action: EffectAction): boolean {
+    return true;
+  }
 }
 
 export class RenderingProcessor extends AbstractEffectProcessor<RenderingAction> {
-  override process(action: EffectAction): void {
+  override process(action: RenderingAction): void {
     this.put(action);
     setTimeout(this.execute);
+  }
+
+  protected override prepareActions(actions: Set<RenderingAction>): Iterable<RenderingAction> {
+    return [...actions].sort(this.topologicalSort);
+  }
+
+  protected override test(action: RenderingAction): boolean {
+    return action.host.isConnected;
+  }
+
+  private topologicalSort(a: RenderingAction, b: RenderingAction): number {
+    if (a === b) {
+      return 0;
+    }
+    const position = a.host.compareDocumentPosition(b.host);
+    if (position & Node.DOCUMENT_POSITION_FOLLOWING) {
+      return -1;
+    } else if (position & Node.DOCUMENT_POSITION_PRECEDING) {
+      return 1;
+    } else {
+      return 0;
+    }
   }
 }
