@@ -52,6 +52,7 @@ export class ComputationProcessor extends ActionProcessor<ComputationAction> {
 
 abstract class AbstractEffectProcessor<T extends Action> extends ActionProcessor<T> {
   private actions: Set<T> = new Set();
+  private currentEffect = 0;
 
   constructor() {
     super();
@@ -59,16 +60,19 @@ abstract class AbstractEffectProcessor<T extends Action> extends ActionProcessor
   }
 
   protected execute(): void {
-    if (this.actions.size === 0) return;
-    for (const action of this.actions) {
-      this.callSafe(action);
+    if (this.currentEffect === 1) {
+      for (const action of this.actions) {
+        this.callSafe(action);
+      }
+      const actions = this.actions;
+      this.actions = new Set();
+      requestIdleCallback(() => actions.clear());
     }
-    const actions = this.actions;
-    this.actions = new Set();
-    requestIdleCallback(() => actions.clear());
+    this.currentEffect--;
   }
 
   protected put(action: T): void {
+    this.currentEffect++;
     this.actions.add(action);
   }
 }
