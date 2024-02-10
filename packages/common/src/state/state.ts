@@ -20,6 +20,10 @@ export enum SubscriptionMode {
   RENDER,
 }
 
+export interface SignalSubscription extends Subscription {
+  add(containsAction: Signal<unknown>): void;
+}
+
 export interface Action extends Subscription {
   readonly subscriptionMode: SubscriptionMode;
   readonly call: VoidFunction;

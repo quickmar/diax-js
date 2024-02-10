@@ -1,4 +1,12 @@
-import { ACTIONS, Action, Signal, SubscriptionMode, Supplier, TargetConstructor } from '@diax-js/common';
+import {
+  ACTIONS,
+  Action,
+  Signal,
+  SignalSubscription,
+  SubscriptionMode,
+  Supplier,
+  TargetConstructor,
+} from '@diax-js/common';
 import {
   RenderingTargetCallbacks,
   RenderingElementCallbacks,
@@ -28,7 +36,7 @@ export class BaseRenderingElement
     return true;
   }
 
-  private disposeRender?: VoidFunction;
+  private renderSubscription?: SignalSubscription;
   private previousObservables = new Set<Signal<unknown>>();
 
   constructor(supplier: Supplier<RenderingTargetCallbacks<Hole>>) {
@@ -38,8 +46,8 @@ export class BaseRenderingElement
   override connectedCallback(): void {
     super.connectedCallback();
     useElement(this, () => {
-      this.disposeRender = subscribe(() => {
-        if (this.disposeRender) {
+      this.renderSubscription = subscribe(() => {
+        if (this.renderSubscription) {
           this.render();
         } else {
           this.firstRender();
@@ -50,7 +58,7 @@ export class BaseRenderingElement
 
   override disconnectedCallback(): void {
     super.disconnectedCallback();
-    this.disposeRender?.();
+    this.renderSubscription?.unsubscribe();
   }
 
   private firstRender(): void {
@@ -87,6 +95,7 @@ export class BaseRenderingElement
     if (difference.size > 0) {
       for (const observable of difference) {
         getActions(observable).add(renderingAction);
+        this.renderSubscription?.add(observable);
       }
       this.previousObservables = new Set(currentObservables);
     }

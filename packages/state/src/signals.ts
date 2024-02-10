@@ -71,7 +71,8 @@ export const signal: UseSignal = <T>(initialValue: T) => {
 };
 
 export const useEffect: UseEffect = (fn: VoidFunction) => {
-  return subscribe(fn, produceEffectAction);
+  const subscription = subscribe(fn, produceEffectAction);
+  return () => subscription.unsubscribe();
 };
 
 export const computed: UseComputed = <T>(supplier: Supplier<T>) => {
@@ -83,6 +84,6 @@ export const computed: UseComputed = <T>(supplier: Supplier<T>) => {
       _signal = signal(supplier());
     }
   };
-  const dispose = subscribe(compute, produceComputationAction);
-  return new ComputedSignal(_signal!, dispose);
+  const subscription = subscribe(compute, produceComputationAction);
+  return new ComputedSignal(_signal!, () => subscription.unsubscribe());
 };
