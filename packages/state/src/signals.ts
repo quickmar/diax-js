@@ -17,6 +17,7 @@ class Signal<T> implements ISignal<T> {
   #actions: Set<Action> = new Set();
 
   set value(value: T) {
+    if (this.#value === value) return;
     this.#value = value;
     for (const action of this.#actions) {
       action.schedule();
@@ -77,10 +78,7 @@ export const computed: UseComputed = <T>(supplier: Supplier<T>) => {
   let _signal: ISignal<T> | null = null;
   const compute = () => {
     if (_signal) {
-      const value = supplier();
-      if (_signal.value !== value) {
-        _signal.value = value;
-      }
+      _signal.value = supplier();
     } else {
       _signal = signal(supplier());
     }

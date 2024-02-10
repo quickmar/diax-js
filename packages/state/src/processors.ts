@@ -61,11 +61,11 @@ abstract class AbstractEffectProcessor<T extends Action> extends ActionProcessor
 
   protected execute(): void {
     if (this.currentEffect === 1) {
-      for (const action of this.actions) {
-        this.callSafe(action);
-      }
       const actions = this.actions;
       this.actions = new Set();
+      for (const action of actions) {
+        this.callSafe(action);
+      }
       requestIdleCallback(() => actions.clear());
     }
     this.currentEffect--;
