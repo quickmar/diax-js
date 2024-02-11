@@ -1,6 +1,7 @@
 import { Action, SubscriptionMode } from '@diax-js/common';
-import { ActionScheduler } from './action-scheduler';
 import { useDocument, useSelf } from '@diax-js/context';
+import { useHost } from '@diax-js/context/host';
+import { ActionScheduler } from './action-scheduler';
 
 let scheduler: ActionScheduler;
 
@@ -39,6 +40,18 @@ export class EffectAction extends AbstractAction {
 
   override schedule(): void {
     if (!this.close) scheduler.scheduleEffect(this);
+  }
+}
+
+export class RenderingAction extends AbstractAction {
+  readonly host = useHost();
+
+  constructor(callable: VoidFunction) {
+    super(callable, SubscriptionMode.RENDER);
+  }
+
+  override schedule(): void {
+    if (!this.close) scheduler.scheduleRender(this);
   }
 }
 

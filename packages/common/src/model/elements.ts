@@ -14,10 +14,6 @@ export interface ContextHTMLElement extends HTMLElement {
   readonly [CONTEXT]: Context;
 }
 
-export interface RenderingHTMLElement extends ContextHTMLElement, RenderingElementCallbacks {
-
-}
-
 export interface HTMLElementCallbacks {
   connectedCallback(): void;
   disconnectedCallback(): void;
@@ -32,10 +28,6 @@ export interface FormElementCallbacks extends HTMLElementCallbacks {
   formStateRestoreCallback(state: unknown, reason: 'autocomplete' | 'restore'): void;
 }
 
-export interface RenderingElementCallbacks extends HTMLElementCallbacks {
-  render(): void;
-}
-
 export interface FormElement
   extends Pick<
     ElementInternals,
@@ -47,7 +39,6 @@ export interface FormElement
 
 export type TargetCallbacks = Partial<HTMLElementCallbacks> & object;
 export type FormTargetCallbacks = Partial<FormElementCallbacks> & object;
-export type RenderingTargetCallbacks = TargetCallbacks & Pick<RenderingElementCallbacks, 'render'>;
 
 export interface HTMLElementConstructor<T extends TargetCallbacks> extends NoArgType<HTMLElement> {
   readonly target: TargetConstructor<T>;
@@ -57,10 +48,6 @@ export interface HTMLElementConstructor<T extends TargetCallbacks> extends NoArg
 export interface FormElementConstructor extends NoArgType<HTMLElement & FormElement & FormElementCallbacks> {
   readonly target: TargetConstructor<FormTargetCallbacks>;
   readonly formAssociated: true;
-}
-
-export interface RenderingElementConstructor extends HTMLElementConstructor<RenderingTargetCallbacks> {
-  readonly renderAssociated: true;
 }
 
 export interface TargetConstructor<T extends TargetCallbacks> extends NoArgType<T> {

@@ -1,27 +1,110 @@
-import { RenderingTargetCallbacks, RenderingElementCallbacks, Supplier, TargetConstructor, RenderingElementConstructor } from "@diax-js/common";
-import { useElement, useSelf } from "@diax-js/context";
-import { BaseElement } from "@diax-js/custom-element";
-import { attachRendering } from "./rendering/observing";
+import {
+  ACTIONS,
+  Action,
+  Signal,
+  SignalSubscription,
+  SubscriptionMode,
+  Supplier,
+  TargetConstructor,
+} from '@diax-js/common';
+import {
+  RenderingTargetCallbacks,
+  RenderingElementCallbacks,
+  RenderingElementConstructor,
+} from '@diax-js/common/rendering';
+import { getCurrentContext, useElement, useSelf, useToken } from '@diax-js/context';
+import { RENDERING_ACTION_TOKEN, produceRenderingAction, subscribe } from '@diax-js/state/support';
+import { BaseElement } from '@diax-js/custom-element';
+import { render, Hole } from 'uhtml';
+import { RenderingAction } from '@diax-js/state/src/actions';
 
-export class BaseRenderingElement extends BaseElement<RenderingTargetCallbacks> implements RenderingElementCallbacks {
+const difference = <T>(a: Set<T>, b: Set<T>) => {
+  return new Set([...a].filter((element) => !b.has(element)));
+};
+
+const getActions = (signal: Signal<unknown>) => Reflect.get(signal, ACTIONS) as Set<Action>;
+
+const throwSupplier = () => {
+  throw new Error('Rendering action must bu supplied to the context.');
+};
+
+export class BaseRenderingElement
+  extends BaseElement<RenderingTargetCallbacks<Hole>>
+  implements RenderingElementCallbacks
+{
   static get renderAssociated(): true {
     return true;
   }
 
-  constructor(supplier: Supplier<RenderingTargetCallbacks>) {
+  private renderSubscription?: SignalSubscription;
+  private previousObservables = new Set<Signal<unknown>>();
+
+  constructor(supplier: Supplier<RenderingTargetCallbacks<Hole>>) {
     super(supplier);
   }
 
-  render(): void {
+  override connectedCallback(): void {
+    super.connectedCallback();
     useElement(this, () => {
-      this.instance.render();
+      this.renderSubscription = subscribe(() => {
+        if (this.renderSubscription) {
+          this.render();
+        } else {
+          this.firstRender();
+        }
+      }, produceRenderingAction);
     });
+  }
+
+  override disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this.renderSubscription?.unsubscribe();
+  }
+
+  private firstRender(): void {
+    const context = getCurrentContext();
+    const hole = this.instance.render();
+    this.previousObservables = new Set(context.observables);
+    render(this, hole);
+  }
+
+  private render(): void {
+    const context = getCurrentContext();
+    const previousSubscriptionMode = context.subscriptionMode;
+    const previousObservables = context.observables;
+    const renderingAction = useToken(RENDERING_ACTION_TOKEN, throwSupplier);
+    context.subscriptionMode = SubscriptionMode.RENDER;
+    context.observables = new Set();
+    try {
+      const hole = this.instance.render();
+      const currentObservables = context.observables;
+      const diff = difference(currentObservables, this.previousObservables);
+      this.updateSubscriptions(diff, renderingAction, currentObservables);
+      render(this, hole);
+    } finally {
+      context.subscriptionMode = previousSubscriptionMode;
+      context.observables = previousObservables;
+    }
+  }
+
+  private updateSubscriptions(
+    difference: Set<Signal<unknown>>,
+    renderingAction: RenderingAction,
+    currentObservables: Set<Signal<unknown>>,
+  ): void {
+    if (difference.size > 0) {
+      for (const observable of difference) {
+        getActions(observable).add(renderingAction);
+        this.renderSubscription?.add(observable);
+      }
+      this.previousObservables = new Set(currentObservables);
+    }
   }
 }
 
 export function getRenderingElementClass(
-  target: TargetConstructor<RenderingTargetCallbacks>,
-): RenderingElementConstructor {
+  target: TargetConstructor<RenderingTargetCallbacks<Hole>>,
+): RenderingElementConstructor<Hole> {
   return class extends BaseRenderingElement {
     static get observedAttributes() {
       return target.observedAttributes;
@@ -32,10 +115,7 @@ export function getRenderingElementClass(
     }
 
     constructor() {
-      super(() => {
-        attachRendering();
-        return useSelf(target);
-      });
+      super(() => useSelf(target));
     }
   };
 }

@@ -5,13 +5,19 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./uhtml": "./dist/uhtml-rendering.js"
+  },
   "files": [
     "dist"
   ],
   "dependencies": {
     "@diax-js/common": "^0.0.2",
     "@diax-js/context": "^0.0.2",
-    "@diax-js/custom-element": "^0.0.2"
+    "@diax-js/state": "^0.0.2",
+    "@diax-js/custom-element": "^0.0.2",
+    "uhtml": "^4.4.7"
   },
   "devDependencies": {
     "@diax-js/test": "../test"
