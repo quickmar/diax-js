@@ -1,22 +1,14 @@
-import {
-  ACTIONS,
-  Action,
-  Signal,
-  SignalSubscription,
-  SubscriptionMode,
-  Supplier,
-  TargetConstructor,
-} from '@diax-js/common';
+import { ACTIONS, Action, Signal, SignalSubscription, SubscriptionMode } from '@diax-js/common/state';
 import {
   RenderingTargetCallbacks,
   RenderingElementCallbacks,
   RenderingElementConstructor,
 } from '@diax-js/common/rendering';
-import { getCurrentContext, useElement, useSelf, useToken } from '@diax-js/context';
+import { getCurrentContext, useElement, useToken } from '@diax-js/context';
 import { RENDERING_ACTION_TOKEN, produceRenderingAction, subscribe } from '@diax-js/state/support';
 import { BaseElement } from '@diax-js/custom-element';
 import { render, Hole } from 'uhtml';
-import { RenderingAction } from '@diax-js/state/src/actions';
+import { TargetConstructor } from '@diax-js/common/custom-element';
 
 const difference = <T>(a: Set<T>, b: Set<T>) => {
   return new Set([...a].filter((element) => !b.has(element)));
@@ -38,10 +30,6 @@ export class BaseRenderingElement
 
   private renderSubscription?: SignalSubscription;
   private previousObservables = new Set<Signal<unknown>>();
-
-  constructor(supplier: Supplier<RenderingTargetCallbacks<Hole>>) {
-    super(supplier);
-  }
 
   override connectedCallback(): void {
     super.connectedCallback();
@@ -89,7 +77,7 @@ export class BaseRenderingElement
 
   private updateSubscriptions(
     difference: Set<Signal<unknown>>,
-    renderingAction: RenderingAction,
+    renderingAction: ReturnType<typeof produceRenderingAction>,
     currentObservables: Set<Signal<unknown>>,
   ): void {
     if (difference.size > 0) {
@@ -112,10 +100,6 @@ export function getRenderingElementClass(
 
     static get target() {
       return target;
-    }
-
-    constructor() {
-      super(() => useSelf(target));
     }
   };
 }

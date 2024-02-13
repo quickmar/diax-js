@@ -1,4 +1,4 @@
-import { ActionProcessor as IActionProcessor, Action } from '@diax-js/common';
+import { ActionProcessor as IActionProcessor, Action } from '@diax-js/common/state';
 import { ComputationAction, EffectAction, RenderingAction } from './actions';
 
 export abstract class ActionProcessor<T extends Action> implements IActionProcessor<T> {

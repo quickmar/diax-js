@@ -1,27 +1,30 @@
-import { CONTEXT, Context, Dependencies, Signal, TargetCallbacks } from '@diax-js/common';
+import { Context, Dependencies } from '@diax-js/common/context';
+import { TargetCallbacks } from '@diax-js/common/custom-element';
+import { Signal } from '@diax-js/common/state';
 import { BaseDependencies } from './element-context';
-import { throwNoContext } from './utils/util';
 
-let INSTANCE: DocumentContext;
+let documentContext: DocumentContext;
 
 export class DocumentContext implements Context {
   static {
-    if (document && !Object.hasOwn(document, CONTEXT)) {
-      INSTANCE = new this();
-      Object.assign(document, { [CONTEXT]: DocumentContext.create() });
-    }
+    documentContext = new DocumentContext();
   }
 
   static create(): DocumentContext {
-    return INSTANCE ?? throwNoContext(document.nodeName);
+    return documentContext;
   }
 
   get host(): never {
     throw Error('Document Context has no host.');
   }
+  
   readonly instance: TargetCallbacks = {};
   readonly dependencies: Dependencies = new BaseDependencies();
   observables = new Set<Signal<unknown>>();
   observer = null;
   subscriptionMode = null;
+
+  destroy(): void {
+    throw new Error('Document Context can not be destroyed.');
+  }
 }

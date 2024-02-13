@@ -2,15 +2,15 @@ import {
   ACTIONS,
   Signal as ISignal,
   Action,
-  Supplier,
   UseSignal,
   ComputedSignal as IComputedSignal,
   UseComputed,
   UseEffect,
-} from '@diax-js/common';
+} from '@diax-js/common/state';
 import { _getCurrentContext } from '@diax-js/context';
 import { getActions, subscribe } from './support/subscribe';
 import { ComputationAction, EffectAction } from './actions';
+import { Supplier } from '@diax-js/common';
 
 class Signal<T> implements ISignal<T> {
   #value!: T;

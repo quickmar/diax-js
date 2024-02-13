@@ -1,4 +1,4 @@
-import { ACTIONS, Action, Signal, SignalSubscription as ISignalSubscription } from '@diax-js/common';
+import { ACTIONS, Action, Signal, SignalSubscription as ISignalSubscription } from '@diax-js/common/state';
 import { getCurrentContext, useContext } from '@diax-js/context';
 
 export const getActions = (state: Signal<unknown>) => Reflect.get(state, ACTIONS) as Set<Action>;

@@ -1,4 +1,4 @@
-import { Context } from '@diax-js/common';
+import { Context } from '@diax-js/common/context';
 import { throwNoContext } from './utils/util';
 
 let currentContext: Context | null = null;

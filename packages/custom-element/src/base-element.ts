@@ -1,13 +1,10 @@
+import { ContextHTMLElement, CONTEXT, Context } from '@diax-js/common/context';
 import {
-  CONTEXT,
-  Context,
-  ContextHTMLElement,
-  HTMLElementCallbacks,
-  HTMLElementConstructor,
-  Supplier,
   TargetCallbacks,
+  HTMLElementCallbacks,
   TargetConstructor,
-} from '@diax-js/common';
+  HTMLElementConstructor,
+} from '@diax-js/common/custom-element';
 import { ElementContext, useElement, useSelf } from '@diax-js/context';
 
 export class BaseElement<T extends TargetCallbacks>
@@ -20,26 +17,27 @@ export class BaseElement<T extends TargetCallbacks>
     return this[CONTEXT].instance as T;
   }
 
-  constructor(supplier: Supplier<T>) {
+  constructor() {
     super();
-    useElement(this, () => {
-      this[CONTEXT].instance = supplier();
-    });
   }
 
   connectedCallback(): void {
     useElement(this, () => {
+      const target = (this.constructor as HTMLElementConstructor<T>).target;
+      this[CONTEXT].instance = useSelf(target);
       this.instance.connectedCallback?.();
     });
   }
   disconnectedCallback(): void {
     useElement(this, () => {
       this.instance.disconnectedCallback?.();
+      this[CONTEXT].destroy();
     });
   }
   attributeChangedCallback(name: string, oldValue: unknown, newValue: unknown): void {
     useElement(this, () => {
       this.instance.attributeChangedCallback?.(name, oldValue, newValue);
+      // reimplement
     });
   }
   adoptedCallback(): void {
@@ -57,10 +55,6 @@ export function getElementClass(target: TargetConstructor<TargetCallbacks>): HTM
 
     static get target() {
       return target;
-    }
-
-    constructor() {
-      super(() => useSelf(target));
     }
   };
 }

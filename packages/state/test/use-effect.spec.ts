@@ -1,4 +1,4 @@
-import { Signal, SubscriptionMode } from '@diax-js/common';
+import { Signal, SubscriptionMode } from '@diax-js/common/state';
 import { useMockContext, testInCtx, flush } from '@diax-js/test';
 import { useContext } from '@diax-js/context';
 import { getActions, getFirstAction } from './util';

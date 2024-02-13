@@ -1,5 +1,5 @@
 import { useDocument, useSelf } from '@diax-js/context';
-import { Action, SubscriptionMode } from '@diax-js/common';
+import { Action, SubscriptionMode } from '@diax-js/common/state';
 import { ComputationProcessor, EffectProcessor } from '../src/processors';
 import { ComputationAction, EffectAction } from '../src/actions';
 import { MockInstance } from 'vitest';

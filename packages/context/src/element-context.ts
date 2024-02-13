@@ -1,16 +1,26 @@
-import { Context, Dependencies, Signal, TargetCallbacks, Token } from '@diax-js/common';
+import { DestroyAction } from '@diax-js/common/support';
+import { Context, Dependencies, Token } from '@diax-js/common/context';
+import { TargetCallbacks } from '@diax-js/common/custom-element';
+import { Signal } from '@diax-js/common/state';
 import { autoAssignToken } from './utils/util';
 
 export class ElementContext<T extends TargetCallbacks> implements Context<T> {
   readonly host: HTMLElement;
-  readonly instance: T = {} as T;
-  readonly dependencies: Dependencies = new BaseDependencies();
+  instance: T = {} as T;
+  dependencies: Dependencies = new BaseDependencies();
   observables = new Set<Signal<unknown>>();
   subscriptionMode = null;
 
   constructor(node: HTMLElement) {
     this.host = node;
     this.dependencies.setInstance(autoAssignToken(HTMLElement), node);
+  }
+
+  destroy(): void {
+    const dependencies = this.dependencies;
+    this.dependencies = new BaseDependencies();
+    this.instance = {} as T;
+    new DestroyAction(() => dependencies.destroy()).schedule();
   }
 }
 
@@ -38,5 +48,17 @@ export class BaseDependencies implements Dependencies {
 
   removeInstance<T>(token: Token<T>): void {
     this.#dependencies.delete(token.di_index);
+  }
+
+  destroy(): void {
+    for (const [_, dependency] of this.#dependencies) {
+      Object.getOwnPropertyNames(dependency).forEach((key) => {
+        const descriptor = Object.getOwnPropertyDescriptor(dependency, key);
+        if (descriptor?.value) {
+          descriptor.value = null;
+        }
+      });
+    }
+    this.#dependencies.clear();
   }
 }

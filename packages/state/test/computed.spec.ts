@@ -1,4 +1,4 @@
-import { ComputedSignal, Signal } from '@diax-js/common';
+import { ComputedSignal, Signal } from '@diax-js/common/state';
 import { Mock } from 'vitest';
 import { getActions, getFirstAction } from './util';
 import { computed, signal } from '../src/signals';

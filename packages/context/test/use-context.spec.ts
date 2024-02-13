@@ -1,4 +1,4 @@
-import { Context } from '@diax-js/common';
+import { Context } from '@diax-js/common/context';
 import { ElementContext } from '../src/element-context';
 import { DocumentContext } from '../src/document-context';
 import { getCurrentContext, useContext } from '../src/context';
