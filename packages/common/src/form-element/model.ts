@@ -19,7 +19,7 @@ export interface FormElement
 export type FormTargetCallbacks = Partial<FormElementCallbacks> & object;
 
 export interface FormElementConstructor
-  extends HTMLElementConstructor<HTMLElement & FormElement & FormElementCallbacks> {
+  extends HTMLElementConstructor<FormTargetCallbacks> {
   readonly formAssociated: true;
 }
 

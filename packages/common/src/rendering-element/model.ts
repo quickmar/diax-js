@@ -8,7 +8,9 @@ import {
 
 export interface RenderingElementCallbacks extends HTMLElementCallbacks {}
 
-export interface RenderingHTMLElement extends ContextHTMLElement, RenderingElementCallbacks {}
+export interface RenderingHTMLElement<R> extends ContextHTMLElement, RenderingElementCallbacks {
+  render(result: R): void;
+}
 
 export interface RenderingTargetCallbacks<R> extends TargetCallbacks {
   render(): R;
