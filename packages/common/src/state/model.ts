@@ -1,6 +1,7 @@
 import { Supplier } from '../model/common';
 
 export type UseSignal = <T>(init: T) => Signal<T>;
+export type UseAttribute = (attribute: string) => AttributeSignal;
 export type UseComputed = <T>(supplier: Supplier<T>) => ComputedSignal<T>;
 export type UseEffect = (fn: VoidFunction) => VoidFunction;
 
@@ -11,6 +12,8 @@ export interface Signal<T> {
 export interface ReadonlySignal<T> extends Signal<T> {
   readonly value: T;
 }
+
+export interface AttributeSignal extends Signal<string> {}
 
 export interface ComputedSignal<T> extends ReadonlySignal<T>, Subscription {}
 

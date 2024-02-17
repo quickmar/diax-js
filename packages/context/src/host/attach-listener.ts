@@ -5,6 +5,7 @@ type Input = Parameters<HTMLElement['addEventListener']>;
 type AttachListener = (type: Input[0], listener: Input[1], options?: Input[2]) => VoidFunction;
 
 export const attachListener: AttachListener = (type, listener, options) => {
+  // TODO: add unsubscribe to the context
   const host = useHost();
   const actualListener: Input[1] = function (this: HTMLElement, event: Event) {
     let result;

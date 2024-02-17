@@ -18,6 +18,10 @@ export class DocumentContext implements Context {
     throw Error('Document Context has no host.');
   }
 
+  get attributes(): never {
+    throw Error('Document Context has no reactive attributes.');
+  }
+
   readonly instance: TargetCallbacks = {};
   readonly dependencies: Dependencies = new BaseDependencies();
   observables = new Set<Signal<unknown>>();

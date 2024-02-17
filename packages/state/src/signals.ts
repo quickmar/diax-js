@@ -6,11 +6,14 @@ import {
   ComputedSignal as IComputedSignal,
   UseComputed,
   UseEffect,
+  UseAttribute,
+  AttributeSignal as IAttributeSignal,
 } from '@diax-js/common/state';
-import { _getCurrentContext } from '@diax-js/context';
+import { _getCurrentContext, getCurrentContext } from '@diax-js/context';
 import { getActions, subscribe } from './support/subscribe';
 import { ComputationAction, EffectAction } from './actions';
 import { Supplier } from '@diax-js/common';
+import { useHost } from '@diax-js/context/host';
 
 class Signal<T> implements ISignal<T> {
   #value!: T;
@@ -34,6 +37,26 @@ class Signal<T> implements ISignal<T> {
 
   private get [ACTIONS]() {
     return this.#actions;
+  }
+}
+
+class AttributeSignal implements IAttributeSignal {
+  #signal: ISignal<string>;
+  #host: HTMLElement;
+  #qualifiedName: string;
+
+  get value() {
+    return this.#signal.value;
+  }
+
+  set value(value: string) {
+    this.#host.setAttribute(this.#qualifiedName, value);
+  }
+
+  constructor(signal: ISignal<string>, qualifiedName: string) {
+    this.#signal = signal;
+    this.#host = useHost();
+    this.#qualifiedName = qualifiedName;
   }
 }
 
@@ -64,6 +87,17 @@ class ComputedSignal<T> implements IComputedSignal<T> {
 const produceEffectAction = (callable: VoidFunction) => new EffectAction(callable);
 const produceComputationAction = (callable: VoidFunction) => new ComputationAction(callable);
 
+export const attribute: UseAttribute = (attribute: string) => {
+  const { attributes, host } = getCurrentContext();
+  const signal = attributes[attribute];
+  if (signal) {
+    return new AttributeSignal(signal, attribute);
+  }
+  throw new ReferenceError(
+    `${host.localName} has no attribute '${attribute}' in 'observedAttributes' static property.`,
+  );
+};
+
 export const signal: UseSignal = <T>(initialValue: T) => {
   const state = new Signal<T>();
   state.value = initialValue;
@@ -71,6 +105,7 @@ export const signal: UseSignal = <T>(initialValue: T) => {
 };
 
 export const useEffect: UseEffect = (fn: VoidFunction) => {
+  //TODO: Rename to effect
   const subscription = subscribe(fn, produceEffectAction);
   return () => subscription.unsubscribe();
 };
