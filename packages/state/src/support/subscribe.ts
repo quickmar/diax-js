@@ -5,6 +5,7 @@ export const getActions = (state: Signal<unknown>) => Reflect.get(state, ACTIONS
 
 class SignalSubscription implements ISignalSubscription {
   private signals: Set<Signal<unknown>> = new Set();
+  private closed = false;
 
   constructor(private readonly action: Action) {}
 
@@ -13,11 +14,12 @@ class SignalSubscription implements ISignalSubscription {
   }
 
   unsubscribe(): void {
+    if (this.closed) return;
     for (const signal of this.signals) {
       getActions(signal).delete(this.action);
     }
     this.signals.clear();
-    Object.assign(this, { action: null });
+    Object.assign(this, { action: null, closed: true });
   }
 }
 
@@ -43,6 +45,7 @@ export const subscribe = <T extends Action>(fn: VoidFunction, actionProvider: (c
   } finally {
     context.subscriptionMode = previousSubscriptionMode;
     context.observables = previousObservables;
+    context.ownedSubscriptions.add(subscription);
   }
   return subscription;
 };

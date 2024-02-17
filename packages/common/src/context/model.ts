@@ -1,7 +1,7 @@
-import { Cleanable } from "../destroying/model";
-import { TargetCallbacks } from "../custom-element/model";
-import { Type } from "../model/common";
-import { SubscriptionMode, Signal } from "../state/model";
+import { Cleanable } from '../destroying/model';
+import { TargetCallbacks } from '../custom-element/model';
+import { Type } from '../model/common';
+import { SubscriptionMode, Signal, Subscription } from '../state/model';
 
 export const CONTEXT = Symbol.for('@@context');
 
@@ -10,6 +10,7 @@ export interface Context<T extends TargetCallbacks = TargetCallbacks> extends Cl
   instance: T;
   subscriptionMode: SubscriptionMode | null;
   observables: Set<Signal<unknown>>;
+  ownedSubscriptions: Set<Subscription>;
   dependencies: Dependencies;
   destroy(): void;
 }

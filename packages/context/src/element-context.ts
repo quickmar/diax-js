@@ -1,7 +1,7 @@
 import { DestroyAction } from '@diax-js/common/support';
 import { Context, Dependencies, Token } from '@diax-js/common/context';
 import { TargetCallbacks } from '@diax-js/common/custom-element';
-import { Signal } from '@diax-js/common/state';
+import { Signal, Subscription } from '@diax-js/common/state';
 import { autoAssignToken } from './utils/util';
 
 export class ElementContext<T extends TargetCallbacks> implements Context<T> {
@@ -10,6 +10,7 @@ export class ElementContext<T extends TargetCallbacks> implements Context<T> {
   dependencies: Dependencies = new BaseDependencies();
   observables = new Set<Signal<unknown>>();
   subscriptionMode = null;
+  ownedSubscriptions: Set<Subscription> = new Set();
 
   constructor(node: HTMLElement) {
     this.host = node;
@@ -17,10 +18,17 @@ export class ElementContext<T extends TargetCallbacks> implements Context<T> {
   }
 
   destroy(): void {
-    const dependencies = this.dependencies;
+    const { dependencies, ownedSubscriptions } = this;
     this.dependencies = new BaseDependencies();
+    this.ownedSubscriptions = new Set();
     this.instance = {} as T;
-    new DestroyAction(() => dependencies.destroy()).schedule();
+    new DestroyAction(() => {
+      for (const subscription of ownedSubscriptions) {
+        subscription.unsubscribe();
+      }
+      ownedSubscriptions.clear();
+      dependencies.destroy();
+    }).schedule();
   }
 }
 
