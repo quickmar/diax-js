@@ -19,7 +19,7 @@ export class BaseElement<T extends TargetCallbacks>
   extends HTMLElement
   implements ContextHTMLElement, HTMLElementCallbacks
 {
-  [CONTEXT]: Context = new ElementContext<T>(this, initAttributes(this._target.observedAttributes ?? []));
+  [CONTEXT]: Context;
 
   get instance(): T {
     return this[CONTEXT].instance as T;
@@ -27,6 +27,13 @@ export class BaseElement<T extends TargetCallbacks>
 
   protected get _target() {
     return (this.constructor as HTMLElementConstructor<T>).target;
+  }
+
+  constructor() {
+    super();
+    const context = new ElementContext<T>(this);
+    context.attributes = initAttributes(this._target.observedAttributes ?? []);
+    this[CONTEXT] = context;
   }
 
   connectedCallback(): void {

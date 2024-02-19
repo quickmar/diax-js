@@ -1,4 +1,4 @@
-import { Context, Dependencies } from '@diax-js/common/context';
+import { CONTEXT, Context, Dependencies } from '@diax-js/common/context';
 import { TargetCallbacks } from '@diax-js/common/custom-element';
 import { Signal, Subscription } from '@diax-js/common/state';
 import { BaseDependencies } from './element-context';
@@ -7,7 +7,10 @@ let documentContext: DocumentContext;
 
 export class DocumentContext implements Context {
   static {
-    documentContext = new DocumentContext();
+    if (!Object.hasOwn(document, CONTEXT)) {
+      Object.assign(document, { [CONTEXT]: new DocumentContext() });
+    }
+    documentContext = Object.getOwnPropertyDescriptor(document, CONTEXT)?.value;
   }
 
   static create(): DocumentContext {

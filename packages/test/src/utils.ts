@@ -1,18 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  CONTEXT,
-  Context,
-  ContextElement,
-  DI_TOKEN,
-  Dependencies,
-  NoArgType,
-  Signal,
-  SubscriptionMode,
-  TargetCallbacks,
-  Token,
-  newToken,
-} from '@diax-js/common';
 import { createTaskCollector, getCurrentSuite } from 'vitest/suite';
+import { CONTEXT, Context, ContextElement, Dependencies, Token } from '@diax-js/common/context';
+import { Signal, Subscription, SubscriptionMode } from '@diax-js/common/src/state/model';
+import { TargetCallbacks } from '@diax-js/common/src/custom-element/model';
 
 export async function flush(ms: number = 0): Promise<void> {
   await new Promise((resolve) => {
@@ -42,18 +32,11 @@ export class MockDependencies implements Dependencies {
   #dependencies = new Map<number, unknown>();
 
   getInstance<T>(token: Token<T>): T {
-    const instance = this.#dependencies.get(token.di_index);
-    if (instance === null) throw new ReferenceError(`Cyclic dependency detected! ${token.name}`);
-    if (!instance) throw new ReferenceError(`For type ${token.name} dependency is not defined`);
-    return instance as T;
+    return this.#dependencies.get(token.di_index) as T;
   }
 
   setInstance<T>(token: Token<T>, instance: T | null): void {
-    if (!this.#dependencies.has(token.di_index)) {
-      this.#dependencies.set(token.di_index, instance);
-    } else if (instance === null) {
-      this.#dependencies.set(token.di_index, null);
-    }
+    this.#dependencies.set(token.di_index, instance);
   }
 
   hasInstance<T>(token: Token<T>): boolean {
@@ -63,6 +46,10 @@ export class MockDependencies implements Dependencies {
   removeInstance<T>(token: Token<T>): void {
     this.#dependencies.delete(token.di_index);
   }
+
+  destroy(): void {
+    this.#dependencies.clear();
+  }
 }
 
 export class MockContext implements Context {
@@ -71,9 +58,14 @@ export class MockContext implements Context {
   observables: Set<Signal<unknown>> = new Set();
   host: HTMLElement = document.createElement('diax-mock-element');
   dependencies: Dependencies = new MockDependencies();
+  attributes: Readonly<Record<string, Signal<string>>> = {};
+  ownedSubscriptions: Set<Subscription> = new Set();
 
-  constructor() {
-    this.dependencies.setInstance(_autoAssignToken(HTMLElement), this.host);
+  destroy(): void {
+    for (const key of Object.getOwnPropertyNames(this)) {
+      const descriptor = Object.getOwnPropertyDescriptor(this, key);
+      descriptor && (descriptor.value = null);
+    }
   }
 }
 
@@ -143,15 +135,4 @@ export function asAny<T>(obj: T): any {
 
 export function identity<T>(value: T): T {
   return value;
-}
-export function _autoAssignToken<T>(type: NoArgType<T>): Token<T> {
-  if (Object.hasOwn(type, DI_TOKEN)) return Object.getOwnPropertyDescriptor(type, DI_TOKEN)?.value;
-  const token = newToken(type.name);
-  Object.defineProperty(type, DI_TOKEN, {
-    value: token,
-    configurable: false,
-    enumerable: false,
-    writable: false,
-  });
-  return token;
 }

@@ -7,6 +7,9 @@
   "files": [
     "dist"
   ],
+  "devDependencies": {
+    "@diax-js/common": "0.0.2"
+  },
   "scripts": {
     "build": "tsc --build tsconfig.build.json --verbose"
   },

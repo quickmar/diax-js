@@ -6,16 +6,16 @@ import { autoAssignToken } from './utils/util';
 
 export class ElementContext<T extends TargetCallbacks> implements Context<T> {
   readonly host: HTMLElement;
-  readonly attributes: Record<string, AttributeSignal>;
+  attributes: Readonly<Record<string, AttributeSignal>>;
   instance: T = {} as T;
   dependencies: Dependencies = new BaseDependencies();
   observables = new Set<Signal<unknown>>();
   subscriptionMode = null;
   ownedSubscriptions: Set<Subscription> = new Set();
 
-  constructor(node: HTMLElement, attributes: Record<string, AttributeSignal>) {
+  constructor(node: HTMLElement) {
     this.host = node;
-    this.attributes = attributes;
+    this.attributes = {};
     this.dependencies.setInstance(autoAssignToken(HTMLElement), node); // TODO: remove
   }
 
