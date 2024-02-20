@@ -3,6 +3,7 @@ import { Action, SubscriptionMode } from '@diax-js/common/state';
 import { ComputationProcessor, EffectProcessor, RenderingProcessor } from '../src/processors';
 import { ComputationAction, EffectAction, RenderingAction } from '../src/actions';
 import { MockInstance } from 'vitest';
+import { useMockContext } from '@diax-js/test';
 
 describe('Actions', () => {
   let computationProcessor: MockInstance<[ComputationAction], void>;
@@ -27,11 +28,12 @@ describe('Actions', () => {
   describe.each([
     [EffectAction, SubscriptionMode.EFFECT],
     [ComputationAction, SubscriptionMode.COMPUTED],
+    [RenderingAction, SubscriptionMode.RENDER],
   ])('Action', (ActionCtor, subscriptionMode) => {
     let action: Action;
     let callable: VoidFunction;
 
-    beforeEach(() => {
+    useMockContext(() => {
       callable = vi.fn();
       action = new ActionCtor(callable);
     });
