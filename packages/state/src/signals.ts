@@ -20,7 +20,6 @@ class Signal<T> implements ISignal<T> {
   #actions: Set<Action> = new Set();
 
   set value(value: T) {
-    if (this.#value === value) return;
     this.#value = value;
     for (const action of this.#actions) {
       action.schedule();

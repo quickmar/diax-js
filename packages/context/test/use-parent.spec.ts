@@ -1,7 +1,7 @@
 import { Type } from '@diax-js/common';
 import { ContextElement } from '@diax-js/common/context';
 import { useElement, useSelf, useDocument, useParent } from '@diax-js/context';
-import { createContextElementFromString } from '@diax-js/test';
+import { MockContextElement } from '@diax-js/test';
 
 class DocumentService {}
 class ElementService {}
@@ -13,17 +13,15 @@ describe('useParent', () => {
   let elementInstance: ElementService;
 
   beforeEach(() => {
-    element = createContextElementFromString(
-      `
-        <div context id="a">
+    element = new MockContextElement();
+    element.innerHTML = `
+        <mock-context-element id="a">
             <div id="b">
-                <div context id="c"></div>
+                <mock-context-element id="c"></mock-context-element>
             </div>
-        </div>
+        </mock-context-element>
         <div id="d"></div>
-        `,
-      'div',
-    );
+        `;
 
     useDocument(() => {
       documentInstance = useSelf(DocumentService);

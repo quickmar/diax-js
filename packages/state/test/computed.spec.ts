@@ -3,7 +3,6 @@ import { Mock } from 'vitest';
 import { getActions, getFirstAction } from './util';
 import { computed, signal } from '../src/signals';
 import { identity, useMockContext } from '@diax-js/test';
-import { useContext } from '@diax-js/context';
 
 describe('Computed', () => {
   let positive: Signal<number>;
@@ -22,7 +21,7 @@ describe('Computed', () => {
     spyP = vi.fn(identity);
     spyN = vi.fn(identity);
     sum = computed(() => spyP(positive.value) + spyN(negative.value));
-  }, useContext);
+  });
 
   it('should be sum', () => {
     expect(sum.value).toBe(0);

@@ -64,11 +64,11 @@ abstract class AbstractEffectProcessor<T extends Action> extends ActionProcessor
 
   protected execute(): void {
     if (this.currentEffect === 1) {
-      const actions = this.actions;
-      this.actions = new Set();
-      for (const action of this.prepareActions(actions)) {
+      for (const action of this.prepareActions(this.actions)) {
         if (this.test(action)) this.callSafe(action);
       }
+      const actions = this.actions;
+      this.actions = new Set();
       requestIdleCallback(() => actions.clear());
     }
     this.currentEffect--;
@@ -96,6 +96,7 @@ export class EffectProcessor extends AbstractEffectProcessor<EffectAction> {
   }
 }
 
+// TODO: Reimplement. 
 export class RenderingProcessor extends AbstractEffectProcessor<RenderingAction> {
   override process(action: RenderingAction): void {
     this.put(action);

@@ -1,6 +1,5 @@
 import { Signal, SubscriptionMode } from '@diax-js/common/state';
 import { useMockContext, testInCtx, flush } from '@diax-js/test';
-import { useContext } from '@diax-js/context';
 import { getActions, getFirstAction } from './util';
 import { signal, useEffect } from '../src/signals';
 import { Mock } from 'vitest';
@@ -22,7 +21,7 @@ describe('useEffect', () => {
     spyP = vi.fn();
     spyN = vi.fn();
     disposables = [];
-  }, useContext);
+  });
 
   afterEach(() => {
     while (disposables.length) {
