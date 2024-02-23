@@ -1,14 +1,13 @@
-import { Type } from '@diax-js/common';
-import { ContextElement } from '@diax-js/common/context';
-import { useElement, useSelf, useDocument, useParent } from '@diax-js/context';
 import { MockContextElement } from '@diax-js/test';
+import { Type } from '@diax-js/common';
+import { useElement, useSelf, useDocument, useParent } from '@diax-js/context';
 
 class DocumentService {}
 class ElementService {}
 class Service {}
 
 describe('useParent', () => {
-  let element: ContextElement;
+  let element: HTMLElement;
   let documentInstance: DocumentService;
   let elementInstance: ElementService;
 

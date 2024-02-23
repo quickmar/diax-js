@@ -1,10 +1,11 @@
+import { ContextHTMLElement } from '../context/model';
 import { NoArgType } from '../model/common';
 
 export interface TargetConstructor<T extends TargetCallbacks> extends NoArgType<T> {
   readonly observedAttributes?: string[];
 }
 
-export interface HTMLElementConstructor<T extends TargetCallbacks> extends NoArgType<HTMLElement> {
+export interface HTMLElementConstructor<T extends TargetCallbacks> extends NoArgType<ContextHTMLElement> {
   readonly target: TargetConstructor<T>;
   readonly observedAttributes?: string[];
 }

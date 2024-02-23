@@ -1,17 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createTaskCollector, getCurrentSuite } from 'vitest/suite';
-import { CONTEXT, Context, ContextHTMLElement, Dependencies, Token } from '@diax-js/common/context';
-import { Signal, Subscription, SubscriptionMode } from '@diax-js/common/src/state/model';
-import { TargetCallbacks } from '@diax-js/common/src/custom-element/model';
+import { CONTEXT, Context } from '@diax-js/common/context';
+import { useContext } from '@diax-js/context';
+import { getElementClass } from '@diax-js/custom-element';
 
 declare module 'vitest' {
   export interface TestContext {
-    [CONTEXT]?: MockContext;
-    useContext: (ctx: Context, fn: VoidFunction) => void;
+    [CONTEXT]?: Context;
   }
   export interface TaskContext {
-    [CONTEXT]: MockContext;
-    useContext: (ctx: Context, fn: VoidFunction) => void;
+    [CONTEXT]: Context;
   }
 }
 
@@ -19,46 +17,6 @@ export async function flush(ms: number = 0): Promise<void> {
   await new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
-}
-
-export class MockDependencies implements Dependencies {
-  #dependencies = new Map<number, unknown>();
-
-  getInstance<T>(token: Token<T>): T {
-    return this.#dependencies.get(token.di_index) as T;
-  }
-
-  setInstance<T>(token: Token<T>, instance: T | null): void {
-    this.#dependencies.set(token.di_index, instance);
-  }
-
-  hasInstance<T>(token: Token<T>): boolean {
-    return this.#dependencies.has(token.di_index);
-  }
-
-  removeInstance<T>(token: Token<T>): void {
-    this.#dependencies.delete(token.di_index);
-  }
-
-  destroy(): void {
-    this.#dependencies.clear();
-  }
-}
-
-export class MockContext implements Context {
-  instance: TargetCallbacks = {};
-  subscriptionMode: SubscriptionMode | null = null;
-  observables: Set<Signal<unknown>> = new Set();
-  dependencies: Dependencies = new MockDependencies();
-  attributes: Readonly<Record<string, Signal<string>>> = {};
-  ownedSubscriptions: Set<Subscription> = new Set();
-  host: HTMLElement;
-
-  constructor(host: HTMLElement) {
-    this.host = host;
-  }
-
-  destroy(): void {}
 }
 
 type MockingFn = VoidFunction;
@@ -72,21 +30,18 @@ type MockingFn = VoidFunction;
  */
 export function useMockContext(fn: MockingFn): void {
   beforeEach((vitestCtx) => {
-    let mockContext = new MockContextElement()[CONTEXT];
+    const host = new MockContextElement();
+    const context = host[CONTEXT];
     const descriptor = Object.getOwnPropertyDescriptor(vitestCtx, CONTEXT);
-    if (!descriptor) {
-      Object.assign(vitestCtx, { [CONTEXT]: mockContext });
-    } else {
-      mockContext = descriptor.value;
-    }
-    vitestCtx.useContext(mockContext, () => {
+    if (descriptor) throw new Error('Should not define context');
+    Object.assign(vitestCtx, { [CONTEXT]: context });
+    useContext(context, () => {
       fn();
     });
   });
 
   afterEach((vitestCtx) => {
-    vitestCtx[CONTEXT].destroy();
-    Object.assign(vitestCtx, { useContext: null, [CONTEXT]: null });
+    Object.assign(vitestCtx, { useContext: null, [CONTEXT]: null, MockContextElement: null });
   });
 }
 
@@ -102,7 +57,7 @@ export const testInCtx = createTaskCollector(function (this: any, name, fn, time
     },
     handler: (vitestCtx) => {
       let result;
-      vitestCtx.useContext(vitestCtx[CONTEXT], () => {
+      useContext(vitestCtx[CONTEXT], () => {
         result = fn(vitestCtx);
       });
       return result;
@@ -119,15 +74,14 @@ export function identity<T>(value: T): T {
   return value;
 }
 
-export class MockContextElement extends HTMLElement implements ContextHTMLElement {
+export class MockContextTarget {
+  static get observedAttributes() {
+    return ['data-unit-test'];
+  }
+}
+
+export class MockContextElement extends getElementClass(MockContextTarget) {
   static {
     customElements.define('mock-context-element', this);
-  }
-
-  [CONTEXT]: Context<TargetCallbacks>;
-
-  constructor(context?: Context) {
-    super();
-    this[CONTEXT] = context ?? new MockContext(this);
   }
 }

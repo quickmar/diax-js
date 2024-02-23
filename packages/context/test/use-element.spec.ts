@@ -1,6 +1,6 @@
-import { MockContextElement } from '@diax-js/test';
 import { useElement } from '../src/use-element';
 import { useHost } from '../src/host/use-host';
+import { MockContextElement } from '@diax-js/test';
 
 describe('useElement', () => {
   let element: Element;
