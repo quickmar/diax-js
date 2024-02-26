@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createTaskCollector, getCurrentSuite } from 'vitest/suite';
 import { CONTEXT, Context } from '@diax-js/common/context';
-import { useContext } from '@diax-js/context';
+import { useContext, getCurrentContext } from '@diax-js/context';
 import { getElementClass } from '@diax-js/custom-element';
 
 declare module 'vitest' {
@@ -12,6 +12,8 @@ declare module 'vitest' {
     [CONTEXT]: Context;
   }
 }
+
+export { getCurrentContext as getTestContext };
 
 export async function flush(ms: number = 0): Promise<void> {
   await new Promise((resolve) => {
