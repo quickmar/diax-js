@@ -5,15 +5,7 @@ import {
   TargetConstructor,
   HTMLElementConstructor,
 } from '@diax-js/common/custom-element';
-import { AttributeSignal } from '@diax-js/common/state';
 import { ElementContext, useElement, useSelf } from '@diax-js/context';
-import { signal } from '@diax-js/state';
-
-const initAttributes = (observedAttributes: string[]) => {
-  return Object.freeze(
-    observedAttributes.reduce((record, attribute) => Object.assign(record, { [attribute]: signal('') }), {}),
-  ) as Record<string, AttributeSignal>;
-};
 
 export class BaseElement<T extends TargetCallbacks>
   extends HTMLElement
@@ -25,14 +17,9 @@ export class BaseElement<T extends TargetCallbacks>
     return this[CONTEXT].instance as T;
   }
 
-  protected get _target() {
-    return (this.constructor as HTMLElementConstructor<T>).target;
-  }
-
   constructor() {
     super();
     const context = new ElementContext<T>(this);
-    context.attributes = initAttributes(this._target.observedAttributes ?? []);
     this[CONTEXT] = context;
   }
 
@@ -40,22 +27,23 @@ export class BaseElement<T extends TargetCallbacks>
     useElement(this, () => {
       const target = (this.constructor as HTMLElementConstructor<T>).target;
       this[CONTEXT].instance = useSelf(target);
-      this.instance.connectedCallback?.();
+      this.instance.init?.();
     });
   }
   disconnectedCallback(): void {
     useElement(this, () => {
-      this.instance.disconnectedCallback?.();
       this[CONTEXT].destroy();
     });
   }
   attributeChangedCallback(name: string, _oldValue: string, newValue: string): void {
-    const { attributes } = this[CONTEXT];
-    attributes[name].value = newValue;
+    const attribute = this[CONTEXT].attributes[name];
+    if (attribute) {
+      attribute.value = newValue;
+    }
   }
   adoptedCallback(): void {
     useElement(this, () => {
-      this.instance.adoptedCallback?.();
+      this.instance.adopt?.();
     });
   }
 }

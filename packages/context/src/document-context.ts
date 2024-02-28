@@ -17,6 +17,10 @@ export class DocumentContext implements Context {
     return documentContext;
   }
 
+  get observedAttributes(): Set<string> {
+    throw Error('Document Context has no observedAttributes.');
+  }
+
   get host(): never {
     throw Error('Document Context has no host.');
   }

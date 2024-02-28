@@ -7,7 +7,8 @@ export const CONTEXT = Symbol.for('@@context');
 
 export interface Context<T extends TargetCallbacks = TargetCallbacks> extends Cleanable {
   readonly host: HTMLElement;
-  attributes: Readonly<Record<string, Signal<string>>>;
+  readonly observedAttributes: Set<string>;
+  attributes: Record<string, Signal<string> | null>;
   instance: T;
   subscriptionMode: SubscriptionMode | null;
   observables: Set<Signal<unknown>>;

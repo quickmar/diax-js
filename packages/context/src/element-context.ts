@@ -1,12 +1,17 @@
-import { DestroyAction } from '@diax-js/common/support';
+import { DestroyAction, isCleanable } from '@diax-js/common/support';
 import { Context, Dependencies, Token } from '@diax-js/common/context';
-import { TargetCallbacks } from '@diax-js/common/custom-element';
-import { AttributeSignal, Signal, Subscription } from '@diax-js/common/state';
-import { autoAssignToken } from './utils/util';
+import { HTMLElementConstructor, TargetCallbacks } from '@diax-js/common/custom-element';
+import { Signal, Subscription } from '@diax-js/common/state';
+
+const initAttributes = (observedAttributes: string[]) => {
+  return Object.preventExtensions(
+    observedAttributes.reduce((record, attribute) => Object.assign(record, { [attribute]: null }), {}),
+  ) as Record<string, Signal<string>>;
+};
 
 export class ElementContext<T extends TargetCallbacks> implements Context<T> {
   readonly host: HTMLElement;
-  attributes: Readonly<Record<string, AttributeSignal>>;
+  attributes: Record<string, Signal<string> | null>;
   instance: T = {} as T;
   dependencies: Dependencies = new BaseDependencies();
   observables = new Set<Signal<unknown>>();
@@ -15,8 +20,12 @@ export class ElementContext<T extends TargetCallbacks> implements Context<T> {
 
   constructor(node: HTMLElement) {
     this.host = node;
-    this.attributes = {};
-    this.dependencies.setInstance(autoAssignToken(HTMLElement), node); // TODO: remove
+    this.attributes = initAttributes([...this.observedAttributes]);
+  }
+
+  get observedAttributes() {
+    const observedAttributes = (this.host.constructor as HTMLElementConstructor<T>).observedAttributes ?? [];
+    return new Set(observedAttributes);
   }
 
   destroy(): void {
@@ -24,6 +33,7 @@ export class ElementContext<T extends TargetCallbacks> implements Context<T> {
     this.dependencies = new BaseDependencies();
     this.ownedSubscriptions = new Set();
     this.instance = {} as T;
+    dependencies.destroy();
     new DestroyAction(() => {
       for (const subscription of ownedSubscriptions) {
         subscription.unsubscribe();
@@ -62,12 +72,9 @@ export class BaseDependencies implements Dependencies {
 
   destroy(): void {
     for (const [_, dependency] of this.#dependencies) {
-      Object.getOwnPropertyNames(dependency).forEach((key) => {
-        const descriptor = Object.getOwnPropertyDescriptor(dependency, key);
-        if (descriptor?.value) {
-          descriptor.value = null;
-        }
-      });
+      if (isCleanable(dependency)) {
+        dependency.destroy();
+      }
     }
     this.#dependencies.clear();
   }

@@ -1,6 +1,5 @@
-import { CONTEXT, Context, ContextHTMLElement } from '@diax-js/common/context';
-import { TargetCallbacks } from '@diax-js/common/custom-element';
-import { ElementContext, useElement, useSelf } from '@diax-js/context';
+import { useElement, useSelf } from '@diax-js/context';
+import { MockContextElement } from '@diax-js/test';
 
 class TestService {}
 
@@ -12,18 +11,12 @@ class TestServiceCyclic {
   child = useSelf(TestServiceCyclic);
 }
 
-export class TestElement extends HTMLElement implements ContextHTMLElement {
-  [CONTEXT]: Context<TargetCallbacks> = new ElementContext(this);
-}
-
-customElements.define('test-self-element', TestElement);
-
 describe('useSelf', () => {
   let element: Element;
   let instance: TestService;
 
   beforeEach(() => {
-    element = new TestElement();
+    element = new MockContextElement();
   });
 
   it('should create instance', () => {

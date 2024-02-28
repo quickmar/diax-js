@@ -1,3 +1,5 @@
+import { Cleanable } from './model';
+
 export class DestroyAction {
   private closed = false;
 
@@ -9,4 +11,7 @@ export class DestroyAction {
       this.closed = true;
     }
   }
+}
+export function isCleanable(object: unknown): object is Cleanable {
+  return !!object && typeof object === 'object' && 'destroy' in object && typeof object['destroy'] === 'function';
 }

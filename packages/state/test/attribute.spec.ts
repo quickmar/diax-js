@@ -1,14 +1,14 @@
 import { AttributeSignal } from '@diax-js/common/state';
 import { getTestContext, useMockContext } from '@diax-js/test';
 import { attribute } from '../src/signals';
-import { HTMLElementCallbacks } from '@diax-js/common/custom-element';
+import { useElement } from '@diax-js/context';
 
 describe('Attribute', () => {
   let a: AttributeSignal;
-  let host: HTMLElement & HTMLElementCallbacks;
+  let host: HTMLElement;
 
   useMockContext(() => {
-    host = getTestContext().host as HTMLElement & HTMLElementCallbacks;
+    host = getTestContext().host as HTMLElement;
     a = attribute('data-unit-test');
   });
 
@@ -32,4 +32,16 @@ describe('Attribute', () => {
     expect(host.getAttribute('data-unit-test')).toBe('test');
   });
 
+  it('should throw when attribute name is not defined in observed attributes', () => {
+    const action = () =>
+      useElement(host, () => {
+        attribute('unknown_attribute');
+      });
+
+    expect(action).toThrow(
+      new ReferenceError(
+        `${host.localName} has no attribute 'unknown_attribute' in 'observedAttributes' static property.`,
+      ),
+    );
+  });
 });

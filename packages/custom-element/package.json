@@ -10,8 +10,7 @@
   ],
   "dependencies": {
     "@diax-js/common": "^0.0.2",
-    "@diax-js/context": "^0.0.2",
-    "@diax-js/state": "^0.0.2"
+    "@diax-js/context": "^0.0.2"
   },
   "devDependencies": {
     "@diax-js/test": "../test"

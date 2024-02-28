@@ -5,12 +5,17 @@ export interface TargetConstructor<T extends TargetCallbacks> extends NoArgType<
   readonly observedAttributes?: string[];
 }
 
-export interface HTMLElementConstructor<T extends TargetCallbacks> extends NoArgType<ContextHTMLElement> {
+export interface HTMLElementConstructor<T extends TargetCallbacks>
+  extends NoArgType<ContextHTMLElement & HTMLElementCallbacks> {
   readonly target: TargetConstructor<T>;
   readonly observedAttributes?: string[];
 }
 
-export type TargetCallbacks = Partial<HTMLElementCallbacks> & object;
+export type TargetCallbacks = Partial<{
+  init(): void;
+  destroy(): void;
+  adopt(): void;
+}>;
 
 export interface HTMLElementCallbacks {
   connectedCallback(): void;

@@ -87,14 +87,21 @@ const produceEffectAction = (callable: VoidFunction) => new EffectAction(callabl
 const produceComputationAction = (callable: VoidFunction) => new ComputationAction(callable);
 
 export const attribute: UseAttribute = (attribute: string) => {
-  const { attributes, host } = getCurrentContext();
-  const signal = attributes[attribute];
-  if (signal) {
-    return new AttributeSignal(signal, attribute);
+  const { attributes, host, observedAttributes } = getCurrentContext();
+
+  if (!observedAttributes.has(attribute)) {
+    throw new ReferenceError(
+      `${host.localName} has no attribute '${attribute}' in 'observedAttributes' static property.`,
+    );
   }
-  throw new ReferenceError(
-    `${host.localName} has no attribute '${attribute}' in 'observedAttributes' static property.`,
-  );
+  let attributeSignal = attributes[attribute];
+  if (attributeSignal === null) {
+    attributeSignal = signal(host.getAttribute(attribute) ?? '');
+    attributes[attribute] = attributeSignal;
+    return new AttributeSignal(attributeSignal, attribute);
+  } else {
+    return new AttributeSignal(attributeSignal, attribute);
+  }
 };
 
 export const signal: UseSignal = <T>(initialValue: T) => {
