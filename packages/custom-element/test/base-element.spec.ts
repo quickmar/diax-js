@@ -2,7 +2,7 @@ import { CONTEXT, DI_TOKEN } from '@diax-js/common/context';
 import { BaseElement } from '../src/base-element';
 import { TestBaseElement, TestTarget } from './utils';
 
-describe.only('BaseElement', () => {
+describe('BaseElement', () => {
   let element: TestBaseElement;
 
   beforeAll(() => {
