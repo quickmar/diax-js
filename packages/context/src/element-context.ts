@@ -74,6 +74,9 @@ export class BaseDependencies implements Dependencies {
     for (const [_, dependency] of this.#dependencies) {
       if (isCleanable(dependency)) {
         dependency.destroy();
+        for (const key of Object.getOwnPropertyNames(dependency)) {
+          Reflect.set(dependency, key, null);
+        }
       }
     }
     this.#dependencies.clear();

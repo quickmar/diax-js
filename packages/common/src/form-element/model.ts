@@ -1,4 +1,4 @@
-import { HTMLElementCallbacks, HTMLElementConstructor, TargetConstructor } from '../custom-element/model';
+import { HTMLElementCallbacks, HTMLElementConstructor, TargetCallbacks, TargetConstructor } from '../custom-element/model';
 
 export interface FormElementCallbacks extends HTMLElementCallbacks {
   formAssociatedCallback(form: HTMLFormElement): void;
@@ -16,7 +16,7 @@ export interface FormElement
   readonly type: string;
 }
 
-export type FormTargetCallbacks = Partial<FormElementCallbacks> & object;
+export type FormTargetCallbacks = Partial<FormElementCallbacks> & TargetCallbacks;
 
 export interface FormElementConstructor
   extends HTMLElementConstructor<FormTargetCallbacks> {
