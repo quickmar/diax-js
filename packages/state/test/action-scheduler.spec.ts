@@ -1,32 +1,40 @@
-import { useContext, useSelf, useSupplier } from '@diax-js/context';
+import { useSelf, useSupplier } from '@diax-js/context';
 import { useMockContext } from '@diax-js/test';
 import { ActionScheduler } from '../src/action-scheduler';
-import { ComputationProcessor, EffectProcessor } from '../src/processors';
+import { ComputationProcessor, EffectProcessor, RenderingProcessor } from '../src/processors';
 
 describe('ActionScheduler', () => {
-  let mockComputationQueue: ComputationProcessor;
-  let mockEffectQueue: EffectProcessor;
+  let mockComputationProcessor: ComputationProcessor;
+  let mockEffectProcessor: EffectProcessor;
+  let mockRenderingProcessor: RenderingProcessor;
   let actionScheduler: ActionScheduler;
 
   useMockContext(() => {
-    mockComputationQueue = useSupplier(ComputationProcessor, () => Object({ process: vi.fn() }));
-    mockEffectQueue = useSupplier(EffectProcessor, () => Object({ process: vi.fn() }));
+    mockComputationProcessor = useSupplier(ComputationProcessor, () => Object({ process: vi.fn() }));
+    mockEffectProcessor = useSupplier(EffectProcessor, () => Object({ process: vi.fn() }));
+    mockRenderingProcessor = useSupplier(RenderingProcessor, () => Object({ process: vi.fn() }));
     actionScheduler = useSelf(ActionScheduler);
-  }, useContext);
+  });
 
   it('should create', () => {
     expect(actionScheduler).toBeTruthy();
   });
 
-  it('should schedule on computation queue', () => {
+  it('should process computation', () => {
     actionScheduler.scheduleComputation(Object({}));
 
-    expect(mockComputationQueue.process).toBeCalledTimes(1);
+    expect(mockComputationProcessor.process).toBeCalledTimes(1);
   });
 
-  it('should schedule on effect queue', () => {
+  it('should process effect', () => {
     actionScheduler.scheduleEffect(Object({}));
 
-    expect(mockEffectQueue.process).toBeCalledTimes(1);
+    expect(mockEffectProcessor.process).toBeCalledTimes(1);
+  });
+
+  it('should process render', () => {
+    actionScheduler.scheduleRender(Object({}));
+
+    expect(mockRenderingProcessor.process).toBeCalledTimes(1);
   });
 });

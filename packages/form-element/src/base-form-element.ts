@@ -1,7 +1,12 @@
-import { FormTargetCallbacks, FormElementCallbacks, FormElement, Supplier, TargetConstructor, FormElementConstructor } from "@diax-js/common";
-import { useElement, useSelf, useSupplier } from "@diax-js/context";
-import {useHost} from '@diax-js/context/host';
-import { BaseElement } from "@diax-js/custom-element";
+import { TargetConstructor } from '@diax-js/common/custom-element';
+import {
+  FormElement,
+  FormElementCallbacks,
+  FormElementConstructor,
+  FormTargetCallbacks,
+} from '@diax-js/common/form-element';
+import { useElement, useSupplier } from '@diax-js/context';
+import { BaseElement } from '@diax-js/custom-element';
 
 export class BaseFormElement extends BaseElement<FormTargetCallbacks> implements FormElementCallbacks, FormElement {
   static get formAssociated(): true {
@@ -10,10 +15,10 @@ export class BaseFormElement extends BaseElement<FormTargetCallbacks> implements
 
   #internals!: ElementInternals;
 
-  constructor(supplier: Supplier<FormTargetCallbacks>) {
-    super(supplier);
+  constructor() {
+    super();
     useElement(this, () => {
-      this.#internals = useSelf(ElementInternals);
+      this.#internals = useSupplier(ElementInternals, () => this.attachInternals());
     });
   }
   get name(): string {
@@ -70,13 +75,6 @@ export function getFormElementClass(target: TargetConstructor<FormTargetCallback
 
     static get target() {
       return target;
-    }
-
-    constructor() {
-      super(() => {
-        useSupplier(ElementInternals, () => useHost().attachInternals());
-        return useSelf(target);
-      });
     }
   };
 }

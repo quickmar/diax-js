@@ -2,22 +2,24 @@ import {
   ACTIONS,
   Signal as ISignal,
   Action,
-  Supplier,
   UseSignal,
   ComputedSignal as IComputedSignal,
   UseComputed,
   UseEffect,
-} from '@diax-js/common';
-import { _getCurrentContext } from '@diax-js/context';
+  UseAttribute,
+  AttributeSignal as IAttributeSignal,
+} from '@diax-js/common/state';
+import { _getCurrentContext, getCurrentContext } from '@diax-js/context';
 import { getActions, subscribe } from './support/subscribe';
 import { ComputationAction, EffectAction } from './actions';
+import { Supplier } from '@diax-js/common';
+import { useHost } from '@diax-js/context/host';
 
 class Signal<T> implements ISignal<T> {
   #value!: T;
   #actions: Set<Action> = new Set();
 
   set value(value: T) {
-    if (this.#value === value) return;
     this.#value = value;
     for (const action of this.#actions) {
       action.schedule();
@@ -34,6 +36,26 @@ class Signal<T> implements ISignal<T> {
 
   private get [ACTIONS]() {
     return this.#actions;
+  }
+}
+
+class AttributeSignal implements IAttributeSignal {
+  #signal: ISignal<string>;
+  #host: HTMLElement;
+  #qualifiedName: string;
+
+  get value() {
+    return this.#signal.value;
+  }
+
+  set value(value: string) {
+    this.#host.setAttribute(this.#qualifiedName, value);
+  }
+
+  constructor(signal: ISignal<string>, qualifiedName: string) {
+    this.#signal = signal;
+    this.#host = useHost();
+    this.#qualifiedName = qualifiedName;
   }
 }
 
@@ -64,6 +86,24 @@ class ComputedSignal<T> implements IComputedSignal<T> {
 const produceEffectAction = (callable: VoidFunction) => new EffectAction(callable);
 const produceComputationAction = (callable: VoidFunction) => new ComputationAction(callable);
 
+export const attribute: UseAttribute = (attribute: string) => {
+  const { attributes, host, observedAttributes } = getCurrentContext();
+
+  if (!observedAttributes.has(attribute)) {
+    throw new ReferenceError(
+      `${host.localName} has no attribute '${attribute}' in 'observedAttributes' static property.`,
+    );
+  }
+  let attributeSignal = attributes[attribute];
+  if (attributeSignal === null) {
+    attributeSignal = signal(host.getAttribute(attribute) ?? '');
+    attributes[attribute] = attributeSignal;
+    return new AttributeSignal(attributeSignal, attribute);
+  } else {
+    return new AttributeSignal(attributeSignal, attribute);
+  }
+};
+
 export const signal: UseSignal = <T>(initialValue: T) => {
   const state = new Signal<T>();
   state.value = initialValue;
@@ -71,6 +111,7 @@ export const signal: UseSignal = <T>(initialValue: T) => {
 };
 
 export const useEffect: UseEffect = (fn: VoidFunction) => {
+  //TODO: Rename to effect
   const subscription = subscribe(fn, produceEffectAction);
   return () => subscription.unsubscribe();
 };

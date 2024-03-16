@@ -1,4 +1,4 @@
-import { Action, SubscriptionMode } from '@diax-js/common';
+import { Action, SubscriptionMode } from '@diax-js/common/state';
 import { useDocument, useSelf } from '@diax-js/context';
 import { useHost } from '@diax-js/context/host';
 import { ActionScheduler } from './action-scheduler';

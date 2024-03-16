@@ -3,8 +3,8 @@
     "include": [
         "src",
         "test",
-        "./index.ts",
         "./uhtml.d.ts",
+        "./index.ts",
         "./uhtml-rendering.ts",
         "./package.json",
         "./LICENSE",

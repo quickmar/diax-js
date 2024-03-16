@@ -1,50 +1,49 @@
+import { ContextHTMLElement, CONTEXT, Context } from '@diax-js/common/context';
 import {
-  CONTEXT,
-  Context,
-  ContextHTMLElement,
-  HTMLElementCallbacks,
-  HTMLElementConstructor,
-  Supplier,
   TargetCallbacks,
+  HTMLElementCallbacks,
   TargetConstructor,
-} from '@diax-js/common';
+  HTMLElementConstructor,
+} from '@diax-js/common/custom-element';
 import { ElementContext, useElement, useSelf } from '@diax-js/context';
 
 export class BaseElement<T extends TargetCallbacks>
   extends HTMLElement
   implements ContextHTMLElement, HTMLElementCallbacks
 {
-  [CONTEXT]: Context = new ElementContext<T>(this);
+  [CONTEXT]: Context;
 
   get instance(): T {
     return this[CONTEXT].instance as T;
   }
 
-  constructor(supplier: Supplier<T>) {
+  constructor() {
     super();
-    useElement(this, () => {
-      this[CONTEXT].instance = supplier();
-    });
+    const context = new ElementContext<T>(this);
+    this[CONTEXT] = context;
   }
 
   connectedCallback(): void {
     useElement(this, () => {
-      this.instance.connectedCallback?.();
+      const target = (this.constructor as HTMLElementConstructor<T>).target;
+      this[CONTEXT].instance = useSelf(target);
+      this.instance.init?.();
     });
   }
   disconnectedCallback(): void {
     useElement(this, () => {
-      this.instance.disconnectedCallback?.();
+      this[CONTEXT].destroy();
     });
   }
-  attributeChangedCallback(name: string, oldValue: unknown, newValue: unknown): void {
-    useElement(this, () => {
-      this.instance.attributeChangedCallback?.(name, oldValue, newValue);
-    });
+  attributeChangedCallback(name: string, _oldValue: string, newValue: string): void {
+    const attribute = this[CONTEXT].attributes[name];
+    if (attribute) {
+      attribute.value = newValue;
+    }
   }
   adoptedCallback(): void {
     useElement(this, () => {
-      this.instance.adoptedCallback?.();
+      this.instance.adopt?.();
     });
   }
 }
@@ -57,10 +56,6 @@ export function getElementClass(target: TargetConstructor<TargetCallbacks>): HTM
 
     static get target() {
       return target;
-    }
-
-    constructor() {
-      super(() => useSelf(target));
     }
   };
 }

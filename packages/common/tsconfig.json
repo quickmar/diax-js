@@ -5,6 +5,11 @@
         "test",
         "./index.ts",
         "./rendering.ts",
+        "./context.ts",
+        "./custom-element.ts",
+        "./form-element.ts",
+        "./state.ts",
+        "./support.ts",
         "./package.json",
         "./LICENSE",
         "./README.md"

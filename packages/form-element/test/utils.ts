@@ -1,4 +1,5 @@
-import { HTMLElementCallbacks, FormElementCallbacks } from '@diax-js/common';
+import { HTMLElementCallbacks } from '@diax-js/common/custom-element';
+import { FormElementCallbacks } from '@diax-js/common/form-element';
 import { FormElement } from '../src/form-element';
 
 @FormElement('test-form-element')

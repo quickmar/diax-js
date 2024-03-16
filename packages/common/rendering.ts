@@ -1,1 +1,1 @@
-export * from './src/rendering-element/rendering-element';
+export * from './src/rendering-element/model';

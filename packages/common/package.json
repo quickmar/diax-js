@@ -7,7 +7,12 @@
   "module": "dist/index.js",
   "exports": {
     ".": "./dist/index.js",
-    "./rendering": "./dist/rendering.js"
+    "./context": "./dist/context.js",
+    "./custom-element": "./dist/custom-element.js",
+    "./form-element": "./dist/form-element.js",
+    "./rendering": "./dist/rendering.js",
+    "./state": "./dist/state.js",
+    "./support": "./dist/support.js"
   },
   "files": [
     "dist"

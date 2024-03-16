@@ -1,6 +1,6 @@
 import { useToken } from '@diax-js/context';
+import { newToken } from '@diax-js/common/support';
 import { RenderingAction } from './src/actions';
-import { newToken } from '@diax-js/common';
 
 export const RENDERING_ACTION_TOKEN = newToken<RenderingAction>('RENDERING_ACTION');
 export { subscribe } from './src/support/subscribe';

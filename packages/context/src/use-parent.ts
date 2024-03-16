@@ -1,4 +1,5 @@
-import { CONTEXT, Context, NoArgType } from '@diax-js/common';
+import { CONTEXT, Context } from '@diax-js/common/context';
+import { NoArgType } from '@diax-js/common';
 import { getCurrentContext } from './context';
 import { autoAssignToken, hasContext, instantiate } from './utils/util';
 import { DocumentContext } from './document-context';
