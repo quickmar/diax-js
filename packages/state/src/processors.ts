@@ -103,7 +103,7 @@ export class RenderingProcessor extends AbstractEffectProcessor<RenderingAction>
     if (this.actionCounter === 1) {
       this.isRendering = true;
       for (const action of [...this.actions].sort(this.topologicalSort)) {
-        this.callSafe(action);
+        if (action.host.isConnected) this.callSafe(action);
       }
       this.reassignActions();
       this.isRendering = false;
