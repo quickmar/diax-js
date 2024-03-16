@@ -15,7 +15,7 @@ export type TargetCallbacks = Partial<{
   init(): void;
   destroy(): void;
   adopt(): void;
-}>;
+}> & object;
 
 export interface HTMLElementCallbacks {
   connectedCallback(): void;
