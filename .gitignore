@@ -13,6 +13,7 @@ example
 dist-ssr
 *.local
 *.d.ts
+!uhtml.d.ts
 *.js
 *.tgz
 
