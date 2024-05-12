@@ -1,5 +1,5 @@
-import { ActionProcessor as IActionProcessor, Action } from '@diax-js/common';
-import { ComputationAction, EffectAction } from './actions';
+import { ActionProcessor as IActionProcessor, Action } from '@diax-js/common/state';
+import { ComputationAction, EffectAction, RenderingAction } from './actions';
 
 export abstract class ActionProcessor<T extends Action> implements IActionProcessor<T> {
   abstract process(action: T): void;
@@ -14,6 +14,27 @@ export abstract class ActionProcessor<T extends Action> implements IActionProces
     } catch (err) {
       reportError(err);
     }
+  }
+}
+
+abstract class AbstractEffectProcessor<T extends Action> extends ActionProcessor<T> {
+  protected actions: Set<T> = new Set();
+  protected actionCounter = 0;
+
+  constructor() {
+    super();
+    this.execute = this.execute.bind(this);
+  }
+
+  protected put(action: T): void {
+    this.actionCounter++;
+    this.actions.add(action);
+  }
+
+  protected reassignActions(): void {
+    const actions = this.actions;
+    this.actions = new Set();
+    requestIdleCallback(() => actions.clear());
   }
 }
 
@@ -50,30 +71,62 @@ export class ComputationProcessor extends ActionProcessor<ComputationAction> {
   }
 }
 
-export class EffectProcessor extends ActionProcessor<EffectAction> {
-  private actions: Set<EffectAction> = new Set();
-
-  constructor() {
-    super();
-    this.execute = this.execute.bind(this);
+export class EffectProcessor extends AbstractEffectProcessor<EffectAction> {
+  protected override execute(): void {
+    if (this.actionCounter === 1) {
+      for (const action of this.actions) {
+        this.callSafe(action);
+      }
+      this.reassignActions();
+    }
+    this.actionCounter--;
   }
 
   override process(action: EffectAction): void {
     this.put(action);
     queueMicrotask(this.execute);
   }
+}
 
-  protected execute(): void {
-    if (this.actions.size === 0) return;
-    for (const action of this.actions) {
-      this.callSafe(action);
+export class RenderingProcessor extends AbstractEffectProcessor<RenderingAction> {
+  private isRendering: boolean = false;
+
+  protected override put(action: RenderingAction): void {
+    if (this.isRendering) {
+      this.isRendering = false;
+      throw new Error(`Detected state change or RenderingAction request while page is rendering.`);
     }
-    const actions = this.actions;
-    this.actions = new Set();
-    requestIdleCallback(() => actions.clear());
+    super.put(action);
   }
 
-  protected put(action: EffectAction): void {
-    this.actions.add(action);
+  protected override execute(): void {
+    if (this.actionCounter === 1) {
+      this.isRendering = true;
+      for (const action of [...this.actions].sort(this.topologicalSort)) {
+        if (action.host.isConnected) this.callSafe(action);
+      }
+      this.reassignActions();
+      this.isRendering = false;
+    }
+    this.actionCounter--;
+  }
+
+  override process(action: RenderingAction): void {
+    this.put(action);
+    setTimeout(this.execute);
+  }
+
+  private topologicalSort(a: RenderingAction, b: RenderingAction): number {
+    if (a === b) {
+      return 0;
+    }
+    const position = a.host.compareDocumentPosition(b.host);
+    if (position & Node.DOCUMENT_POSITION_FOLLOWING) {
+      return -1;
+    } else if (position & Node.DOCUMENT_POSITION_PRECEDING) {
+      return 1;
+    } else {
+      return 0;
+    }
   }
 }

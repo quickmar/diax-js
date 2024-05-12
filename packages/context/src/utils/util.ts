@@ -1,4 +1,6 @@
-import { CONTEXT, Context, ContextNode, DI_TOKEN, NoArgType, Supplier, Token, newToken } from '@diax-js/common';
+import { NoArgType, Supplier } from '@diax-js/common';
+import { CONTEXT, Context, ContextNode, DI_TOKEN, Token } from '@diax-js/common/context';
+import { newToken } from '@diax-js/common/support';
 
 export function throwNoContext(description: string): never {
   throw new Error(`${description}. Context is not defined!`);

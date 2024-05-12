@@ -13,52 +13,44 @@ Component definition:
 ### 1. Using Decorators:
 
 ```
-    import {RenderingElement, Attributes, RenderState} from '@diax-js/rendering-element'
+    import {RenderingElement} from '@diax-js/rendering-element'
+    import { html } from '@diax/rendering-element/uhtml';
+    import { signal } from '@diax/state';
+    import { attachListener, useHost } from '@diax/context/host';
 
     @RenderingElement('my-element')
     class MyRenderingElement {
-        // may use lifecycle of custom element
+        static get observedAttributes() {
+            return ['data-nick'];
+        }
 
         host = useHost();
 
-        name = '';
+        name = signal('');
+        nick = attribute('data-nick');
 
         constructor() {
-            attachEventLister('dbclick', () => {
-               this.name = 'My Rendering Element';
-               this.host.setAttribute(Attributes.RENDER_STATE , RenderState.PENDING);
+
+            attachEventLister('dblclick', () => {
+               this.name.value = 'My Rendering Element';
             })
         }
 
         render() {
-            this.host.innerHtml = this.name;
+            return html`${this.name.value} has nick ${this.nick.value}`
         }
     }
-```
-
-### 2. Plain JS:
-
-```
-    import {getRenderingElementClass} from '@diax-js/rendering-element';
-
-    class MyRenderingElement {
-        ... as above
-    }
-
-    const HTMLCtor = getRenderingElementClass(MyRenderingElement);
-
-    customElements.define('my-element', HTMLCtor);
 ```
 
 ### Later in HTML:
 
 ```
-    <my-element></my-element> // double click
+    <my-element data-nick="Signal"></my-element> // double click
 
 ...later
 
     <my-element>
-        My Rendering Element
+        My Rendering Element has nick Signal
     </my-element>
 
 ```

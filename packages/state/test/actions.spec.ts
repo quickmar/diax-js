@@ -1,19 +1,23 @@
 import { useDocument, useSelf } from '@diax-js/context';
-import { Action, SubscriptionMode } from '@diax-js/common';
-import { ComputationProcessor, EffectProcessor } from '../src/processors';
-import { ComputationAction, EffectAction } from '../src/actions';
+import { Action, SubscriptionMode } from '@diax-js/common/state';
+import { ComputationProcessor, EffectProcessor, RenderingProcessor } from '../src/processors';
+import { ComputationAction, EffectAction, RenderingAction } from '../src/actions';
 import { MockInstance } from 'vitest';
+import { useMockContext } from '@diax-js/test';
 
 describe('Actions', () => {
   let computationProcessor: MockInstance<[ComputationAction], void>;
   let effectProcessor: MockInstance<[EffectAction], void>;
+  let renderingProcessor: MockInstance<[RenderingAction], void>;
 
   beforeAll(() => {
     useDocument(() => {
-      const computationQueue = useSelf(ComputationProcessor);
-      const effectQueue = useSelf(EffectProcessor);
-      computationProcessor = vi.spyOn(computationQueue, 'process');
-      effectProcessor = vi.spyOn(effectQueue, 'process');
+      const computation = useSelf(ComputationProcessor);
+      const effect = useSelf(EffectProcessor);
+      const render = useSelf(RenderingProcessor);
+      computationProcessor = vi.spyOn(computation, 'process');
+      effectProcessor = vi.spyOn(effect, 'process');
+      renderingProcessor = vi.spyOn(render, 'process');
     });
   });
 
@@ -24,11 +28,12 @@ describe('Actions', () => {
   describe.each([
     [EffectAction, SubscriptionMode.EFFECT],
     [ComputationAction, SubscriptionMode.COMPUTED],
+    [RenderingAction, SubscriptionMode.RENDER],
   ])('Action', (ActionCtor, subscriptionMode) => {
     let action: Action;
     let callable: VoidFunction;
 
-    beforeEach(() => {
+    useMockContext(() => {
       callable = vi.fn();
       action = new ActionCtor(callable);
     });
@@ -81,6 +86,8 @@ describe('Actions', () => {
         return computationProcessor;
       case SubscriptionMode.EFFECT:
         return effectProcessor;
+      case SubscriptionMode.RENDER:
+        return renderingProcessor;
     }
   }
 });

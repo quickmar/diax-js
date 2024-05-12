@@ -1,4 +1,4 @@
-import { ACTIONS, Action, Signal } from '@diax-js/common';
+import { ACTIONS, Action, Signal } from '@diax-js/common/state';
 
 export function getActions(signal: Signal<unknown>): Set<Action> {
   return Reflect.get(signal, ACTIONS);

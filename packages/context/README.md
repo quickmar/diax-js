@@ -27,14 +27,13 @@ useElement(element, () => {...});
 # `Context` concept
 
 Context is an entity that could be pass as free variable thought synchronous functions stack.
-For instance, while executing some function `f()` it can build a example call stack:
+For instance, while some function `f()` is invoked, it can build a example call stack:
 
 ```
     f -> g -> h -> ... -> n
 ```
 
-Passing data form outermost function `f` to bottom `n` one may be inconvenient due to fact that sometimes we have to pass data from `f` to `n` that are not relevant for functions between. <br>
-So idea of `Context` is to create object that could be shared between differed functions and let pass data between them in more scalable manner.
+Passing data form outermost function `f` to the bottom `n` may be inconvenient. Just sometimes we need to pass data from `f` to `n` that are not relevant for functions between. So idea of the `Context` is to create object that could be shared between differed functions and let pass data between them in more scalable manner. The visualization of this concept is code below.
 
 ```
     function f() {

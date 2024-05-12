@@ -1,4 +1,4 @@
-import { Dependencies } from '@diax-js/common';
+import { Dependencies } from '@diax-js/common/context';
 import { BaseDependencies } from '../src/element-context';
 import { autoAssignToken } from '../src/utils/util';
 
@@ -43,9 +43,7 @@ describe.each([BaseDependencies])('Dependencies', (DependenciesCtor) => {
   it('should throw when get null', () => {
     dependencies.setInstance(autoAssignToken(Object), null);
 
-    expect(() => dependencies.getInstance(autoAssignToken(Object))).toThrowError(
-      'Cyclic dependency detected! Object',
-    );
+    expect(() => dependencies.getInstance(autoAssignToken(Object))).toThrowError('Cyclic dependency detected! Object');
   });
 
   it('should throw when not defined', () => {

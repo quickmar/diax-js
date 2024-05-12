@@ -3,10 +3,12 @@
     "include": [
         "src",
         "test",
+        "./uhtml.d.ts",
         "./index.ts",
+        "./uhtml-rendering.ts",
         "./package.json",
         "./LICENSE",
-        "./README.md"
+        "./README.md",
     ],
     "compilerOptions": {
         "rootDir": "./",

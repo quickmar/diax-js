@@ -1,4 +1,4 @@
-import { CONTEXT } from "@diax-js/common";
+import { CONTEXT } from "@diax-js/common/context";
 import { DocumentContext } from "../src/document-context";
 
 describe('document context', () => {

@@ -2,8 +2,10 @@
 
 `Diax` a library for creating Web Components with extended capabilities and clean API.
 
-# Problem trying to solve
+# Problem it is addressed
+
 ### Context based behavior
+
 While developing HTML page often we would like to configure some behavior of component based on it parents. This means that parents are creating some context in witch our component exists and can derive behavior. <br>
 
 Visual representation of context depended behavior:
@@ -23,7 +25,6 @@ Visual representation of context depended behavior:
     </disabling-parent>
 </body>
 ```
-
 
 # How to use
 
@@ -105,7 +106,7 @@ class FormElement {}
 @RenderingElement('rendering-element')
 class RenderingElement {
     render() {
-        this.innerHtml = 'Hello';
+        return html`Hello`;
     }
 }
 
@@ -144,19 +145,19 @@ class BaseElementChild {
 }
 ```
 
-### Same lifecycle as native Web Component
+### Signal based client rendering
 
-```
-@Element('base-element')
-class BaseElement {
-  constructor() {}
+    @RenderingElement('my-element')
+    class MyRenderingElement {
+        name = signal('');
 
-  connectedCallback() {}
+        constructor() {
+            attachEventLister('dblclick', () => {
+               this.name.value = 'My Rendering Element';
+            })
+        }
 
-  disconnectedCallback() {}
-
-  attributeChangedCallback(name, oldValue, newValue) {}
-
-  adoptedCallback() {}
-}
-```
+        render() {
+            return html`${this.name.value}`
+        }
+    }

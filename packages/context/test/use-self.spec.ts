@@ -1,5 +1,5 @@
 import { useElement, useSelf } from '@diax-js/context';
-import { createContextElement } from '@diax-js/test';
+import { MockContextElement } from '@diax-js/test';
 
 class TestService {}
 
@@ -16,7 +16,7 @@ describe('useSelf', () => {
   let instance: TestService;
 
   beforeEach(() => {
-    element = createContextElement('a');
+    element = new MockContextElement();
   });
 
   it('should create instance', () => {

@@ -1,6 +1,6 @@
 # `@diax-js/common`
 
-This package contains all general types definitions, symbols ect. on witch other packages will be based.
+This package contains all general types definitions, symbols, interfaces ect. The definitions included in this package are used to develope other diax-js packages. 
 
 # How to use
 

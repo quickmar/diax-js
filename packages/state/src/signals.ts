@@ -2,18 +2,18 @@ import {
   ACTIONS,
   Signal as ISignal,
   Action,
-  SubscriptionMode,
-  Supplier,
   UseSignal,
   ComputedSignal as IComputedSignal,
-  Subscription,
   UseComputed,
   UseEffect,
-} from '@diax-js/common';
-import { useContext, _getCurrentContext, getCurrentContext } from '@diax-js/context';
+  UseAttribute,
+  AttributeSignal as IAttributeSignal,
+} from '@diax-js/common/state';
+import { _getCurrentContext, getCurrentContext } from '@diax-js/context';
+import { getActions, subscribe } from './support/subscribe';
 import { ComputationAction, EffectAction } from './actions';
-
-const getActions = (state: ISignal<unknown>) => Reflect.get(state, ACTIONS) as Set<Action>;
+import { Supplier } from '@diax-js/common';
+import { useHost } from '@diax-js/context/host';
 
 class Signal<T> implements ISignal<T> {
   #value!: T;
@@ -36,6 +36,26 @@ class Signal<T> implements ISignal<T> {
 
   private get [ACTIONS]() {
     return this.#actions;
+  }
+}
+
+class AttributeSignal implements IAttributeSignal {
+  #signal: ISignal<string>;
+  #host: HTMLElement;
+  #qualifiedName: string;
+
+  get value() {
+    return this.#signal.value;
+  }
+
+  set value(value: string) {
+    this.#host.setAttribute(this.#qualifiedName, value);
+  }
+
+  constructor(signal: ISignal<string>, qualifiedName: string) {
+    this.#signal = signal;
+    this.#host = useHost();
+    this.#qualifiedName = qualifiedName;
   }
 }
 
@@ -63,44 +83,25 @@ class ComputedSignal<T> implements IComputedSignal<T> {
   }
 }
 
-const subscribe_ = (fn: VoidFunction, subscriptionMode: SubscriptionMode) => {
-  const context = getCurrentContext();
-  const callable = () => {
-    useContext(context, fn);
-  };
+const produceEffectAction = (callable: VoidFunction) => new EffectAction(callable);
+const produceComputationAction = (callable: VoidFunction) => new ComputationAction(callable);
 
-  const action =
-    subscriptionMode === SubscriptionMode.EFFECT ? new EffectAction(callable) : new ComputationAction(callable);
-  const previousSubscriptionMode = context.subscriptionMode;
-  const previousObservables = context.observables;
-  context.subscriptionMode = subscriptionMode;
-  context.observables = new Set();
-  const disposables: Subscription[] = [];
-  try {
-    callable();
-    for (const observable of context.observables) {
-      const actions = getActions(observable);
-      actions.add(action);
-      const subscription = {
-        actions,
-        action,
-        unsubscribe() {
-          this.actions.delete(this.action);
-          this.action.unsubscribe();
-          Object.assign(this, { action: null, actions: null });
-        },
-      };
-      disposables.push(subscription);
-    }
-  } finally {
-    context.subscriptionMode = previousSubscriptionMode;
-    context.observables = previousObservables;
+export const attribute: UseAttribute = (attribute: string) => {
+  const { attributes, host, observedAttributes } = getCurrentContext();
+
+  if (!observedAttributes.has(attribute)) {
+    throw new ReferenceError(
+      `${host.localName} has no attribute '${attribute}' in 'observedAttributes' static property.`,
+    );
   }
-  return () => {
-    while (disposables.length) {
-      disposables.pop()?.unsubscribe();
-    }
-  };
+  let attributeSignal = attributes[attribute];
+  if (attributeSignal === null) {
+    attributeSignal = signal(host.getAttribute(attribute) ?? '');
+    attributes[attribute] = attributeSignal;
+    return new AttributeSignal(attributeSignal, attribute);
+  } else {
+    return new AttributeSignal(attributeSignal, attribute);
+  }
 };
 
 export const signal: UseSignal = <T>(initialValue: T) => {
@@ -110,21 +111,20 @@ export const signal: UseSignal = <T>(initialValue: T) => {
 };
 
 export const useEffect: UseEffect = (fn: VoidFunction) => {
-  return subscribe_(fn, SubscriptionMode.EFFECT);
+  //TODO: Rename to effect
+  const subscription = subscribe(fn, produceEffectAction);
+  return () => subscription.unsubscribe();
 };
 
 export const computed: UseComputed = <T>(supplier: Supplier<T>) => {
   let _signal: ISignal<T> | null = null;
   const compute = () => {
     if (_signal) {
-      const value = supplier();
-      if (_signal.value !== value) {
-        _signal.value = value;
-      }
+      _signal.value = supplier();
     } else {
       _signal = signal(supplier());
     }
   };
-  const dispose = subscribe_(compute, SubscriptionMode.COMPUTED);
-  return new ComputedSignal(_signal!, dispose);
+  const subscription = subscribe(compute, produceComputationAction);
+  return new ComputedSignal(_signal!, () => subscription.unsubscribe());
 };
