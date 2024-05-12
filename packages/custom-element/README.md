@@ -1,6 +1,6 @@
 # `@diax-js/custom-element`
 
-Base implementation of custom element.
+Base implementation of custom element. 
 
 # How to use
 
@@ -16,7 +16,6 @@ Component definition:
 
     @Element('my-element')
     class MyElement {
-        // may use lifecycle of custom element
         
         name = 'My Element'
 
