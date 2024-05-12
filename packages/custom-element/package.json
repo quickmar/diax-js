@@ -1,6 +1,6 @@
 {
   "name": "@diax-js/custom-element",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Simple implementation of Custom Elements.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,8 +9,8 @@
     "dist"
   ],
   "dependencies": {
-    "@diax-js/common": "^0.0.2",
-    "@diax-js/context": "^0.0.2"
+    "@diax-js/common": "^0.1.0",
+    "@diax-js/context": "^0.1.0"
   },
   "devDependencies": {
     "@diax-js/test": "../test"
@@ -20,6 +20,7 @@
     "test": "vitest"
   },
   "keywords": [
+    "frontend",
     "web",
     "components",
     "js",

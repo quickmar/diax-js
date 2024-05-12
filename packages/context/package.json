@@ -1,6 +1,6 @@
 {
   "name": "@diax-js/context",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Core package for web component implementation by diax",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -13,7 +13,7 @@
   ],
   "types": "dist/index.d.ts",
   "dependencies": {
-    "@diax-js/common": "^0.0.2"
+    "@diax-js/common": "^0.1.0"
   },
   "devDependencies": {
     "@diax-js/test": "../test"
@@ -23,6 +23,7 @@
     "test": "vitest"
   },
   "keywords": [
+    "frontend",
     "web",
     "components",
     "js",
