@@ -16,12 +16,13 @@ Component definition:
     import {RenderingElement} from '@diax-js/rendering-element'
     import { html } from '@diax/rendering-element/uhtml';
     import { signal } from '@diax/state';
+    import { attachListener, useHost } from '@diax/context/host';
 
     @RenderingElement('my-element')
     class MyRenderingElement {
         static get observedAttributes() {
             return ['data-nick'];
-        } 
+        }
 
         host = useHost();
 
@@ -29,7 +30,7 @@ Component definition:
         nick = attribute('data-nick');
 
         constructor() {
-            
+
             attachEventLister('dblclick', () => {
                this.name.value = 'My Rendering Element';
             })

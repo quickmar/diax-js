@@ -1,6 +1,6 @@
 # `@diax-js/custom-element`
 
-Base implementation of custom element. 
+Base implementation of custom element.
 
 # How to use
 
@@ -11,12 +11,14 @@ Type in your console:
 Component definition:
 
 ### 1. Using Decorators:
+
 ```
     import {Element} from '@diax-js/custom-element'
+    import { attachListener } from '@diax/context/host';
 
     @Element('my-element')
     class MyElement {
-        
+
         name = 'My Element'
 
         constructor() {
@@ -30,6 +32,7 @@ Component definition:
         }
     }
 ```
+
 ### 2. Plain JS:
 
 ```
@@ -43,6 +46,7 @@ Component definition:
 
     customElements.define('my-element', HTMLCtor);
 ```
+
 ### Later in HTML:
 
 ```
