@@ -1,6 +1,6 @@
 {
   "name": "@diax-js/rendering-element",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,10 +13,10 @@
     "dist"
   ],
   "dependencies": {
-    "@diax-js/common": "^0.0.2",
-    "@diax-js/context": "^0.0.2",
-    "@diax-js/state": "^0.0.2",
-    "@diax-js/custom-element": "^0.0.2",
+    "@diax-js/common": "^0.1.0",
+    "@diax-js/context": "^0.1.0",
+    "@diax-js/state": "^0.1.0",
+    "@diax-js/custom-element": "^0.1.0",
     "uhtml": "^4.4.7"
   },
   "devDependencies": {
@@ -27,6 +27,7 @@
     "test": "vitest"
   },
   "keywords": [
+    "frontend",
     "web",
     "components",
     "js",
