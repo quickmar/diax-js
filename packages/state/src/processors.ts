@@ -17,6 +17,27 @@ export abstract class ActionProcessor<T extends Action> implements IActionProces
   }
 }
 
+abstract class AbstractEffectProcessor<T extends Action> extends ActionProcessor<T> {
+  protected actions: Set<T> = new Set();
+  protected actionCounter = 0;
+
+  constructor() {
+    super();
+    this.execute = this.execute.bind(this);
+  }
+
+  protected put(action: T): void {
+    this.actionCounter++;
+    this.actions.add(action);
+  }
+
+  protected reassignActions(): void {
+    const actions = this.actions;
+    this.actions = new Set();
+    requestIdleCallback(() => actions.clear());
+  }
+}
+
 export class ComputationProcessor extends ActionProcessor<ComputationAction> {
   private readonly computationBudged = 1000;
   private currentComputation = 0;
@@ -50,65 +71,49 @@ export class ComputationProcessor extends ActionProcessor<ComputationAction> {
   }
 }
 
-abstract class AbstractEffectProcessor<T extends Action> extends ActionProcessor<T> {
-  private actions: Set<T> = new Set();
-  private currentEffect = 0;
-
-  constructor() {
-    super();
-    this.execute = this.execute.bind(this);
-  }
-
-  protected abstract prepareActions(actions: Set<T>): Iterable<T>;
-  protected abstract test(action: T): boolean;
-
-  protected execute(): void {
-    if (this.currentEffect === 1) {
-      for (const action of this.prepareActions(this.actions)) {
-        if (this.test(action)) this.callSafe(action);
-      }
-      const actions = this.actions;
-      this.actions = new Set();
-      requestIdleCallback(() => actions.clear());
-    }
-    this.currentEffect--;
-  }
-
-  protected put(action: T): void {
-    this.currentEffect++;
-    this.actions.add(action);
-  }
-}
-
 export class EffectProcessor extends AbstractEffectProcessor<EffectAction> {
+  protected override execute(): void {
+    if (this.actionCounter === 1) {
+      for (const action of this.actions) {
+        this.callSafe(action);
+      }
+      this.reassignActions();
+    }
+    this.actionCounter--;
+  }
+
   override process(action: EffectAction): void {
     this.put(action);
     queueMicrotask(this.execute);
   }
-
-  protected override prepareActions(actions: Set<EffectAction>): Iterable<EffectAction> {
-    // does nothing
-    return actions;
-  }
-
-  protected override test(_action: EffectAction): boolean {
-    return true;
-  }
 }
 
-// TODO: Reimplement. 
 export class RenderingProcessor extends AbstractEffectProcessor<RenderingAction> {
+  private isRendering: boolean = false;
+
+  protected override put(action: RenderingAction): void {
+    if (this.isRendering) {
+      this.isRendering = false;
+      throw new Error(`Detected state change or RenderingAction request while page is rendering.`);
+    }
+    super.put(action);
+  }
+
+  protected override execute(): void {
+    if (this.actionCounter === 1) {
+      this.isRendering = true;
+      for (const action of [...this.actions].sort(this.topologicalSort)) {
+        if (action.host.isConnected) this.callSafe(action);
+      }
+      this.reassignActions();
+      this.isRendering = false;
+    }
+    this.actionCounter--;
+  }
+
   override process(action: RenderingAction): void {
     this.put(action);
     setTimeout(this.execute);
-  }
-
-  protected override prepareActions(actions: Set<RenderingAction>): Iterable<RenderingAction> {
-    return [...actions].sort(this.topologicalSort);
-  }
-
-  protected override test(action: RenderingAction): boolean {
-    return action.host.isConnected;
   }
 
   private topologicalSort(a: RenderingAction, b: RenderingAction): number {
