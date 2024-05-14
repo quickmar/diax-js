@@ -24,6 +24,10 @@ describe('BaseElement', () => {
     expect(Reflect.has(TestBaseElement, 'observedAttributes')).toBe(true);
   });
 
+  it('should has disabled futures', () => {
+    expect(Reflect.has(TestBaseElement, 'disabledFeatures')).toBe(true);
+  });
+
   it('should has target', () => {
     expect(Reflect.has(TestBaseElement, 'target')).toBe(true);
   });

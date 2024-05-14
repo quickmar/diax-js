@@ -3,6 +3,7 @@ import { NoArgType } from '../model/common';
 
 export interface TargetConstructor<T extends TargetCallbacks> extends NoArgType<T> {
   readonly observedAttributes?: string[];
+  readonly disabledFeatures?: string[];
 }
 
 export interface HTMLElementConstructor<T extends TargetCallbacks>
@@ -15,7 +16,8 @@ export type TargetCallbacks = Partial<{
   init(): void;
   destroy(): void;
   adopt(): void;
-}> & object;
+}> &
+  object;
 
 export interface HTMLElementCallbacks {
   connectedCallback(): void;

@@ -54,6 +54,10 @@ export function getElementClass(target: TargetConstructor<TargetCallbacks>): HTM
       return target.observedAttributes;
     }
 
+    static get disabledFeatures() {
+      return target.disabledFeatures;
+    }
+
     static get target() {
       return target;
     }
