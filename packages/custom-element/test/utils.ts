@@ -7,7 +7,7 @@ export class TestTarget implements TargetCallbacks {
   }
 
   static get disabledFeatures() {
-    return ['shadow', 'internals'];
+    return [];
   }
 
   init = vi.fn();
