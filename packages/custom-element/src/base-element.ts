@@ -4,8 +4,26 @@ import {
   HTMLElementCallbacks,
   TargetConstructor,
   HTMLElementConstructor,
+  DisabledFeatures,
 } from '@diax-js/common/custom-element';
-import { ElementContext, useElement, useSelf } from '@diax-js/context';
+import { DISABLED_FEATURES } from '@diax-js/common/support';
+import { ElementContext, useDocument, useElement, useSelf, useToken } from '@diax-js/context';
+
+let systemDisabledFeatures: DisabledFeatures;
+
+useDocument(() => {
+  systemDisabledFeatures = useToken(DISABLED_FEATURES, () => {
+    // If instance of DISABLED_FEATURES is defined before this script.
+    // This implementation will be supplied to the document context.
+    // And all elements for this document will have the same disabled features.
+    // Otherwise, this default implementation will be supplied to the document context.
+    return {
+      get disabledFeatures() {
+        return [];
+      },
+    };
+  });
+});
 
 export class BaseElement<T extends TargetCallbacks>
   extends HTMLElement
@@ -38,7 +56,7 @@ export class BaseElement<T extends TargetCallbacks>
   attributeChangedCallback(name: string, _oldValue: string, newValue: string): void {
     const attribute = this[CONTEXT].attributes[name];
     if (attribute) {
-      attribute.value = newValue;
+      attribute.setValue(newValue);
     }
   }
   adoptedCallback(): void {
@@ -52,6 +70,10 @@ export function getElementClass(target: TargetConstructor<TargetCallbacks>): HTM
   return class extends BaseElement<TargetCallbacks> {
     static get observedAttributes() {
       return target.observedAttributes;
+    }
+
+    static get disabledFeatures() {
+      return [...systemDisabledFeatures.disabledFeatures, ...(target.disabledFeatures ?? [])];
     }
 
     static get target() {

@@ -1,6 +1,6 @@
 {
   "name": "@diax-js/state",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,8 +13,8 @@
     "dist"
   ],
   "dependencies": {
-    "@diax-js/common": "^0.1.0",
-    "@diax-js/context": "^0.1.0"
+    "@diax-js/common": "^0.2.0",
+    "@diax-js/context": "^0.2.0"
   },
   "scripts": {
     "build": "tsc --build tsconfig.build.json --verbose",

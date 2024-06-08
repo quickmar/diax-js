@@ -1,1 +1,1 @@
-export { computed, signal, attribute, useEffect } from './src/signals';
+export { computed, signal, attribute, effect } from './src/signals';

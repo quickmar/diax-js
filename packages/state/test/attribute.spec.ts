@@ -27,7 +27,7 @@ describe('Attribute', () => {
   });
 
   it('should update host attribute', () => {
-    a.value = 'test';
+    a.setValue('test');
 
     expect(host.getAttribute('data-unit-test')).toBe('test');
   });
