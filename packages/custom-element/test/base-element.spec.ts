@@ -105,8 +105,13 @@ describe('BaseElement', () => {
     const spy = vi.fn();
     const attributes = element[CONTEXT].attributes;
     attributes['test-target'] = {
-      set value(value: string) {
+      setValue(value: string) {
         spy(value);
+      },
+
+      get value() {
+        throw new Error('Method not implemented.');
+        return '';
       },
     };
 

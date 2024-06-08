@@ -20,7 +20,7 @@ describe('Signal', () => {
   });
 
   it('should update value', () => {
-    s.value = 10;
+    s.setValue(10);
 
     expect(s.value).toBe(10);
   });
@@ -30,7 +30,7 @@ describe('Signal', () => {
     actions.add(asAny({ schedule: vi.fn() }));
     actions.add(asAny({ schedule: vi.fn() }));
 
-    s.value = 10;
+    s.setValue(100);
 
     actions.forEach((action) => {
       expect(action.schedule).toBeCalledTimes(1);

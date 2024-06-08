@@ -56,7 +56,7 @@ export class BaseElement<T extends TargetCallbacks>
   attributeChangedCallback(name: string, _oldValue: string, newValue: string): void {
     const attribute = this[CONTEXT].attributes[name];
     if (attribute) {
-      attribute.value = newValue;
+      attribute.setValue(newValue);
     }
   }
   adoptedCallback(): void {

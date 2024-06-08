@@ -36,9 +36,9 @@ describe('Computed', () => {
   });
 
   it('should update computed synchronously', () => {
-    positive.value = 100;
+    positive.setValue(100);
     expect(sum.value).toBe(99);
-    negative.value = -100;
+    negative.setValue(-100);
     expect(sum.value).toBe(0);
   });
 
@@ -55,8 +55,8 @@ describe('Computed', () => {
     spyP.mockClear();
     sum.unsubscribe();
 
-    positive.value = 10;
-    negative.value = -3;
+    positive.setValue(10);
+    negative.setValue(-3);
 
     expect(spyP).not.toBeCalled();
     expect(spyN).not.toBeCalled();

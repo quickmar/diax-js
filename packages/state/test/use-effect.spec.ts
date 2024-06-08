@@ -52,7 +52,7 @@ describe('useEffect', () => {
 
   testInCtx('should not subscribe when assigning value', () => {
     useEffectHelper(() => {
-      positive.value = 10;
+      positive.setValue(10);
     });
 
     const actions = getActions(positive);
@@ -85,7 +85,7 @@ describe('useEffect', () => {
     });
     spyP.mockReset();
 
-    positive.value = 10;
+    positive.setValue(10);
     expect(spyP).not.toBeCalled();
     await Promise.resolve();
 
@@ -101,8 +101,8 @@ describe('useEffect', () => {
     spyP.mockReset();
     spyN.mockReset();
 
-    positive.value = 10;
-    negative.value = -10;
+    positive.setValue(10);
+    negative.setValue(-10);
     await Promise.resolve();
 
     expect(spyP).toBeCalledTimes(1);
@@ -114,7 +114,7 @@ describe('useEffect', () => {
   testInCtx('should swap values to negative', async () => {
     testNotDuplicating(
       () => {
-        positive.value = 10;
+        positive.setValue(10);
       },
       () => {
         expect(spyP).toBeCalledTimes(1);
@@ -128,7 +128,7 @@ describe('useEffect', () => {
   testInCtx('should swap values to positive', async () => {
     testNotDuplicating(
       () => {
-        negative.value = -10;
+        negative.setValue(-10);
       },
       () => {
         expect(spyP).toBeCalledTimes(1);
@@ -170,9 +170,9 @@ describe('useEffect', () => {
     });
     spyP.mockReset();
 
-    positive.value = 2;
+    positive.setValue(2);
     await Promise.resolve().then(() => {
-      positive.value = secondValue;
+      positive.setValue(secondValue);
     });
 
     await flush();
@@ -182,10 +182,12 @@ describe('useEffect', () => {
 
   async function testNotDuplicating(setValue: VoidFunction, expectations: VoidFunction) {
     useEffectHelper(() => {
-      spyN((negative.value = -positive.value));
+      negative.setValue(-positive.value);
+      spyN(negative.value);
     });
     useEffectHelper(() => {
-      spyP((positive.value = negative.value));
+      positive.setValue(negative.value);
+      spyP(positive.value);
     });
     spyP.mockReset();
     spyN.mockReset();

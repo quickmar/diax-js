@@ -5,11 +5,11 @@ export type UseAttribute = (attribute: string) => AttributeSignal;
 export type UseComputed = <T>(supplier: Supplier<T>) => ComputedSignal<T>;
 export type UseEffect = (fn: VoidFunction) => VoidFunction;
 
-export interface Signal<T> {
-  value: T;
+export interface Signal<T> extends ReadonlySignal<T> {
+  setValue(value: T): void;
 }
 
-export interface ReadonlySignal<T> extends Signal<T> {
+export interface ReadonlySignal<T> {
   readonly value: T;
 }
 

@@ -19,7 +19,7 @@ class Signal<T> implements ISignal<T> {
   #value!: T;
   #actions: Set<Action> = new Set();
 
-  set value(value: T) {
+  setValue(value: T) {
     this.#value = value;
     for (const action of this.#actions) {
       action.schedule();
@@ -48,7 +48,7 @@ class AttributeSignal implements IAttributeSignal {
     return this.#signal.value;
   }
 
-  set value(value: string) {
+  setValue(value: string) {
     this.#host.setAttribute(this.#qualifiedName, value);
   }
 
@@ -106,7 +106,7 @@ export const attribute: UseAttribute = (attribute: string) => {
 
 export const signal: UseSignal = <T>(initialValue: T) => {
   const state = new Signal<T>();
-  state.value = initialValue;
+  state.setValue(initialValue);
   return state;
 };
 
@@ -120,7 +120,7 @@ export const computed: UseComputed = <T>(supplier: Supplier<T>) => {
   let _signal: ISignal<T> | null = null;
   const compute = () => {
     if (_signal) {
-      _signal.value = supplier();
+      _signal.setValue(supplier());
     } else {
       _signal = signal(supplier());
     }
