@@ -34,7 +34,7 @@ export interface HTMLElementCallbacks {
   adoptedCallback(): void;
 }
 
-export type ElementDecorator = <T extends TargetConstructor<TargetCallbacks>>(
+export type CustomElementDecorator = <T extends TargetConstructor<TargetCallbacks>>(
   target: T,
   context: ClassDecoratorContext,
 ) => void;
