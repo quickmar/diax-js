@@ -1,10 +1,10 @@
 import { Signal, SubscriptionMode } from '@diax-js/common/state';
 import { useMockContext, testInCtx, flush } from '@diax-js/test';
 import { getActions, getFirstAction } from './util';
-import { signal, useEffect } from '../src/signals';
+import { signal, effect } from '../src/signals';
 import { Mock } from 'vitest';
 
-describe('useEffect', () => {
+describe('effect', () => {
   let positive: Signal<number>;
   let negative: Signal<number>;
   let disposables: VoidFunction[];
@@ -30,7 +30,7 @@ describe('useEffect', () => {
   });
 
   testInCtx('should subscribe when reading value', () => {
-    useEffectHelper(() => {
+    effectHelper(() => {
       positive.value;
     });
 
@@ -41,7 +41,7 @@ describe('useEffect', () => {
   });
 
   testInCtx('should not subscribe', () => {
-    useEffectHelper(() => {
+    effectHelper(() => {
       positive;
     });
 
@@ -51,7 +51,7 @@ describe('useEffect', () => {
   });
 
   testInCtx('should not subscribe when assigning value', () => {
-    useEffectHelper(() => {
+    effectHelper(() => {
       positive.setValue(10);
     });
 
@@ -61,7 +61,7 @@ describe('useEffect', () => {
   });
 
   testInCtx('should create one action for each observable', () => {
-    useEffectHelper(() => {
+    effectHelper(() => {
       positive.value;
       negative.value;
     });
@@ -70,7 +70,7 @@ describe('useEffect', () => {
   });
 
   testInCtx('should call fn when subscribing', async () => {
-    useEffectHelper(() => {
+    effectHelper(() => {
       spyP(positive.value);
     });
 
@@ -80,7 +80,7 @@ describe('useEffect', () => {
   });
 
   testInCtx('should call fn asynchronously', async () => {
-    useEffectHelper(() => {
+    effectHelper(() => {
       spyP(positive.value);
     });
     spyP.mockReset();
@@ -94,7 +94,7 @@ describe('useEffect', () => {
   });
 
   testInCtx('should call once when dependencies change', async () => {
-    useEffectHelper(() => {
+    effectHelper(() => {
       spyP(positive.value);
       spyN(negative.value);
     });
@@ -140,7 +140,7 @@ describe('useEffect', () => {
   });
 
   testInCtx('should unsubscribe', async () => {
-    const dispose = useEffect(() => {
+    const dispose = effect(() => {
       positive.value;
       negative.value;
     });
@@ -159,13 +159,13 @@ describe('useEffect', () => {
     await testRunTwice(2);
   });
 
-  function useEffectHelper(fn: VoidFunction) {
-    const dispose = useEffect(fn);
+  function effectHelper(fn: VoidFunction) {
+    const dispose = effect(fn);
     disposables.push(dispose);
   }
 
   async function testRunTwice(secondValue: number) {
-    useEffectHelper(() => {
+    effectHelper(() => {
       spyP(positive.value);
     });
     spyP.mockReset();
@@ -181,11 +181,11 @@ describe('useEffect', () => {
   }
 
   async function testNotDuplicating(setValue: VoidFunction, expectations: VoidFunction) {
-    useEffectHelper(() => {
+    effectHelper(() => {
       negative.setValue(-positive.value);
       spyN(negative.value);
     });
-    useEffectHelper(() => {
+    effectHelper(() => {
       positive.setValue(negative.value);
       spyP(positive.value);
     });

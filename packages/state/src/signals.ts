@@ -110,8 +110,7 @@ export const signal: UseSignal = <T>(initialValue: T) => {
   return state;
 };
 
-export const useEffect: UseEffect = (fn: VoidFunction) => {
-  //TODO: Rename to effect
+export const effect: UseEffect = (fn: VoidFunction) => {
   const subscription = subscribe(fn, produceEffectAction);
   return () => subscription.unsubscribe();
 };
