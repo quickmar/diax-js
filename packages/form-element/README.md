@@ -1,6 +1,6 @@
 # `@diax-js/form-element`
 
-Base implementation of custom element that can be associated with forms.
+Base implementation of element that can be associated with forms.
 
 # How to use
 
@@ -13,7 +13,9 @@ Component definition:
 ### 1. Using Decorators:
 
 ```
-    import {FormElement} from '@diax-js/form-element'
+    import { FormElement } from '@diax-js/form-element';
+    import { useHost } from '@diax/context/host';
+    
 
     @FormElement('my-element')
     class MyFormElement {

@@ -2,29 +2,17 @@
 
 `Diax` a library for creating Web Components with extended capabilities and clean API.
 
-# Problem it is addressed
+# Problem diax aim to solve
+Developing modern web page often require of shearing data between parts of the page and updates of UI based on user interaction. To meet these requirements there is a need to deliver more JavaSpript to the page, but nature of software is that it is growing over time. These phenomena require encapsulation as it allows dividing softer in to smaller pieces that are better manageable, extendable and composable. 
 
-### Context based behavior
+Web Components are solution for that. They let attach custom JavaScript to its definition, so it creates encapsulation and increase manageability. They are HTML Nodes, so they are composable. Last but not least they are pure JavaScript classes, so they are extendable.
 
-While developing HTML page often we would like to configure some behavior of component based on it parents. This means that parents are creating some context in witch our component exists and can derive behavior. <br>
+Even all positive aspect that Web Components brings to the Web there are improvements which can be addressed. 
+- Passing data between elements 
+- Reacting on user actions
+- Code extensibility
 
-Visual representation of context depended behavior:
-
-```
-<body>
-    <enabling-parent>
-        <my-form>
-            ... content is editable
-        </my-form>
-    </enabling-parent>
-
-    <disabling-parent>
-        <my-form>
-            ... content is not editable
-        </my-form>
-    </disabling-parent>
-</body>
-```
+<br>
 
 # How to use
 
@@ -35,32 +23,35 @@ Type in your console:
 and then create your first element simply by creating decorated class:
 
 ```
-@Element('first-element')
-class FirstElement {}
+@CustomElement('first-element')
+class FirstElement {
+
+    init() {
+        console.log("Hello");
+    }
+}
 ```
 
 This is all you need to do to define your first web component with `diax.js`.
 
 # Features of custom elements by `diax.js`
 
-### Comparing to native solution provide simpler API surface
-
+### Signal based client rendering
 ```
-// Native element
-class MyElement extends HTMLElement{
-    constructor() {
-        // check autocomplete - lot of noise from HTMLElement
-    }
-}
+    @RenderingElement('my-element')
+    class MyRenderingElement {
+        name = signal('');
 
+        constructor() {
+            attachEventLister('dblclick', () => {
+               this.name.setValue('My Rendering Element');
+            })
+        }
 
-// diax.js
-@Element('my-element')
-class MyElement {
-    constructor() {
-        // check autocomplete - empty result, as nothing has been defined
+        render() {
+            return html`${this.name.value}`
+        }
     }
-}
 ```
 
 ### Dependency Injection like system
@@ -71,18 +62,38 @@ class Service {}
 
 ...
 
-@Element('my-element')
+@CustomElement('my-element')
 class MyElement {
     service = useSelf(Service); // instantiate service and dependencies
 }
 
 ```
 
+### Comparing to native solution provide simpler API surface
+
+```
+// Native element
+class MyElement extends HTMLElement{
+    constructor() {
+        // all properties from HTMLElement are visible in autocomplete
+    }
+}
+
+
+// diax.js
+@CustomElement('my-element')
+class MyElement {
+    constructor() {
+        // check autocomplete - empty result, as MyElement is pure JS class
+    }
+}
+```
+
 ### Specialized element implementations
 
 ```
 // act as basic Custom Element
-@Element('base-element')
+@CustomElement('base-element')
 class BaseElement {}
 
 <base-element>
@@ -115,49 +126,32 @@ class RenderingElement {
 </rendering-element>
 ```
 
-### Powerful extendibility
+### Powerful extensibility
 
 Extending your code can be by inheritance or by composition. It is up to you how to maintain and extend your code.
 
-- inheritance
+- Inheritance
 
 ```
-@Element('base-element')
+@CustomElement('base-element')
 class BaseElement {
     // some base logic
 }
 
-@Element('base-element-child')
+@CustomElement('base-element-child')
 class BaseElementChild extends BaseElement{}
 ```
 
-- composition
+- Composition
 
 ```
-@Element('base-element')
+@CustomElement('base-element')
 class BaseElement {
     // some base logic
 }
 
-@Element('base-element-child')
+@CustomElement('base-element-child')
 class BaseElementChild {
     baseElement = useSelf(BaseElement);
 }
 ```
-
-### Signal based client rendering
-
-    @RenderingElement('my-element')
-    class MyRenderingElement {
-        name = signal('');
-
-        constructor() {
-            attachEventLister('dblclick', () => {
-               this.name.value = 'My Rendering Element';
-            })
-        }
-
-        render() {
-            return html`${this.name.value}`
-        }
-    }

@@ -13,10 +13,10 @@ Component definition:
 ### 1. Using Decorators:
 
 ```
-    import {Element} from '@diax-js/custom-element'
+    import { CustomElement } from '@diax-js/custom-element'
     import { attachListener } from '@diax/context/host';
 
-    @Element('my-element')
+    @CustomElement('my-element')
     class MyElement {
 
         name = 'My Element'

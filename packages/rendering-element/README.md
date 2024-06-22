@@ -1,6 +1,6 @@
 # `@diax-js/rendering-element`
 
-Base implementation of custom element that can render content.
+Base implementation of element that can render content.
 
 # How to use
 
@@ -13,10 +13,10 @@ Component definition:
 ### 1. Using Decorators:
 
 ```
-    import {RenderingElement} from '@diax-js/rendering-element'
+    import { RenderingElement } from '@diax-js/rendering-element'
     import { html } from '@diax/rendering-element/uhtml';
-    import { signal } from '@diax/state';
-    import { attachListener, useHost } from '@diax/context/host';
+    import { signal, attribute } from '@diax/state';
+    import { attachListener } from '@diax/context/host';
 
     @RenderingElement('my-element')
     class MyRenderingElement {
@@ -24,15 +24,13 @@ Component definition:
             return ['data-nick'];
         }
 
-        host = useHost();
-
         name = signal('');
         nick = attribute('data-nick');
 
         constructor() {
 
             attachEventLister('dblclick', () => {
-               this.name.value = 'My Rendering Element';
+               this.name.setValue('My Rendering Element');
             })
         }
 
@@ -40,6 +38,20 @@ Component definition:
             return html`${this.name.value} has nick ${this.nick.value}`
         }
     }
+```
+
+### 2. Plain JS:
+
+```
+    import {getRenderingElementClass} from '@diax-js/rendering-element';
+
+    class MyFormElement {
+        ... as above
+    }
+
+    const HTMLCtor = getRenderingElementClass(MyFormElement);
+
+    customElements.define('my-element', HTMLCtor);
 ```
 
 ### Later in HTML:
