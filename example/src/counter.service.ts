@@ -1,7 +1,5 @@
 import { signal } from '@diax-js/state';
-import { useDocument } from '../../packages/context/dist/src/use-document';
-import { useSelf } from '../../packages/context/dist/src/use-self';
-import { useParent } from '@diax-js/context';
+import { useDocument, useParent, useSelf } from '@diax-js/context';
 
 export class CounterService {
   #count = signal(0);
@@ -25,10 +23,8 @@ useDocument(() => {
   useSelf(CounterService);
 });
 
-
 export function useCount() {
-    const instance = useParent(CounterService);
-    if (!instance) throw new Error('useCount must be used within the context of a CounterService');
-    return instance;
-  }
-  
+  const instance = useParent(CounterService);
+  if (!instance) throw new Error('useCount must be used within the context of a CounterService');
+  return instance;
+}

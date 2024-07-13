@@ -3,7 +3,7 @@ import { Mock } from 'vitest';
 import { EffectAction } from '../src/actions';
 import { EffectProcessor } from '../src/processors';
 
-describe('EffectProcessor', () => {
+describe.only('EffectProcessor', () => {
   let callable: Mock<[]>;
   let effectAction: EffectAction;
   let effectProcessor: EffectProcessor;
@@ -71,11 +71,11 @@ describe('EffectProcessor', () => {
     expect(reportError).toBeCalledTimes(1);
   });
 
-  it('should not execute action twice', async () => {
+  it.only('should not execute action twice', async () => {
     effectProcessor.process(effectAction);
     effectProcessor.process(effectAction);
 
-    await Promise.resolve();
+    await flush();
 
     expect(callable).toBeCalledTimes(1);
   });

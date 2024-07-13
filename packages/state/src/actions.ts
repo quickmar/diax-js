@@ -1,4 +1,5 @@
 import { Action, SubscriptionMode } from '@diax-js/common/state';
+import { Lockable } from '@diax-js/common/concurrent';
 import { useDocument, useSelf } from '@diax-js/context';
 import { useHost } from '@diax-js/context/host';
 import { ActionScheduler } from './action-scheduler';
@@ -9,13 +10,15 @@ useDocument(() => {
   scheduler = useSelf(ActionScheduler);
 });
 
-export abstract class AbstractAction implements Action {
+export abstract class AbstractAction implements Action, Lockable {
   protected close: boolean = false;
+  protected isLocked: boolean = false;
   #callable: VoidFunction;
 
   get call() {
     return this.#callable;
   }
+
   readonly subscriptionMode: SubscriptionMode;
 
   constructor(callable: VoidFunction, subscriptionMode: SubscriptionMode) {
@@ -23,10 +26,21 @@ export abstract class AbstractAction implements Action {
     this.subscriptionMode = subscriptionMode;
   }
 
+  lock(): void {
+    if (this.close) return;
+    this.isLocked = true;
+  }
+  
+  unlock(): void {
+    if (this.close) return;
+    this.isLocked = false;
+  }
+
   unsubscribe(): void {
     if (!this.close) {
       this.#callable = () => {};
       this.close = true;
+      this.isLocked = true;
     }
   }
 
@@ -39,7 +53,7 @@ export class EffectAction extends AbstractAction {
   }
 
   override schedule(): void {
-    if (!this.close) scheduler.scheduleEffect(this);
+    if (!this.close && !this.isLocked) scheduler.scheduleEffect(this);
   }
 }
 
@@ -51,7 +65,7 @@ export class RenderingAction extends AbstractAction {
   }
 
   override schedule(): void {
-    if (!this.close) scheduler.scheduleRender(this);
+    if (!this.close && !this.isLocked) scheduler.scheduleRender(this);
   }
 }
 
