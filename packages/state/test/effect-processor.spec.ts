@@ -71,11 +71,11 @@ describe.only('EffectProcessor', () => {
     expect(reportError).toBeCalledTimes(1);
   });
 
-  it.only('should not execute action twice', async () => {
+  it('should not execute action twice', async () => {
     effectProcessor.process(effectAction);
     effectProcessor.process(effectAction);
 
-    await flush();
+    await Promise.resolve();
 
     expect(callable).toBeCalledTimes(1);
   });

@@ -111,7 +111,7 @@ describe('effect', () => {
     expect(spyN).toBeCalledWith(-10);
   });
 
-  testInCtx.skip('should swap values to negative', async () => {
+  testInCtx('should swap values to negative', async () => {
     testNotDuplicating(
       () => {
         positive.setValue(10);
@@ -125,7 +125,7 @@ describe('effect', () => {
     );
   });
 
-  testInCtx.skip('should swap values to positive', async () => {
+  testInCtx('should swap values to positive', async () => {
     testNotDuplicating(
       () => {
         negative.setValue(-10);

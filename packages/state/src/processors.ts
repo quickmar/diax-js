@@ -1,9 +1,9 @@
-import { ActionProcessor as IActionProcessor } from '@diax-js/common/state';
-import { AbstractAction, ComputationAction, EffectAction, RenderingAction } from './actions';
+import { Action, ActionProcessor as IActionProcessor, LockableAction } from '@diax-js/common/state';
+import { ComputationAction, EffectAction, RenderingAction } from './actions';
 import { Queue } from './util/queue';
 import { CountLock } from './util/lock';
 
-export abstract class ActionProcessor<T extends AbstractAction> implements IActionProcessor<T> {
+export abstract class ActionProcessor<T extends Action> implements IActionProcessor<T> {
   abstract process(action: T): void;
 
   protected abstract execute(): void;
@@ -15,13 +15,11 @@ export abstract class ActionProcessor<T extends AbstractAction> implements IActi
       action.call();
     } catch (err) {
       reportError(err);
-    } finally {
-      action.unlock();
     }
   }
 }
 
-abstract class AbstractEffectProcessor<T extends AbstractAction> extends ActionProcessor<T> {
+abstract class AbstractEffectProcessor<T extends LockableAction> extends ActionProcessor<T> {
   protected actionsQueue: Queue<T> = new Queue();
   protected countLock: CountLock = new CountLock();
 
@@ -41,9 +39,14 @@ abstract class AbstractEffectProcessor<T extends AbstractAction> extends ActionP
   protected override execute(): void {
     if (!this.countLock.isLocked) {
       const queue = this.getQueue();
+      const toUnlock: T[] = [];
       while (!queue.isEmpty()) {
-        this.callSafe(this.actionsQueue.dequeue());
+        const action = queue.dequeue();
+        toUnlock.push(action);
+        this.callSafe(action);
       }
+      toUnlock.forEach((a) => a.unlock());
+      toUnlock.length = 0;
     }
     this.countLock.unlock();
   }
