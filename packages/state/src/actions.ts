@@ -56,7 +56,7 @@ export class EffectAction extends AbstractAction {
   }
 
   override schedule(): void {
-    if (!this.close && !this.isLocked) scheduler.scheduleEffect(this);
+    if (!this.close) scheduler.scheduleEffect(this);
   }
 }
 
@@ -68,7 +68,7 @@ export class RenderingAction extends AbstractAction {
   }
 
   override schedule(): void {
-    if (!this.close && !this.isLocked) scheduler.scheduleRender(this);
+    if (!this.close) scheduler.scheduleRender(this);
   }
 }
 
