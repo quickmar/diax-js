@@ -37,6 +37,7 @@ abstract class AbstractEffectProcessor<T extends LockableAction> extends ActionP
   }
 
   protected override execute(): void {
+    this.countLock.unlock();
     if (!this.countLock.isLocked) {
       const queue = this.getQueue();
       const toUnlock: T[] = [];
@@ -48,7 +49,6 @@ abstract class AbstractEffectProcessor<T extends LockableAction> extends ActionP
       toUnlock.forEach((a) => a.unlock());
       toUnlock.length = 0;
     }
-    this.countLock.unlock();
   }
 }
 

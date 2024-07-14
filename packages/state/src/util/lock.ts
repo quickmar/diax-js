@@ -4,7 +4,7 @@ export class CountLock implements Lockable {
   #count = 0;
 
   get isLocked(): boolean {
-    return this.#count === 0;
+    return this.#count !== 0;
   }
 
   lock(): void {
