@@ -3,7 +3,7 @@ import { Mock } from 'vitest';
 import { EffectAction } from '../src/actions';
 import { EffectProcessor } from '../src/processors';
 
-describe.only('EffectProcessor', () => {
+describe('EffectProcessor', () => {
   let callable: Mock<[]>;
   let effectAction: EffectAction;
   let effectProcessor: EffectProcessor;

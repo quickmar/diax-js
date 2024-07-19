@@ -31,10 +31,10 @@ abstract class AbstractEffectProcessor<T extends LockableAction> extends ActionP
   protected abstract getQueue(): Queue<T>;
 
   protected put(action: T): void {
-    if (!action.isLocked) { // TODO: this one require investigation how this works. Just not sure why it helped.
+    if (!action.isLocked) { 
       this.actionsQueue.enqueue(action);
+      action.lock();
     }
-    action.lock();
     this.countLock.lock();
   }
 
