@@ -1,4 +1,4 @@
-import { signal } from '@diax-js/state';
+import { computed, effect, scheduled, signal } from '@diax-js/state';
 import { useDocument, useParent, useSelf } from '@diax-js/context';
 
 export class CounterService {
@@ -6,6 +6,24 @@ export class CounterService {
 
   get count() {
     return this.#count.value;
+  }
+
+  constructor() {
+    const sch = scheduled(() => {
+      const value = this.#count.value;
+
+      return new Promise<number>((resolve) => {
+        setTimeout(() => resolve(value), 1000);
+      });
+    });
+
+    const comp = computed(() => {
+      return sch.value * 2;
+    });
+
+    effect(() => {
+      console.log('scheduled', comp.value);
+    });
   }
 
   increment() {

@@ -1,5 +1,5 @@
 import { Lockable } from '../concurrent/model';
-import { Supplier } from '../model/common';
+import { AsyncSupplier, Supplier } from '../model/common';
 /**
  * UseSignal is a factory that returns {@link Signal}
  */
@@ -9,6 +9,11 @@ export type UseSignal = <T>(init: T) => Signal<T>;
  * UseAttribute is a factory that returns {@link AttributeSignal}
  */
 export type UseAttribute = (attribute: string) => AttributeSignal;
+
+/**
+ * UseSchedule is a factory that takes {@link AsyncSupplier} and returns {@link ReadonlySignal}.
+ */
+export type UseSchedule = <T>(supplier: AsyncSupplier<T>) => ReadonlySignal<T>;
 
 /**
  * UseComputed is a factory that takes {@link Supplier} and returns {@link ComputedSignal}.
@@ -68,6 +73,24 @@ export enum SubscriptionMode {
   EFFECT,
   COMPUTED,
   RENDER,
+  SCHEDULED,
+}
+
+/**
+ * Indicates state of given signal in context of concurrency.
+ */
+export enum SignalStatus {
+  WAITING,
+  RUNNING,
+  DONE,
+}
+
+/**
+ * SignalContext is a context that holds {@link SignalSubscription} and {@link ActionProcessor}.
+ */
+export interface SignalContext {
+  readonly subscription: SignalSubscription;
+  readonly actionProcessor: ActionProcessor<Action>;
 }
 
 /**

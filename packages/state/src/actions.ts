@@ -81,3 +81,13 @@ export class ComputationAction extends AbstractAction {
     if (!this.close) scheduler.scheduleComputation(this);
   }
 }
+
+export class ScheduledAction extends AbstractAction {
+  constructor(callable: VoidFunction) {
+    super(callable, SubscriptionMode.SCHEDULED);
+  }
+
+  override schedule(): void {
+    if (!this.close) scheduler.scheduleComputation(this);
+  }
+}

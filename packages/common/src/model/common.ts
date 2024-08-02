@@ -9,3 +9,5 @@ export interface Type<T> {
 }
 
 export type Supplier<T> = () => T;
+
+export type AsyncSupplier<T> = Supplier<Promise<T>>;
