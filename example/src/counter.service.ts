@@ -1,29 +1,30 @@
-import { computed, effect, scheduled, signal } from '@diax-js/state';
+import { scheduled, signal } from '@diax-js/state';
 import { useDocument, useParent, useSelf } from '@diax-js/context';
+
+const flush = <T>(val: T, time: number = 1000) =>
+  new Promise<T>((resolve) => {
+    setTimeout(() => resolve(val), time);
+  });
 
 export class CounterService {
   #count = signal(0);
+  #scheduled = scheduled(async () => {
+    return await flush(this.#count.value);
+  });
+  #scheduled1 = scheduled(async () => {
+    return await flush(this.#scheduled.value, 2000);
+  });
 
   get count() {
     return this.#count.value;
   }
 
-  constructor() {
-    const sch = scheduled(() => {
-      const value = this.#count.value;
+  get scheduled() {
+    return this.#scheduled.value;
+  }
 
-      return new Promise<number>((resolve) => {
-        setTimeout(() => resolve(value), 1000);
-      });
-    });
-
-    const comp = computed(() => {
-      return sch.value * 2;
-    });
-
-    effect(() => {
-      console.log('scheduled', comp.value);
-    });
+  get scheduled1() {
+    return this.#scheduled1.value;
   }
 
   increment() {

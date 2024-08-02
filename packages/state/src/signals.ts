@@ -215,7 +215,7 @@ export const scheduled: UseSchedule = <T>(supplier: AsyncSupplier<T>) => {
       .then(setSignalValue)
       .then(
         () => _scheduled.resolve(),
-        () => _scheduled.reject,
+        () => _scheduled.reject(),
       );
   };
 
@@ -229,7 +229,8 @@ function trySubscribe(
   actionProvider: (callable: VoidFunction) => Action,
   context: Context,
 ): SignalSubscription & { status: SignalStatus; promise: Promise<unknown> } {
-  let subscription: ReturnType<typeof subscribe> | null = null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let subscription: any | null = null;
   let promise: Promise<unknown> = Promise.resolve();
   let status: SignalStatus = SignalStatus.RUNNING;
   try {
@@ -240,9 +241,9 @@ function trySubscribe(
     }
     status = SignalStatus.WAITING;
     promise = error.promise;
-    error.promise.then(() => {
+    error.promise.finally(() => {
       useContext(context, () => {
-        subscription = subscribe(callable, actionProvider);
+        subscription = trySubscribe(callable, actionProvider, context);
       });
     });
   }

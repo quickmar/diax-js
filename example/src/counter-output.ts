@@ -12,7 +12,8 @@ export class CounterOutput {
 
     effect(() => {
       if (!this.holder) return;
-      this.holder.value = String(useCount().count);
+      const count = useCount();
+      this.holder.value = String(count.scheduled1);
     });
   }
 }

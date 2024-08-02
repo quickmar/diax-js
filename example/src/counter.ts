@@ -10,9 +10,9 @@ export class Counter {
   constructor() {
     this.increment = this.increment.bind(this);
     this.decrement = this.decrement.bind(this);
-    const com = computed(() => this.countService.count);
+    const com = computed(() => this.countService.scheduled);
     effect(() => {
-      console.log('count', this.countService.count, com.value);
+      console.log('scheduled', com.value);
     });
   }
 
