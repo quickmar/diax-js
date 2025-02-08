@@ -17,7 +17,7 @@
     "@diax-js/context": "^0.2.0",
     "@diax-js/state": "^0.2.0",
     "@diax-js/custom-element": "^0.2.0",
-    "uhtml": "^4.4.7"
+    "uhtml": "^4.7.0"
   },
   "devDependencies": {
     "@diax-js/test": "../test"
