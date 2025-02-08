@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createTaskCollector, getCurrentSuite } from 'vitest/suite';
+import { getElementClass } from '@diax-js/custom-element';
 import { CONTEXT, Context } from '@diax-js/common/context';
 import { useContext, getCurrentContext } from '@diax-js/context';
-import { getElementClass } from '@diax-js/custom-element';
 
-declare module 'vitest' {
+declare module '@vitest/runner' {
   export interface TestContext {
-    [CONTEXT]?: Context;
+    [CONTEXT]: Context;
   }
   export interface TaskContext {
     [CONTEXT]: Context;
@@ -51,7 +51,9 @@ export function useMockContext(fn: MockingFn): void {
  * Equivalent to {@link test} or {@link it} but runs in {@link useContext}.
  * Use it wit {@link useMockContext}
  */
-export const testInCtx = createTaskCollector(function (this: any, name, fn, timeout) {
+export const testInCtx = createTaskCollector(function (this: any, ...args) {
+  const [name] = args;
+  const fn = Array.from(args).find((arg) => typeof arg === 'function');
   getCurrentSuite().task(name, {
     ...this,
     meta: {
@@ -62,9 +64,9 @@ export const testInCtx = createTaskCollector(function (this: any, name, fn, time
       useContext(vitestCtx[CONTEXT], () => {
         result = fn(vitestCtx);
       });
+
       return result;
     },
-    timeout,
   });
 });
 
