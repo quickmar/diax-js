@@ -1,6 +1,6 @@
 {
   "name": "@diax-js/form-element",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Simple implementation of Form Associated Custom Elements.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,9 +9,9 @@
     "dist"
   ],
   "dependencies": {
-    "@diax-js/common": "^0.2.0",
-    "@diax-js/context": "^0.2.0",
-    "@diax-js/custom-element": "^0.2.0"
+    "@diax-js/common": "^0.3.0",
+    "@diax-js/context": "^0.3.0",
+    "@diax-js/custom-element": "^0.3.0"
   },
   "devDependencies": {
     "@diax-js/test": "../test"

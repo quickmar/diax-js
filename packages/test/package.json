@@ -1,7 +1,7 @@
 {
   "name": "@diax-js/test",
   "private": "true",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Unit test for Diax.",
   "main": "index.js",
   "files": [
