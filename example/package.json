@@ -1,0 +1,23 @@
+{
+  "name": "example",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@diax/common": "../packages/common",
+    "@diax/context": "../packages/context",
+    "@diax/custom-element": "../packages/custom-element",
+    "@diax/form-element": "../packages/form-element",
+    "@diax/rendering-element": "../packages/rendering-element",
+    "@diax/state": "../packages/state"
+  },
+  "devDependencies": {
+    "typescript": "~5.7.2",
+    "vite": "^6.1.0"
+  }
+}

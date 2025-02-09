@@ -1,4 +1,4 @@
-import { Action, SubscriptionMode } from '@diax-js/common/state';
+import { LockableAction, SubscriptionMode } from '@diax-js/common/state';
 import { useDocument, useSelf } from '@diax-js/context';
 import { useHost } from '@diax-js/context/host';
 import { ActionScheduler } from './action-scheduler';
@@ -9,13 +9,19 @@ useDocument(() => {
   scheduler = useSelf(ActionScheduler);
 });
 
-export abstract class AbstractAction implements Action {
+export abstract class AbstractAction implements LockableAction {
   protected close: boolean = false;
   #callable: VoidFunction;
+  #isLocked = false;
+
+  get isLocked(): boolean {
+    return this.#isLocked;
+  }
 
   get call() {
     return this.#callable;
   }
+
   readonly subscriptionMode: SubscriptionMode;
 
   constructor(callable: VoidFunction, subscriptionMode: SubscriptionMode) {
@@ -23,10 +29,21 @@ export abstract class AbstractAction implements Action {
     this.subscriptionMode = subscriptionMode;
   }
 
+  lock(): void {
+    if (this.close) return;
+    this.#isLocked = true;
+  }
+
+  unlock(): void {
+    if (this.close) return;
+    this.#isLocked = false;
+  }
+
   unsubscribe(): void {
     if (!this.close) {
       this.#callable = () => {};
       this.close = true;
+      this.lock();
     }
   }
 

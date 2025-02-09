@@ -1,5 +1,7 @@
-import { ActionProcessor as IActionProcessor, Action } from '@diax-js/common/state';
+import { Action, ActionProcessor as IActionProcessor, LockableAction } from '@diax-js/common/state';
 import { ComputationAction, EffectAction, RenderingAction } from './actions';
+import { Queue } from './util/queue';
+import { CountLock } from './util/lock';
 
 export abstract class ActionProcessor<T extends Action> implements IActionProcessor<T> {
   abstract process(action: T): void;
@@ -17,24 +19,38 @@ export abstract class ActionProcessor<T extends Action> implements IActionProces
   }
 }
 
-abstract class AbstractEffectProcessor<T extends Action> extends ActionProcessor<T> {
-  protected actions: Set<T> = new Set();
-  protected actionCounter = 0;
+abstract class AbstractEffectProcessor<T extends LockableAction> extends ActionProcessor<T> {
+  protected actionsQueue: Queue<T> = new Queue();
+  protected countLock: CountLock = new CountLock();
 
   constructor() {
     super();
     this.execute = this.execute.bind(this);
   }
 
+  protected abstract getQueue(): Queue<T>;
+
   protected put(action: T): void {
-    this.actionCounter++;
-    this.actions.add(action);
+    if (!action.isLocked) { 
+      this.actionsQueue.enqueue(action);
+      action.lock();
+    }
+    this.countLock.lock();
   }
 
-  protected reassignActions(): void {
-    const actions = this.actions;
-    this.actions = new Set();
-    requestIdleCallback(() => actions.clear());
+  protected override execute(): void {
+    this.countLock.unlock();
+    if (!this.countLock.isLocked) {
+      const queue = this.getQueue();
+      const toUnlock: T[] = [];
+      while (!queue.isEmpty()) {
+        const action = queue.dequeue();
+        toUnlock.push(action);
+        this.callSafe(action);
+      }
+      toUnlock.forEach((a) => a.unlock());
+      toUnlock.length = 0;
+    }
   }
 }
 
@@ -72,19 +88,13 @@ export class ComputationProcessor extends ActionProcessor<ComputationAction> {
 }
 
 export class EffectProcessor extends AbstractEffectProcessor<EffectAction> {
-  protected override execute(): void {
-    if (this.actionCounter === 1) {
-      for (const action of this.actions) {
-        this.callSafe(action);
-      }
-      this.reassignActions();
-    }
-    this.actionCounter--;
-  }
-
   override process(action: EffectAction): void {
     this.put(action);
     queueMicrotask(this.execute);
+  }
+
+  protected override getQueue(): Queue<EffectAction> {
+    return this.actionsQueue;
   }
 }
 
@@ -99,24 +109,16 @@ export class RenderingProcessor extends AbstractEffectProcessor<RenderingAction>
     super.put(action);
   }
 
-  protected override execute(): void {
-    if (this.actionCounter === 1) {
-      this.isRendering = true;
-      for (const action of [...this.actions].sort(this.topologicalSort)) {
-        if (action.host.isConnected) this.callSafe(action);
-      }
-      this.reassignActions();
-      this.isRendering = false;
-    }
-    this.actionCounter--;
-  }
-
   override process(action: RenderingAction): void {
     this.put(action);
     setTimeout(this.execute);
   }
 
-  private topologicalSort(a: RenderingAction, b: RenderingAction): number {
+  protected override getQueue(): Queue<RenderingAction> {
+    return this.actionsQueue.sorted(this.topologicalComparator);
+  }
+
+  private topologicalComparator(a: RenderingAction, b: RenderingAction): number {
     if (a === b) {
       return 0;
     }

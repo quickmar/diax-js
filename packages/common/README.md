@@ -1,10 +1,10 @@
 # `@diax-js/common`
 
-This package contains all general types definitions, symbols, interfaces ect. The definitions included in this package are used to develope other diax-js packages. 
+This package contains all general types-definitions, symbols, interfaces etc. The definitions included in this package are used to develop other diax-js packages. 
 
 # How to use
 
-Type in your console:
+Type in your terminal
 
 `npm i @diax-js/common`
 

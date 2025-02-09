@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test</title>
+</head>
+<!-- <script type="module" src="./index.ts"></script> -->
+
+<body>
+  <style>
+    main {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      column-gap: 200px;
+      row-gap: 200px;
+    }
+
+    test-rendering {
+      display: flex;
+    }
+  </style>
+  <main>
+    <counter-output>
+      Counter value = <input id="holder" type="text">
+    </counter-output>
+    <my-counter></my-counter>
+    <counter-output>
+      Counter value = <input id="holder" type="text">
+    </counter-output>
+  </main>
+  <script type="module" src="./src/counter.ts"></script>
+  <script type="module" src="./src/counter-output.ts"></script>
+
+</body>
+
+</html>

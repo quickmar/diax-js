@@ -1,10 +1,10 @@
 # `@diax-js/custom-element`
 
-Base implementation of custom element.
+This package provides implementation of custom element.
 
 # How to use
 
-Type in your console:
+Type in your terminal:
 
 `npm i @diax-js/custom-element`
 
@@ -13,21 +13,19 @@ Component definition:
 ### 1. Using Decorators:
 
 ```
-    import {Element} from '@diax-js/custom-element'
+    import { CustomElement } from '@diax-js/custom-element'
     import { attachListener } from '@diax/context/host';
 
-    @Element('my-element')
+    @CustomElement('my-element')
     class MyElement {
 
-        name = 'My Element'
+        private name = 'My Element'
 
         constructor() {
-            attachEventLister('dbclick', () => {
-                this.alert();
-            })
+            attachEventLister('dblclick', () => this.alert());
         }
 
-        alert() {
+        private alert() {
             alert(this.name);
         }
     }
@@ -39,7 +37,7 @@ Component definition:
     import {getElementClass} from '@diax-js/custom-element';
 
     class MyElement {
-        ... as above
+        ... definition of the class as above
     }
 
     const HTMLCtor = getElementClass(MyElement);
