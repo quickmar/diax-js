@@ -24,14 +24,11 @@ Component definition:
             return ['data-nick'];
         }
 
-        name = signal('');
-        nick = attribute('data-nick');
+        private name = signal('');
+        private nick = attribute('data-nick');
 
         constructor() {
-
-            attachEventLister('dblclick', () => {
-               this.name.setValue('My Rendering Element');
-            })
+            attachEventLister('dblclick', () => this.name.setValue('My Rendering Element'));
         }
 
         render() {
@@ -61,7 +58,7 @@ Component definition:
 
 ...later
 
-    <my-element>
+    <my-element data-nick="Signal">
         My Rendering Element has nick Signal
     </my-element>
 

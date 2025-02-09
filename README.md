@@ -2,13 +2,15 @@
 
 `Diax` a library for creating Web Components with extended capabilities and clean API.
 
-# Problem diax aim to solve
-Developing modern web page often require of shearing data between parts of the page and updates of UI based on user interaction. To meet these requirements there is a need to deliver more JavaSpript to the page, but nature of software is that it is growing over time. These phenomena require encapsulation as it allows dividing softer in to smaller pieces that are better manageable, extendable and composable. 
+#
+
+Developing modern web page often require of shearing data between parts of the page and updates of UI based on user interaction. To meet these requirements there is a need to deliver more JavaSpript to the page, but nature of software is that it is growing over time. These phenomena require encapsulation as it allows dividing softer in to smaller pieces that are better manageable, extendable and composable.
 
 Web Components are solution for that. They let attach custom JavaScript to its definition, so it creates encapsulation and increase manageability. They are HTML Nodes, so they are composable. Last but not least they are pure JavaScript classes, so they are extendable.
 
-Even all positive aspect that Web Components brings to the Web there are improvements which can be addressed. 
-- Passing data between elements 
+Even all positive aspect that Web Components brings to the Web there are improvements which can be addressed.
+
+- Passing data between elements
 - Reacting on user actions
 - Code extensibility
 
@@ -37,10 +39,11 @@ This is all you need to do to define your first web component with `diax.js`.
 # Features of custom elements by `diax.js`
 
 ### Signal based client rendering
+
 ```
     @RenderingElement('my-element')
     class MyRenderingElement {
-        name = signal('');
+        private name = signal('');
 
         constructor() {
             attachEventLister('dblclick', () => {
@@ -54,17 +57,17 @@ This is all you need to do to define your first web component with `diax.js`.
     }
 ```
 
-### Dependency Injection like system
+### Dependency Injection system
 
 ```
-// service
+// service class definition
 class Service {}
 
 ...
 
 @CustomElement('my-element')
 class MyElement {
-    service = useSelf(Service); // instantiate service and dependencies
+    private service = useSelf(Service); // instantiate service and dependencies
 }
 
 ```
@@ -73,9 +76,9 @@ class MyElement {
 
 ```
 // Native element
-class MyElement extends HTMLElement{
+class MyElement extends HTMLElement {
     constructor() {
-        // all properties from HTMLElement are visible in autocomplete
+        // autocomplete is proposing all properties inherited from HTMLElement class     
     }
 }
 
@@ -127,6 +130,24 @@ class RenderingElement {
 ```
 
 ### Powerful extensibility
+
+Demonstrates two primary methods of code extension in the framework:
+
+1. **Inheritance Pattern**
+    - Traditional class inheritance using `extends`
+    - Allows direct extension of base element functionality
+    - Maintains "is-a" relationship between parent and child elements
+
+2. **Composition Pattern**
+    - Uses `useSelf()` hook for component composition
+    - Implements "has-a" relationship between components
+    - Provides more flexible and modular approach to code reuse
+
+Both patterns support the `@CustomElement` decorator for element registration.
+
+Choose between:
+- Inheritance when you want to create specialized versions of base elements
+- Composition when you need more flexible component relationships or want to avoid tight coupling
 
 Extending your code can be by inheritance or by composition. It is up to you how to maintain and extend your code.
 

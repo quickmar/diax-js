@@ -1,10 +1,10 @@
 # `@diax-js/form-element`
 
-Base implementation of element that can be associated with forms.
+This package provides implementation of custom element that is designed to be associated with forms.
 
 # How to use
 
-Type in your console:
+Type in your terminal:
 
 `npm i @diax-js/form-element`
 

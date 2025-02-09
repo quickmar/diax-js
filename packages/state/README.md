@@ -1,15 +1,20 @@
 # `@diax-js/state`
 
-Base implementation of state primitive. In diax-js base state primitive are expressed as signals. Signals are base reactive primitives, which are use for modeling of state changes in frontend systems.
+The `state` package is base implementation of reactive state primitive.
+Base abstraction are `signals` witch allows for glitch free state propagation.
+This mechanism is widely adopted by frontend framework, because of the convenience of usage.
 
-In diax-js signals are implemented by:
+In diax-js signals are implemented by following primitives:
 
-- `signal` its value that can be changed over the time
-- `computed` it is `signal` which value depends on other `signal`'s value
-- `attribute` it's value depends on observed attribute in component definition
+- `signal` its represents value that can be changed over the time
+- `computed` it is `signal` which value, depends on other `signal`'s value
+- `attribute` it's value depends on observed attribute in custom element definition
 - `effect` it is a consumer of the value change in `signal`
 
-In diax-js state change propagation has defined order. Firstly the state of the signal is updated. Then all computed values are calculated. After all values are calculated, all effects are invoked. Effect could update state of some signals, so calculation may happen again. After all computed signals and effect run. All Rendering Elements are scheduled to render.
+In diax-js state change propagation has defined order. Firstly the state of the `signal` is updated. Then this updated is propagated to it dependencies like `computed`, `effect` or `rendering-element`. First all `computed` values are calculated synchronously and propagated as well. In this phase `effects` and `renders` are queued.
+After `computation` phase happen `effects` are invoked. It may happen that invocation of `effect` will update any `signal` causing `computation` and scheduling of `effects` and `renders` again. This process will be repeated until all the state is propagated.
+As a final step `rendering` happen. Where all queued invocation of `render` take place. This step must not cause other rendering.
+
 This is process is called state derivation and can be visualized as fallow:
 
 ```
@@ -52,16 +57,13 @@ Type in your console:
             return ['data-nick'];
         }
 
-        name = signal('My Rendering Element');
-        nick = attribute('data-nick');
-        nameAndNick = computed(() => `Name is @{this.name.value} and nick is #{this.nick.value}`)
+        private name = signal('My Rendering Element');
+        private nick = attribute('data-nick');
+        private nameAndNick = computed(() => `Name is @{this.name.value} and nick is #{this.nick.value}`)
 
         constructor() {
             effect(() => console.log(this.nick.value));
-
-            attachEventLister('dblclick', () => {
-                this.nick.setValue('Attribute signal');
-            })
+            attachEventLister('dblclick', () => this.nick.setValue('Attribute signal'));
         }
 
         render() {
