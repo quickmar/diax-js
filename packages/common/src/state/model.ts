@@ -90,10 +90,12 @@ export interface Action extends Subscription {
    */
   schedule(): void;
 }
+
 /**
  * {@link LockableAction} is a object that can be locked. It means that it will not propagate its state changes.
  */
 export interface LockableAction extends Action, Lockable {}
+
 /**
  * Subscription is a object that can unsubscribe.
  */

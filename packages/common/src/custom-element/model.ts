@@ -1,7 +1,6 @@
 import { ContextHTMLElement } from '../context/model';
 import { NoArgType } from '../model/common';
 
-
 /**
  * Interface representing features that can be disabled on an element.
  *
@@ -14,6 +13,7 @@ import { NoArgType } from '../model/common';
 export interface DisabledFeatures {
   readonly disabledFeatures: ('shadow' | 'internals')[];
 }
+
 /**
  * Represents a constructor interface for a custom element target with callback methods.
  * 
