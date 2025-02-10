@@ -1,0 +1,46 @@
+{
+  "name": "@diax-js/browser",
+  "version": "0.3.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@diax-js/common": "^0.3.0",
+    "@diax-js/context": "^0.3.0",
+    "@diax-js/custom-element": "^0.3.0",
+    "@diax-js/form-element": "^0.3.0",
+    "@diax-js/rendering-element": "0.3.0",
+    "@diax-js/state": "^0.3.0"
+  },
+  "scripts": {
+    "build": "tsc --build tsconfig.build.json --verbose",
+    "test": "vitest"
+  },
+  "keywords": [
+    "frontend",
+    "web",
+    "components",
+    "js",
+    "custom",
+    "element",
+    "rendering-element",
+    "rendering"
+  ],
+  "author": "Marek Miałkowski",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/quickmar/diax-js.git"
+  },
+  "bugs": {
+    "url": "hhttps://github.com/quickmar/diax-js/issues"
+  },
+  "homepage": "https://github.com/quickmar/diax-js/tree/main/packages/state"
+}
