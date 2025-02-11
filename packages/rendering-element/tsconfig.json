@@ -5,7 +5,7 @@
         "test",
         "./uhtml.d.ts",
         "./index.ts",
-        "./uhtml-rendering.ts",
+        "./uhtml.ts",
         "./package.json",
         "./LICENSE",
         "./README.md",

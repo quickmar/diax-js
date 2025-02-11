@@ -1,10 +1,9 @@
-import { CustomElement } from '@diax/custom-element';
-import { useHost } from '@diax-js/context/host';
-import { effect } from '@diax-js/state';
+import { CustomElement, useHost } from '@diax-js/browser';
+import { effect } from '@diax-js/browser/state';
 import { useCount } from './counter.service';
 
 @CustomElement('counter-output')
-export class CounterOutput {
+class CounterOutput {
   private holder?: HTMLInputElement;
 
   constructor() {
@@ -16,3 +15,5 @@ export class CounterOutput {
     });
   }
 }
+
+export default CounterOutput;

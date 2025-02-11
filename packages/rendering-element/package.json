@@ -7,7 +7,7 @@
   "module": "dist/index.js",
   "exports": {
     ".": "./dist/index.js",
-    "./uhtml": "./dist/uhtml-rendering.js"
+    "./uhtml": "./dist/uhtml.js"
   },
   "files": [
     "dist"

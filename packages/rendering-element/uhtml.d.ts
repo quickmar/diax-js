@@ -1,3 +1,3 @@
 declare module 'uhtml' {
-  export * from 'uhtml/types';
+  export * from 'uhtml';
 }

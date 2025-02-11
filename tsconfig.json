@@ -20,10 +20,10 @@
       "path": "./packages/state"
     },
     {
-      "path": "./packages/browser"
+      "path": "./packages/test"
     },
     {
-      "path": "./packages/test"
+      "path": "./packages/browser"
     }
   ],
 }

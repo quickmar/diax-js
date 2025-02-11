@@ -1,5 +1,5 @@
-import { signal } from '@diax-js/state';
-import { useDocument, useParent, useSelf } from '@diax-js/context';
+import { signal } from '@diax-js/browser/state';
+import { useDocument, useParent, useSelf } from '@diax-js/browser';
 
 export class CounterService {
   #count = signal(0);

@@ -1,10 +1,10 @@
-import { RenderingElement } from '@diax-js/rendering-element';
-import { html } from '@diax-js/rendering-element/uhtml';
-import { CounterService, useCount } from './counter.service';
-import { computed, effect } from '@diax/state';
+import { html, RenderingElement } from "@diax-js/browser";
+import { computed, effect } from "@diax-js/browser/state";
+import { CounterService, useCount } from "./counter.service";
+
 
 @RenderingElement('my-counter')
-export class Counter {
+class Counter {
   private countService: CounterService = useCount();
 
   constructor() {
@@ -31,3 +31,5 @@ export class Counter {
     `;
   }
 }
+
+export default Counter;

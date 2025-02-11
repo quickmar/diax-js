@@ -9,12 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@diax/common": "../packages/common",
-    "@diax/context": "../packages/context",
-    "@diax/custom-element": "../packages/custom-element",
-    "@diax/form-element": "../packages/form-element",
-    "@diax/rendering-element": "../packages/rendering-element",
-    "@diax/state": "../packages/state"
+    "@diax/browser": "../packages/browser"
   },
   "devDependencies": {
     "typescript": "~5.7.2",
