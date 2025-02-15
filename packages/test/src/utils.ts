@@ -84,7 +84,7 @@ export class MockContextTarget {
   }
 }
 
-export class MockContextElement extends getElementClass(MockContextTarget) {
+export class MockContextElement extends getElementClass(MockContextTarget, { observedAttributes: ['data-test'] }) {
   static {
     customElements.define('mock-context-element', this);
   }

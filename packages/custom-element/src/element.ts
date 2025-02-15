@@ -1,4 +1,4 @@
-import { CustomElementDecorator } from '@diax-js/common/custom-element';
+import { CustomElementDecorator } from '@diax-js/common/decorator';
 import { getElementClass } from './base-element';
 
 export function CustomElement(tagName: string): CustomElementDecorator {

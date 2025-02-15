@@ -16,7 +16,7 @@ describe('useSelf', () => {
   let instance: TestService;
 
   beforeEach(() => {
-    element = new MockContextElement();
+    element = new MockContextElement() as HTMLElement;
   });
 
   it('should create instance', () => {

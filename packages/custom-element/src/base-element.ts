@@ -1,16 +1,17 @@
 import { ContextHTMLElement, CONTEXT, Context } from '@diax-js/common/context';
 import { HTMLElementCallbacks, TargetConstructor, HTMLElementConstructor } from '@diax-js/common/custom-element';
-
 import { ElementContext, useElement, useSelf } from '@diax-js/context';
+import { CustomElementDecoratorMetadata, runMetadataHooks } from '@diax-js/common/decorator';
 
 export abstract class BaseElement<T> extends HTMLElement implements ContextHTMLElement, HTMLElementCallbacks {
   abstract readonly target: TargetConstructor<T>;
   [CONTEXT]: Context;
   protected component?: T;
 
-  constructor(metadata: DecoratorMetadataObject) {
+  constructor(metadata: CustomElementDecoratorMetadata) {
     super();
     this[CONTEXT] = new ElementContext(this, metadata);
+    runMetadataHooks(metadata, 'onHostCreated');
   }
 
   connectedCallback(): void {

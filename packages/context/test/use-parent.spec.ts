@@ -12,7 +12,7 @@ describe('useParent', () => {
   let elementInstance: ElementService;
 
   beforeEach(() => {
-    element = new MockContextElement();
+    element = new MockContextElement() as HTMLElement;
     element.innerHTML = `
         <mock-context-element id="a">
             <div id="b">

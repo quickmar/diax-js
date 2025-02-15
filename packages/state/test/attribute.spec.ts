@@ -9,7 +9,7 @@ describe('Attribute', () => {
 
   useMockContext(() => {
     host = getTestContext().host as HTMLElement;
-    a = attribute('data-unit-test');
+    a = attribute('data-test');
   });
 
   it('should create', () => {
@@ -21,7 +21,7 @@ describe('Attribute', () => {
   });
 
   it('should update signal value', () => {
-    host.setAttribute('data-unit-test', 'test');
+    host.setAttribute('data-test', 'test');
 
     expect(a.value).toBe('test');
   });
@@ -29,7 +29,7 @@ describe('Attribute', () => {
   it('should update host attribute', () => {
     a.setValue('test');
 
-    expect(host.getAttribute('data-unit-test')).toBe('test');
+    expect(host.getAttribute('data-test')).toBe('test');
   });
 
   it('should throw when attribute name is not defined in observed attributes', () => {

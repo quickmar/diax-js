@@ -2,6 +2,10 @@ import { CONTEXT, DI_TOKEN } from '@diax-js/common/context';
 import { BaseElement } from '../src/base-element';
 import { TestBaseElement, TestTarget } from './utils';
 
+const getComponent = (element: TestBaseElement) => {
+  return Reflect.get(element, 'component');
+};
+
 describe('BaseElement', () => {
   let element: TestBaseElement;
 
@@ -29,7 +33,7 @@ describe('BaseElement', () => {
   });
 
   it('should has target', () => {
-    expect(Reflect.has(TestBaseElement, 'target')).toBe(true);
+    expect(Reflect.has(element, 'target')).toBe(true);
   });
 
   it('should be instanceof BaseElement', () => {
@@ -41,13 +45,13 @@ describe('BaseElement', () => {
   });
 
   it('should not create instance', () => {
-    expect(element[CONTEXT].instance).not.toBeInstanceOf(TestTarget);
+    expect(getComponent(element)).not.toBeInstanceOf(TestTarget);
   });
 
   it('should create instance', () => {
     document.body.appendChild(element);
 
-    expect(element[CONTEXT].instance).toBeInstanceOf(TestTarget);
+    expect(getComponent(element)).toBeInstanceOf(TestTarget);
 
     element.remove();
   });
@@ -74,7 +78,7 @@ describe('BaseElement', () => {
   it('should call init', () => {
     document.body.appendChild(element);
 
-    expect(element[CONTEXT].instance.init).toBeCalledTimes(1);
+    expect(getComponent(element).init).toBeCalledTimes(1);
     element.remove();
   });
 
@@ -88,13 +92,13 @@ describe('BaseElement', () => {
   });
 
   it('should stub instance', () => {
-    const stubInstance1 = element[CONTEXT].instance;
+    const stubInstance1 = getComponent(element);
     document.body.appendChild(element);
 
-    const instance = element[CONTEXT].instance;
+    const instance = getComponent(element);
     document.body.removeChild(element);
 
-    const stubInstance2 = element[CONTEXT].instance;
+    const stubInstance2 = getComponent(element);
 
     expect(stubInstance1).not.toBe(stubInstance2);
     expect(stubInstance1).toEqual(stubInstance2);
@@ -104,7 +108,7 @@ describe('BaseElement', () => {
   it('should call attribute change callback', () => {
     const spy = vi.fn();
     const attributes = element[CONTEXT].attributes;
-    attributes['test-target'] = {
+    attributes['test-attribute'] = {
       setValue(value: string) {
         spy(value);
       },
@@ -115,7 +119,7 @@ describe('BaseElement', () => {
       },
     };
 
-    element.setAttribute('test-target', 'test');
+    element.setAttribute('test-attribute', 'test');
 
     expect(spy).toBeCalledTimes(1);
     expect(spy).toBeCalledWith('test');

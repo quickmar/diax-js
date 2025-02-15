@@ -5,6 +5,7 @@ import { produceRenderingAction, subscribe } from '@diax-js/state/support';
 import { BaseElement } from '@diax-js/custom-element';
 import { render, Hole } from 'uhtml';
 import { TargetConstructor } from '@diax-js/common/custom-element';
+import { CustomElementDecoratorMetadata } from '@diax-js/common/decorator';
 
 export abstract class BaseRenderingElement<R>
   extends BaseElement<RenderingTargetCallbacks<R>>
@@ -17,6 +18,10 @@ export abstract class BaseRenderingElement<R>
   private renderSubscription?: SignalSubscription;
 
   abstract render(result: R): void;
+
+  constructor(metadata: CustomElementDecoratorMetadata) {
+    super(metadata);
+  }
 
   override connectedCallback(): void {
     super.connectedCallback();
@@ -37,7 +42,7 @@ export abstract class BaseRenderingElement<R>
 
 export function getRenderingElementClass(
   target: TargetConstructor<RenderingTargetCallbacks<Hole>>,
-  metadata: DecoratorMetadataObject,
+  metadata: CustomElementDecoratorMetadata,
 ): RenderingElementConstructor<Hole> {
   return class extends BaseRenderingElement<Hole> {
     static get observedAttributes() {

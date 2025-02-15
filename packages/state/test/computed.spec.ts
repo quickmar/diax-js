@@ -8,8 +8,8 @@ describe('Computed', () => {
   let positive: Signal<number>;
   let negative: Signal<number>;
   let sum: ComputedSignal<number>;
-  let spyP: Mock<[number], number>;
-  let spyN: Mock<[number], number>;
+  let spyP: Mock;
+  let spyN: Mock;
 
   beforeAll(() => {
     vi.stubGlobal('requestIdleCallback', vi.fn());

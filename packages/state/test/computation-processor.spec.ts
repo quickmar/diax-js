@@ -5,7 +5,7 @@ import { ComputationProcessor } from '../src/processors';
 import { fail } from 'assert';
 
 describe('ComputationProcessor', () => {
-  let callable: Mock<[]>;
+  let callable: Mock;
   let computationAction: ComputationAction;
   let computationProcessor: ComputationProcessor;
 

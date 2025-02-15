@@ -1,33 +1,36 @@
-export const SHADOW_ROOT_INTI = Symbol('ShadowRootInit');
+import { CustomElementDecoratorMetadata } from './model';
 
-const AFTER_HOST_CREATED = Symbol('@@afterHostCreated');
+type HookKey = keyof Pick<CustomElementDecoratorMetadata, 'onHostCreated' | 'onConnected' | 'onDisconnected'>;
 
-function setMetadata(target: any, metadata: DecoratorMetadataObject) {
-  if (target[Symbol.metadata]) return;
-  Object.defineProperty(target, Symbol.metadata, {
-    value: metadata,
-    enumerable: false,
-  });
-}
-
-export function __addAfterHostFn(metadata: DecoratorMetadataObject, fn: VoidFunction): void {
-  if (typeof fn === 'function') return;
-  let runnables = metadata[AFTER_HOST_CREATED] as VoidFunction[];
-  if (!runnables) {
-    runnables = [];
-    metadata[AFTER_HOST_CREATED] = runnables;
+/**
+ * Executes metadata hooks defined in the given metadata object.
+ *
+ * This function retrieves the hooks from the metadata object using the specified key.
+ * It checks if the hooks exist and are stored in an array. Then, each hook is invoked
+ * with the entire metadata object as its argument. If a hook throws an error during its
+ * execution, the error is caught and passed to the reportError function.
+ *
+ * @param metadata - The metadata object that may contain an array of hooks.
+ * @param key - The key of the metadata object where the hooks array is stored.
+ */
+export function runMetadataHooks(metadata: DecoratorMetadataObject, key: HookKey): void {
+  const hooks = metadata[key];
+  if (!hooks || !Array.isArray(hooks)) {
+    return;
   }
-  runnables.push(fn);
-}
-
-export function __processAfterHostFNs(metadata: DecoratorMetadataObject) {
-  let runnables = metadata[AFTER_HOST_CREATED] as VoidFunction[];
-  if (!runnables) return;
-  while (runnables.length > 0) {
+  for (const hook of hooks) {
     try {
-      runnables.pop()?.();
-    } catch (e) {
-      reportError(e);
+      hook(metadata);
+    } catch (error) {
+      reportError(error);
     }
   }
+}
+
+export function addMetadataHook(metadata: DecoratorMetadataObject, key: HookKey, hook: VoidFunction): void {
+  let hooks = metadata[key] as VoidFunction[];
+  if (!hooks) {
+    metadata[key] = [];
+  }
+  hooks.push(hook);
 }

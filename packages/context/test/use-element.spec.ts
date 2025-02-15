@@ -3,10 +3,10 @@ import { useHost } from '../src/host/use-host';
 import { MockContextElement } from '@diax-js/test';
 
 describe('useElement', () => {
-  let element: Element;
+  let element: HTMLElement;
 
   beforeEach(() => {
-    element = new MockContextElement();
+    element = new MockContextElement() as HTMLElement;
   });
 
   it('should use element context', () => {

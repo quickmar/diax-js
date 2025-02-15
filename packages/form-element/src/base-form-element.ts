@@ -1,5 +1,6 @@
 import { TargetConstructor } from '@diax-js/common/custom-element';
 import { FormElement, FormElementCallbacks, FormElementConstructor } from '@diax-js/common/form-element';
+import { CustomElementDecoratorMetadata } from '@diax-js/common/decorator';
 import { useElement, useSupplier } from '@diax-js/context';
 import { BaseElement } from '@diax-js/custom-element';
 
@@ -10,7 +11,7 @@ export abstract class BaseFormElement<T> extends BaseElement<T> implements FormE
 
   #internals!: ElementInternals;
 
-  constructor(metadata: DecoratorMetadataObject) {
+  constructor(metadata: CustomElementDecoratorMetadata) {
     super(metadata);
     useElement(this, () => {
       this.#internals = useSupplier(ElementInternals, () => this.attachInternals());
@@ -64,7 +65,7 @@ export abstract class BaseFormElement<T> extends BaseElement<T> implements FormE
 
 export function getFormElementClass<T>(
   target: TargetConstructor<T>,
-  metadata: DecoratorMetadataObject,
+  metadata: CustomElementDecoratorMetadata,
 ): FormElementConstructor {
   return class extends BaseFormElement<T> {
     static get observedAttributes() {

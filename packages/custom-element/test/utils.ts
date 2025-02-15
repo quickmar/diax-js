@@ -1,7 +1,6 @@
-import { TargetCallbacks } from '@diax-js/common/custom-element';
 import { getElementClass } from '../index';
 
-export class TestTarget implements TargetCallbacks {
+export class TestTarget {
   static get observedAttributes() {
     return ['test-target'];
   }
@@ -15,7 +14,7 @@ export class TestTarget implements TargetCallbacks {
   adopt = vi.fn();
 }
 
-export class TestBaseElement extends getElementClass(TestTarget) {
+export class TestBaseElement extends getElementClass(TestTarget, { observedAttributes: ['test-attribute'] }) {
   static {
     customElements.define('test-base-element', this);
   }

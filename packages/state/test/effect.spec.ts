@@ -8,8 +8,8 @@ describe('effect', () => {
   let positive: Signal<number>;
   let negative: Signal<number>;
   let disposables: VoidFunction[];
-  let spyP: Mock<[number]>;
-  let spyN: Mock<[number]>;
+  let spyP: Mock;
+  let spyN: Mock;
 
   beforeAll(() => {
     vi.stubGlobal('requestIdleCallback', vi.fn());

@@ -4,7 +4,7 @@ import { EffectAction } from '../src/actions';
 import { EffectProcessor } from '../src/processors';
 
 describe('EffectProcessor', () => {
-  let callable: Mock<[]>;
+  let callable: Mock;
   let effectAction: EffectAction;
   let effectProcessor: EffectProcessor;
 

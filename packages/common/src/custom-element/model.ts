@@ -38,7 +38,7 @@ export interface TargetConstructor<T> extends NoArgType<T> {
  *
  * @extends NoArgType<ContextHTMLElement & HTMLElementCallbacks>
  */
-export interface HTMLElementConstructor<T = object> extends NoArgType<T & ContextHTMLElement & HTMLElementCallbacks> {
+export interface HTMLElementConstructor<T = object> extends NoArgType<ContextHTMLElement & HTMLElementCallbacks> {
   readonly observedAttributes?: string[];
   readonly disabledFeatures?: string[];
 }
@@ -60,12 +60,3 @@ export interface HTMLElementCallbacks {
   attributeChangedCallback(name: string, oldValue: unknown, newValue: unknown): void;
   adoptedCallback(): void;
 }
-
-/**
- * A decorator function that defines a custom element.
- *
- * @param tagName - The name of the custom element
- *
- * @returns A decorator function that defines the custom element
- */
-export type CustomElementDecorator = <T>(target: NoArgType<T>, context: ClassDecoratorContext) => void;

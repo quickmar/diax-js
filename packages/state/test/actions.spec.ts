@@ -5,10 +5,12 @@ import { ComputationAction, EffectAction, RenderingAction } from '../src/actions
 import { MockInstance } from 'vitest';
 import { useMockContext } from '@diax-js/test';
 
+type ProcessorSpy<T extends Action> = MockInstance<(action: T) => void>;
+
 describe('Actions', () => {
-  let computationProcessor: MockInstance<[ComputationAction], void>;
-  let effectProcessor: MockInstance<[EffectAction], void>;
-  let renderingProcessor: MockInstance<[RenderingAction], void>;
+  let computationProcessor: ProcessorSpy<ComputationAction>;
+  let effectProcessor: ProcessorSpy<EffectAction>;
+  let renderingProcessor: ProcessorSpy<RenderingAction>;
 
   beforeAll(() => {
     useDocument(() => {
