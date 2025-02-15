@@ -1,9 +1,11 @@
-import { RenderingElementDecorator } from "@diax-js/common/rendering";
-import { getRenderingElementClass } from "./base-rendering-element";
-import { Hole } from "uhtml";
+import { RenderingElementDecorator } from '@diax-js/common/rendering';
+import { getRenderingElementClass } from './base-rendering-element';
+import { Hole } from 'uhtml';
 
 export function RenderingElement(tagName: string): RenderingElementDecorator<Hole> {
-    return function (target) {
-      customElements.define(tagName, getRenderingElementClass(target));
-    };
-  }
+  return function (target, { addInitializer, metadata }) {
+    addInitializer(() => {
+      customElements.define(tagName, getRenderingElementClass(target, metadata));
+    });
+  };
+}

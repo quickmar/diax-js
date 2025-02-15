@@ -1,22 +1,17 @@
 import { TargetConstructor } from '@diax-js/common/custom-element';
-import {
-  FormElement,
-  FormElementCallbacks,
-  FormElementConstructor,
-  FormTargetCallbacks,
-} from '@diax-js/common/form-element';
+import { FormElement, FormElementCallbacks, FormElementConstructor } from '@diax-js/common/form-element';
 import { useElement, useSupplier } from '@diax-js/context';
 import { BaseElement } from '@diax-js/custom-element';
 
-export class BaseFormElement extends BaseElement<FormTargetCallbacks> implements FormElementCallbacks, FormElement {
+export abstract class BaseFormElement<T> extends BaseElement<T> implements FormElementCallbacks, FormElement {
   static get formAssociated(): true {
     return true;
   }
 
   #internals!: ElementInternals;
 
-  constructor() {
-    super();
+  constructor(metadata: DecoratorMetadataObject) {
+    super(metadata);
     useElement(this, () => {
       this.#internals = useSupplier(ElementInternals, () => this.attachInternals());
     });
@@ -47,34 +42,41 @@ export class BaseFormElement extends BaseElement<FormTargetCallbacks> implements
   }
   formAssociatedCallback(form: HTMLFormElement): void {
     useElement(this, () => {
-      this.instance.formAssociatedCallback?.(form);
+      // TODO: Implement formAssociatedCallback
     });
   }
   formDisabledCallback(disabled: boolean): void {
     useElement(this, () => {
-      this.instance.formDisabledCallback?.(disabled);
+      // TODO: Implement formDisabledCallback
     });
   }
   formResetCallback(): void {
     useElement(this, () => {
-      this.instance.formResetCallback?.();
+      // TODO: Implement formResetCallback
     });
   }
   formStateRestoreCallback(state: unknown, reason: 'autocomplete' | 'restore'): void {
     useElement(this, () => {
-      this.instance.formStateRestoreCallback?.(state, reason);
+      // TODO: Implement formStateRestoreCallback
     });
   }
 }
 
-export function getFormElementClass(target: TargetConstructor<FormTargetCallbacks>): FormElementConstructor {
-  return class extends BaseFormElement {
+export function getFormElementClass<T>(
+  target: TargetConstructor<T>,
+  metadata: DecoratorMetadataObject,
+): FormElementConstructor {
+  return class extends BaseFormElement<T> {
     static get observedAttributes() {
       return target.observedAttributes;
     }
 
-    static get target() {
+    get target() {
       return target;
+    }
+
+    constructor() {
+      super(metadata);
     }
   };
 }

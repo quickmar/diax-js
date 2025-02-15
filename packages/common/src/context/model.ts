@@ -1,85 +1,76 @@
+/**
+ * @fileoverview This module defines the core interfaces and symbols necessary for implementing a dependency injection system that also manages state and behavior for DOM elements.
+ *
+ * It includes:
+ * - The CONTEXT symbol, used to attach a Context instance to DOM nodes or elements.
+ * - The Context interface, which encapsulates the state and behavior associated with a specific host HTMLElement, including attribute management, subscription modes, observables, and cleanup via the Cleanable interface.
+ * - The Dependencies interface, responsible for managing dependency injection instances with methods to get, set, check, and remove dependency instances.
+ * - Extended interfaces for Node, Element, and HTMLElement (ContextNode, ContextElement, ContextHTMLElement) to include the Context property.
+ * - The DI_TOKEN symbol and Token interface, which represent and uniquely identify tokens for dependency injection.
+ *
+ * @remarks
+ * All interfaces extend the Cleanable interface to ensure that resources can be properly released when they are no longer needed.
+ */
+
 import { Cleanable } from '../destroying/model';
-import { TargetCallbacks } from '../custom-element/model';
 import { Type } from '../model/common';
 import { SubscriptionMode, Signal, Subscription } from '../state/model';
 
-/**
- * The symbol for the context @link Context.
- *
- * @constant {Symbol} CONTEXT
- */
 export const CONTEXT = Symbol.for('@@context');
 
 /**
- * The Context interface is responsible for managing the state and lifecycle of UI components or other entities in diax-js based components.
- * Context is attached to the host element of the component and it is used as a free ubound variable for synchronous function stack.
- * Those functions are selected from HTMLElement lifecycle methods, event handlers etc. and acts as as a root function stack. 
- * All children stacks are attached to the context and they have access to the context. 
- * 
- * @template T - The type of the target callbacks.
+ * Represents a context holding state and behavior for an instance of type T.
  *
- * @interface Context
- * @extends {Cleanable}
+ * This interface provides an encapsulation for managing attributes and subscriptions
+ * associated with a given host element in the DOM. It extends the Cleanable interface,
+ * ensuring that any resources can be freed when they are no longer needed.
  *
- * @property {HTMLElement} host - The host element of the context.
- * @property {Set<string>} observedAttributes - The set of observed attributes.
- * @property {Record<string, Signal<string> | null>} attributes - The record of attributes.
- * @property {T} instance - The instance of the target callbacks.
- * @property {SubscriptionMode | null} subscriptionMode - The subscription mode of the context.
- * @property {Set<Signal<unknown>>} observables - The set of observables.
- * @property {Set<Subscription>} ownedSubscriptions - The set of owned subscriptions.
- * @property {Dependencies} dependencies - The dependencies of the context.
-
+ * @typeparam T - The type of the instance associated with this context.
+ *
+ * @property host - The HTMLElement that acts as the host for this context.
+ * @property observedAttributes - A set of attribute names that are being observed.
+ * @property attributes - A collection of attributes mapped to their corresponding signals or null.
+ * @property instance - The instance of type T that this context encapsulates.
+ * @property subscriptionMode - The current subscription mode, or null if not set.
+ * @property observables - A set of signals representing observable values.
+ * @property ownedSubscriptions - A set of subscriptions owned by this context, used for cleanup.
+ * @property dependencies - External dependencies required by this context.
+ *
+ * @method destroy - Cleans up all associated resources for this context.
  */
-export interface Context<T extends TargetCallbacks = TargetCallbacks> extends Cleanable {
+export interface Context extends Cleanable {
   readonly host: HTMLElement;
   readonly observedAttributes: Set<string>;
   attributes: Record<string, Signal<string> | null>;
-  instance: T;
   subscriptionMode: SubscriptionMode | null;
   observables: Set<Signal<unknown>>;
   ownedSubscriptions: Set<Subscription>;
   dependencies: Dependencies;
-  /**
-   * The destroy method is responsible for destroying the context.
-   */
+
   destroy(): void;
 }
 
 /**
- * The Dependencies interface is responsible for managing the instances of dependencies.
+ * Represents a container for managing dependency instances with the ability to clean up resources.
+ *
+ * This interface extends Cleanable to ensure that any resources held by the dependencies
+ * can be properly disposed of when no longer needed. It provides methods to interact with
+ * dependency instances associated with specific tokens.
+ *
+ * @remarks
+ * The dependencies container encapsulates the logic for storing, retrieving, checking,
+ * and removing instances by their respective tokens, allowing for flexible and type-safe
+ * dependency management.
  *
  * @interface Dependencies
- * @extends {Cleanable}
  */
 export interface Dependencies extends Cleanable {
-  /**
-   * The getInstance method is responsible for retrieving the instance of the dependency.
-   * @param token - The token of the dependency.
-   * @returns The instance of the dependency.
-   */
   getInstance<T>(token: Token<T>): T;
 
-  /**
-   * The setInstance method is responsible for setting the instance of the dependency.
-   * @param token - The token of the dependency.
-   * @param instance - The instance of the dependency.
-   */
   setInstance<T>(token: Token<T>, instance: T | null): void;
 
-  /**
-   * The hasInstance method is responsible for checking whether the dependency has instance.
-   * 
-   * @param token - The token of the dependency.
-   * @returns Whether the dependency has instance.
-   */
   hasInstance<T>(token: Token<T>): boolean;
 
-  /**
-   * The removeInstance method is responsible for removing the instance of the dependency.
-   *
-   * @param token - The index of the dependency.
-   */
   removeInstance<T>(token: Token<T>): void;
 }
 

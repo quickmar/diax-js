@@ -1,5 +1,4 @@
 import { CONTEXT, Context, Dependencies } from '@diax-js/common/context';
-import { TargetCallbacks } from '@diax-js/common/custom-element';
 import { Signal, Subscription } from '@diax-js/common/state';
 import { BaseDependencies } from './element-context';
 
@@ -29,7 +28,6 @@ export class DocumentContext implements Context {
     throw Error('Document Context has no reactive attributes.');
   }
 
-  readonly instance: TargetCallbacks = {};
   readonly dependencies: Dependencies = new BaseDependencies();
   observables = new Set<Signal<unknown>>();
   ownedSubscriptions: Set<Subscription> = new Set();

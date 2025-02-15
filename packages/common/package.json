@@ -13,7 +13,8 @@
     "./form-element": "./dist/form-element.js",
     "./rendering": "./dist/rendering.js",
     "./state": "./dist/state.js",
-    "./support": "./dist/support.js"
+    "./support": "./dist/support.js",
+    "./decorator": "./dist/decorator.js"
   },
   "files": [
     "dist"

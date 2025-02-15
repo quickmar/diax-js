@@ -22,5 +22,8 @@
     {
       "path": "./packages/browser/tsconfig.build.json"
     },
+    {
+      "path": "./packages/decorator/tsconfig.build.json"
+    }
   ]
 }

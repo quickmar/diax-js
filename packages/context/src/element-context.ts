@@ -1,6 +1,6 @@
 import { DestroyAction, isCleanable } from '@diax-js/common/support';
 import { Context, Dependencies, Token } from '@diax-js/common/context';
-import { HTMLElementConstructor, TargetCallbacks } from '@diax-js/common/custom-element';
+import { HTMLElementConstructor } from '@diax-js/common/custom-element';
 import { Signal, Subscription } from '@diax-js/common/state';
 
 const initAttributes = (observedAttributes: string[]) => {
@@ -9,22 +9,21 @@ const initAttributes = (observedAttributes: string[]) => {
   ) as Record<string, Signal<string>>;
 };
 
-export class ElementContext<T extends TargetCallbacks> implements Context<T> {
+export class ElementContext implements Context {
   readonly host: HTMLElement;
   attributes: Record<string, Signal<string> | null>;
-  instance: T = {} as T;
   dependencies: Dependencies = new BaseDependencies();
   observables = new Set<Signal<unknown>>();
   subscriptionMode = null;
   ownedSubscriptions: Set<Subscription> = new Set();
 
-  constructor(node: HTMLElement) {
+  constructor(node: HTMLElement, metadata: DecoratorMetadataObject) {
     this.host = node;
     this.attributes = initAttributes([...this.observedAttributes]);
   }
 
   get observedAttributes() {
-    const observedAttributes = (this.host.constructor as HTMLElementConstructor<T>).observedAttributes ?? [];
+    const observedAttributes = (this.host.constructor as HTMLElementConstructor).observedAttributes ?? [];
     return new Set(observedAttributes);
   }
 
@@ -32,7 +31,6 @@ export class ElementContext<T extends TargetCallbacks> implements Context<T> {
     const { dependencies, ownedSubscriptions } = this;
     this.dependencies = new BaseDependencies();
     this.ownedSubscriptions = new Set();
-    this.instance = {} as T;
     dependencies.destroy();
     new DestroyAction(() => {
       for (const subscription of ownedSubscriptions) {

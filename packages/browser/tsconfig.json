@@ -6,6 +6,7 @@
         "./index.ts",
         "./support.ts",
         "./state.ts",
+        "./decorators.ts",
         "./package.json",
         "./LICENSE",
         "./README.md"

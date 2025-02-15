@@ -1,12 +1,13 @@
-import { HTMLElementCallbacks, HTMLElementConstructor, TargetCallbacks, TargetConstructor } from '../custom-element/model';
+import { HTMLElementCallbacks, HTMLElementConstructor, TargetConstructor } from '../custom-element/model';
+import { NoArgType } from '../model/common';
 
 /**
  * Represents callbacks for form-associated custom elements.
  * Extends the base HTMLElement callbacks with form-specific lifecycle methods.
- * 
+ *
  * @interface FormElementCallbacks
  * @extends HTMLElementCallbacks
- * 
+ *
  * @see {@link https://html.spec.whatwg.org/multipage/custom-elements.html#form-associated-custom-elements}
  */
 export interface FormElementCallbacks extends HTMLElementCallbacks {
@@ -20,7 +21,7 @@ export interface FormElementCallbacks extends HTMLElementCallbacks {
  * Represents a form element with validation capabilities.
  * This interface combines essential form-related properties and methods from ElementInternals
  * with basic form element attributes.
- * 
+ *
  * @interface FormElement
  * @property {string} name - The name of the form element
  * @property {string} type - The type of the form element
@@ -41,13 +42,6 @@ export interface FormElement
 }
 
 /**
- * Represents a combination of form element callbacks and target callbacks.
- * Creates a type that includes optional form element callbacks merged with target callbacks.
- * 
- * @template FormElementCallbacks - The type containing form element-specific callback methods
- * @template TargetCallbacks - The type containing target-specific callback methods
- */
-export type FormTargetCallbacks = Partial<FormElementCallbacks> & TargetCallbacks;
 
 /**
  * Constructor interface for form-associated custom elements.
@@ -58,12 +52,6 @@ export type FormTargetCallbacks = Partial<FormElementCallbacks> & TargetCallback
  * @property {true} formAssociated - Indicates that the element will participate in form submission.
  * This property must be declared as `static` in implementing classes.
  */
-export interface FormElementConstructor
-  extends HTMLElementConstructor<FormTargetCallbacks> {
+export interface FormElementConstructor extends HTMLElementConstructor {
   readonly formAssociated: true;
 }
-
-export type FormElementDecorator = <T extends TargetConstructor<FormTargetCallbacks>>(
-  target: T,
-  context: ClassDecoratorContext,
-) => void;

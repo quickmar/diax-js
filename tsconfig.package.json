@@ -2,6 +2,7 @@
     "compilerOptions": {
         "lib": [
             "ES2024",
+            "ESNext.Decorators",
             "DOM",
             "DOM.Iterable"
         ],

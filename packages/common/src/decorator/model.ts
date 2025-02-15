@@ -1,0 +1,1 @@
+export type DecoratorMetadataObject2 = Record<string | symbol, any>;
