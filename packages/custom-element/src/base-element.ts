@@ -4,32 +4,43 @@ import { ElementContext, useElement, useSelf } from '@diax-js/context';
 import { CustomElementDecoratorMetadata, runMetadataHooks } from '@diax-js/common/decorator';
 
 export abstract class BaseElement<T> extends HTMLElement implements ContextHTMLElement, HTMLElementCallbacks {
-  abstract readonly target: TargetConstructor<T>;
-  [CONTEXT]: Context;
+  protected abstract readonly target: TargetConstructor<T>;
+  protected abstract readonly metadata: CustomElementDecoratorMetadata;
   protected component?: T;
+  [CONTEXT]: Context;
+
+  private runOnce = () => {
+    runMetadataHooks(this.metadata, 'onHostCreated');
+    this.runOnce = () => {};
+  };
 
   constructor(metadata: CustomElementDecoratorMetadata) {
     super();
     this[CONTEXT] = new ElementContext(this, metadata);
-    runMetadataHooks(metadata, 'onHostCreated');
   }
 
   connectedCallback(): void {
     useElement(this, () => {
+      this.runOnce();
       this.component = useSelf(this.target);
+      runMetadataHooks(this.metadata, 'onConnected');
     });
   }
+
   disconnectedCallback(): void {
     useElement(this, () => {
       this[CONTEXT].destroy();
+      runMetadataHooks(this.metadata, 'onDisconnected');
     });
   }
+
   attributeChangedCallback(name: string, _oldValue: string, newValue: string): void {
     const attribute = this[CONTEXT].attributes[name];
     if (attribute) {
       attribute.setValue(newValue);
     }
   }
+  
   adoptedCallback(): void {
     useElement(this, () => {
       // TODO: Implement adoptedCallback
@@ -56,6 +67,10 @@ export function getElementClass<T>(
 
     get target() {
       return target;
+    }
+
+    get metadata() {
+      return metadata;
     }
   };
 }

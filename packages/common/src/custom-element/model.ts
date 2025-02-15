@@ -1,4 +1,5 @@
 import { ContextHTMLElement } from '../context/model';
+import { CustomElementDecoratorMetadata } from '../decorator/model';
 import { NoArgType } from '../model/common';
 
 /**

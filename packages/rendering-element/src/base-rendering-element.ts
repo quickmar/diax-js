@@ -53,6 +53,10 @@ export function getRenderingElementClass(
       return target;
     }
 
+    get metadata() {
+      return metadata;
+    }
+
     constructor() {
       super(metadata);
     }
