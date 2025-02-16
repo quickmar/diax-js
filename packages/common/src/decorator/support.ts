@@ -2,7 +2,7 @@ import { CustomElementDecoratorMetadata } from './model';
 
 export type RunnableKey = keyof Pick<
   CustomElementDecoratorMetadata,
-  'onConnected' | 'onDisconnected' | 'onHostCreated'
+  'onConnected' | 'onDisconnected' | 'onHostCreated' | 'onAdopted'
 >;
 
 /**
@@ -16,13 +16,13 @@ export type RunnableKey = keyof Pick<
  * @param metadata - The metadata object that may contain an array of hooks.
  * @param key - The key of the metadata object where the hooks array is stored.
  */
-export function runMetadataHooks(metadata: DecoratorMetadataObject, key: RunnableKey): void {
+export function runMetadataHooks<T>(this: T, metadata: CustomElementDecoratorMetadata, key: RunnableKey): void {
   const hooks = metadata[key];
   if (!hooks || !Array.isArray(hooks)) {
     return;
   }
   for (const hook of hooks) {
-    callHook(hook);
+    callHook.call(this, hook);
   }
 }
 
@@ -34,7 +34,7 @@ export function runMetadataHooks(metadata: DecoratorMetadataObject, key: Runnabl
  * @param key - The key under which the hook should be stored
  * @param hook - The function to be added as a hook
  */
-export function addMetadataHook(metadata: DecoratorMetadataObject, key: RunnableKey, hook: VoidFunction): void {
+export function addMetadataHook(metadata: CustomElementDecoratorMetadata, key: RunnableKey, hook: VoidFunction): void {
   let hooks = metadata[key] as VoidFunction[];
   if (!hooks) {
     hooks = [];
@@ -43,9 +43,9 @@ export function addMetadataHook(metadata: DecoratorMetadataObject, key: Runnable
   hooks.push(hook);
 }
 
-function callHook(hook: VoidFunction): void {
+function callHook<T>(this: T, hook: VoidFunction): void {
   try {
-    hook();
+    hook.call(this);
   } catch (error) {
     reportError(error);
   }

@@ -2,6 +2,7 @@ import { DestroyAction, isCleanable } from '@diax-js/common/support';
 import { Context, Dependencies, Token } from '@diax-js/common/context';
 import { CustomElementDecoratorMetadata } from '@diax-js/common/decorator';
 import { Signal, Subscription } from '@diax-js/common/state';
+import { HTMLElementConstructor } from '@diax-js/common/custom-element';
 
 const initAttributes = (observedAttributes: string[]) => {
   return Object.preventExtensions(
@@ -18,9 +19,11 @@ export class ElementContext implements Context {
   subscriptionMode = null;
   ownedSubscriptions: Set<Subscription> = new Set();
 
-  constructor(node: HTMLElement, metadata: CustomElementDecoratorMetadata) {
+  constructor(node: InstanceType<HTMLElementConstructor>, metadata: CustomElementDecoratorMetadata) {
     this.host = node;
-    this.observedAttributes = new Set(metadata.observedAttributes);
+    const ctor = node.constructor as HTMLElementConstructor;
+    const { observedAttributes = [] } = ctor;
+    this.observedAttributes = new Set([...observedAttributes, ...(metadata.observedAttributes ?? [])]);
     this.attributes = initAttributes([...this.observedAttributes]);
   }
 

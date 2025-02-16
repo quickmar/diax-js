@@ -3,22 +3,22 @@ import { Method, NoArgType } from '../model/common';
 /**
  * Provides metadata configuration for custom element decorators.
  *
- * @remarks
- * This interface extends {@link DecoratorMetadataObject} and includes additional properties used
- * during the lifecycle of custom elements.
+ * @interface CustomElementDecoratorMetadata
  *
- * @property observedAttributes - An optional array of attribute names to be observed for changes.
- * @property disabledOptions - Optional array of options that are disabled within this context.
- * @property onHostCreated - Optional array of callback functions executed when the host is created.
- * @property onConnected - Optional array of callback functions executed when the element is connected to the DOM.
- * @property onDisconnected - Optional array of callback functions executed when the element is disconnected from the DOM.
+ * @property observedAttributes - An optional array of attribute names that the custom element observes for changes.
+ * @property disabledOptions - An optional list of options that are disabled, possibly controlling certain decorator behaviors.
+ * @property onHostCreated - An optional array of callbacks executed when the host element is created.
+ * @property onConnected - An optional array of callbacks executed when the custom element is connected to the DOM.
+ * @property onDisconnected - An optional array of callbacks executed when the custom element is disconnected from the DOM.
+ * @property onAdopted - An optional array of callbacks executed when the custom element is adopted into a new document.
  */
-export interface CustomElementDecoratorMetadata extends DecoratorMetadataObject {
+export interface CustomElementDecoratorMetadata {
   observedAttributes?: string[];
   disabledOptions?: string[];
   onHostCreated?: VoidFunction[];
   onConnected?: VoidFunction[];
   onDisconnected?: VoidFunction[];
+  onAdopted?: VoidFunction[];
 }
 
 /**

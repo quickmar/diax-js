@@ -80,11 +80,11 @@ export function identity<T>(value: T): T {
 
 export class MockContextTarget {
   static get observedAttributes() {
-    return ['data-unit-test'];
+    return ['data-test'];
   }
 }
 
-export class MockContextElement extends getElementClass(MockContextTarget, { observedAttributes: ['data-test'] }) {
+export class MockContextElement extends getElementClass(MockContextTarget, {}) {
   static {
     customElements.define('mock-context-element', this);
   }

@@ -60,7 +60,7 @@ export function ObservedAttributes(...attributes: string[]): CustomElementDecora
  * }
  * ```
  */
-export const PostConnect = voidCallbackDecorator('onConnected');
+export const Connected = voidCallbackDecorator('onConnected');
 
 /**
  * Decorator that marks a method to be called before the object is disconnected.
@@ -74,19 +74,36 @@ export const PostConnect = voidCallbackDecorator('onConnected');
  * - Useful for managing resource deallocation or other necessary shutdown procedures.
  * - Ensures that the method is invoked in a context that does not expect a return value.
  */
-export const PreDisconnect = voidCallbackDecorator('onDisconnected');
+export const Disconnected = voidCallbackDecorator('onDisconnected');
+
+/**
+ * Decorator that applies a void callback for the "onAdopted" lifecycle event.
+ *
+ * @remarks
+ * When applied, the corresponding class is expected to implement an "onAdopted" method
+ * that will be called upon adoption of the element. This facilitates the handling
+ * of the element's adoption into the DOM.
+ *
+ * @example
+ * ```typescript
+   @CustomElement
+ * class MyElement {
+     @Adopted
+ *   onAdopted() {
+ *     // Called when the element is added to the DOM
+ *   }
+ * }
+ * ```
+ *
+ * @see voidCallbackDecorator for implementation details.
+ */
+export const Adopted = voidCallbackDecorator('onAdopted');
 
 function voidCallbackDecorator(key: RunnableKey): CustomElementMethodDecorator<() => void> {
-  return function (value, { addInitializer, kind, metadata }) {
+  return function (value, { kind, metadata }) {
     if (kind !== 'method') return;
-    let initialized = false;
-    addInitializer(function () {
-      if (initialized) return;
-      initialized = true;
-      const self = this;
-      addMetadataHook(metadata, key, () => {
-        value.call(self);
-      });
+    addMetadataHook(metadata, key, function (this: ThisParameterType<typeof value>) {
+      value.call(this);
     });
   };
 }

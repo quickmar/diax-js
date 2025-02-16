@@ -10,7 +10,7 @@ export abstract class BaseElement<T> extends HTMLElement implements ContextHTMLE
   [CONTEXT]: Context;
 
   private runOnce = () => {
-    runMetadataHooks(this.metadata, 'onHostCreated');
+    runMetadataHooks.call(this.component, this.metadata, 'onHostCreated');
     this.runOnce = () => {};
   };
 
@@ -23,14 +23,15 @@ export abstract class BaseElement<T> extends HTMLElement implements ContextHTMLE
     useElement(this, () => {
       this.runOnce();
       this.component = useSelf(this.target);
-      runMetadataHooks(this.metadata, 'onConnected');
+      runMetadataHooks.call(this.component, this.metadata, 'onConnected');
     });
   }
 
   disconnectedCallback(): void {
     useElement(this, () => {
+      runMetadataHooks.call(this.component, this.metadata, 'onDisconnected');
       this[CONTEXT].destroy();
-      runMetadataHooks(this.metadata, 'onDisconnected');
+      this.component = undefined;
     });
   }
 
@@ -40,17 +41,17 @@ export abstract class BaseElement<T> extends HTMLElement implements ContextHTMLE
       attribute.setValue(newValue);
     }
   }
-  
+
   adoptedCallback(): void {
     useElement(this, () => {
-      // TODO: Implement adoptedCallback
+      runMetadataHooks.call(this.component, this.metadata, 'onAdopted');
     });
   }
 }
 
 export function getElementClass<T>(
   target: TargetConstructor<T>,
-  metadata: DecoratorMetadataObject,
+  metadata: CustomElementDecoratorMetadata,
 ): HTMLElementConstructor {
   return class extends BaseElement<T> {
     static get observedAttributes() {
@@ -58,7 +59,7 @@ export function getElementClass<T>(
     }
 
     static get disabledFeatures() {
-      return [...(target.disabledFeatures ?? [])];
+      return target.disabledFeatures;
     }
 
     constructor() {

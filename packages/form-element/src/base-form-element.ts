@@ -76,6 +76,10 @@ export function getFormElementClass<T>(
       return target;
     }
 
+    get metadata() {
+      return metadata;
+    }
+
     constructor() {
       super(metadata);
     }

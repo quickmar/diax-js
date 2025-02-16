@@ -39,7 +39,7 @@ export interface TargetConstructor<T> extends NoArgType<T> {
  *
  * @extends NoArgType<ContextHTMLElement & HTMLElementCallbacks>
  */
-export interface HTMLElementConstructor<T = object> extends NoArgType<ContextHTMLElement & HTMLElementCallbacks> {
+export interface HTMLElementConstructor<T = object> extends NoArgType<T & ContextHTMLElement & HTMLElementCallbacks> {
   readonly observedAttributes?: string[];
   readonly disabledFeatures?: string[];
 }

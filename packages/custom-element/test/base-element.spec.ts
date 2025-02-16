@@ -92,17 +92,15 @@ describe('BaseElement', () => {
   });
 
   it('should stub instance', () => {
-    const stubInstance1 = getComponent(element);
+    const noComponentBeforeConnect = getComponent(element);
     document.body.appendChild(element);
-
-    const instance = getComponent(element);
+    const componentAfterConnect = getComponent(element);
     document.body.removeChild(element);
+    const noComponentAfterDisconnect = getComponent(element);
 
-    const stubInstance2 = getComponent(element);
-
-    expect(stubInstance1).not.toBe(stubInstance2);
-    expect(stubInstance1).toEqual(stubInstance2);
-    expect(stubInstance1).not.toEqual(instance);
+    expect(noComponentBeforeConnect).toBeUndefined();
+    expect(componentAfterConnect).toBeDefined();
+    expect(noComponentAfterDisconnect).toBeUndefined();
   });
 
   it('should call attribute change callback', () => {
