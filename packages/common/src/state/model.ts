@@ -20,6 +20,10 @@ export type UseComputed = <T>(supplier: Supplier<T>) => ComputedSignal<T>;
  */
 export type UseEffect = (fn: VoidFunction) => VoidFunction;
 
+export type AttachListener <K extends keyof HTMLElementEventMap, This = object> = (type: K, listener: (this: This, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions) => void;
+
+export type AddEventListenersParams <K extends keyof HTMLElementEventMap, This = object> = Parameters<AttachListener<K, This>>;
+
 /**
  * Signal is a reactive value.
  * It can be updated by calling setValue.

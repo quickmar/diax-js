@@ -1,7 +1,7 @@
 import { CustomElement, useHost } from '@diax-js/browser';
 import { effect } from '@diax-js/browser/state';
 import { useCount } from './counter.service';
-import { AttachShadow, PostConnect, PreDisconnect } from '@diax/browser/decorators';
+import { AttachShadow, Connected, Disconnected, AttachListener } from '@diax/browser/decorators';
 
 @CustomElement('counter-output')
 // @AttachShadow()
@@ -18,14 +18,20 @@ class CounterOutput {
     });
   }
 
-  @PostConnect
+  @Connected
   init() {
     console.log('test');
   }
 
-  @PreDisconnect
+  @Disconnected
   cleanup() {
     console.log('cleanup');
+  }
+
+  @AttachListener('dblclick')
+  listener(event: UIEvent) {
+    console.log(event);
+    console.log(this.holder?.value);
   }
 }
 

@@ -1,25 +1,41 @@
-import { useElement } from '../use-element';
-import { useHost } from './use-host';
+import { AddEventListenersParams, Subscription } from '@diax-js/common/state';
+import { getCurrentContext } from '../context';
 
-type Input = Parameters<HTMLElement['addEventListener']>;
-type AttachListener = (type: Input[0], listener: Input[1], options?: Input[2]) => VoidFunction;
+interface EventListener<K extends keyof HTMLElementEventMap, This> extends Subscription {
+  host: HTMLElement;
+  type: AddEventListenersParams<K, This>[0];
+  listener: OmitThisParameter<AddEventListenersParams<K>[1]>;
+  options: AddEventListenersParams<K, This>[2];
+  subscribe(): void;
+}
 
-export const attachListener: AttachListener = (type, listener, options) => {
-  // TODO: add unsubscribe to the context
-  const host = useHost();
-  const actualListener: Input[1] = function (this: HTMLElement, event: Event) {
-    let result;
-    useElement(this, () => {
-      if (typeof listener === 'function') {
-        result = listener(event);
-      } else {
-        result = listener.handleEvent(event);
-      }
-    });
-    return result;
+export const attachListener = <K extends keyof HTMLElementEventMap, This>(
+  type: AddEventListenersParams<K, This>[0],
+  listener: OmitThisParameter<AddEventListenersParams<K>[1]>,
+  options: AddEventListenersParams<K, This>[2],
+) => {
+  const { host, ownedSubscriptions } = getCurrentContext();
+
+  const actualListener: AddEventListenersParams<K, HTMLElement>[1] = function (event) {
+    return listener(event);
   };
 
-  host.addEventListener(type, actualListener, options);
+  const subscription: EventListener<K, This> = {
+    host,
+    type,
+    listener: actualListener,
+    options,
+    subscribe() {
+      this.host.addEventListener(type, this.listener, options);
+    },
+    unsubscribe() {
+      this.host.removeEventListener(this.type, this.listener, this.options);
+      Object.assign(this, { host: null, listener: null, options: null, type: null });
+    },
+  };
 
-  return () => host.removeEventListener(type, actualListener, options);
+  subscription.subscribe();
+  ownedSubscriptions.add(subscription);
+
+  return subscription.unsubscribe.bind(subscription);
 };

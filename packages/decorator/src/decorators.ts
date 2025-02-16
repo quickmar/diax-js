@@ -1,10 +1,34 @@
+import { Method } from '@diax-js/common';
 import {
   CustomElementDecorator,
   CustomElementMethodDecorator,
   RunnableKey,
   addMetadataHook,
 } from '@diax-js/common/decorator';
-import { attachShadow } from '@diax-js/context/host';
+import { AddEventListenersParams } from '@diax-js/common/state';
+import { attachListener, attachShadow } from '@diax-js/context/host';
+
+export const Bind: CustomElementMethodDecorator = function (value, { kind, addInitializer, name }) {
+  if (kind !== 'method') return;
+  addInitializer(function (this: ThisParameterType<typeof value>) {
+    this[name as keyof typeof this] = value.bind(this) as (typeof this)[keyof typeof this];
+  });
+};
+
+export function AttachListener<K extends keyof HTMLElementEventMap>(
+  eventType: K,
+  options?: AddEventListenersParams<any>[2],
+) {
+  return function <This, Value extends Method<This, (e: HTMLElementEventMap[K]) => any>>(
+    value: Value,
+    { kind, metadata }: ClassMethodDecoratorContext<This, Value>,
+  ) {
+    if (kind !== 'method') return;
+    addMetadataHook(metadata, 'onConnected', function (this: ThisParameterType<typeof value>) {
+      attachListener(eventType, value.bind(this), options);
+    });
+  };
+}
 
 /**
  * A decorator factory that attaches a shadow root to a custom element host.
