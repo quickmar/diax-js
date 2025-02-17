@@ -8,6 +8,16 @@ import {
 import { AddEventListenersParams } from '@diax-js/common/state';
 import { attachListener, attachShadow } from '@diax-js/context/host';
 
+/**
+ * Decorator that binds the original method to the class instance.
+ *
+ * This decorator is applied to a method and ensures that the method's `this` context
+ * is permanently bound to the instance on which the method is defined. It does so by
+ * adding an initializer that reassigns the method on the instance to its bound version.
+ *
+ * @param value - The original method to be bound.
+ * @param context - {@link ClassMethodDecoratorContext}
+ */
 export const Bind: CustomElementMethodDecorator = function (value, { kind, addInitializer, name }) {
   if (kind !== 'method') return;
   addInitializer(function (this: ThisParameterType<typeof value>) {
@@ -15,6 +25,28 @@ export const Bind: CustomElementMethodDecorator = function (value, { kind, addIn
   });
 };
 
+/**
+ * A method decorator that attaches an event listener to an element when it connects to the DOM.
+ *
+ * @param eventType - The type of event to listen for. Must be one of the keys from HTMLElementEventMap.
+ * @param options - Optional parameters for the event listener (e.g. capture, once, passive).
+ *
+ * @remarks
+ * This decorator binds the decorated method to the target instance and
+ * ensure the listener is attached to the host during the element's connection phase.
+ * It take care of removing the listener when element is disconnected.
+ *
+ * @example
+ *
+ * @CustomElement("my-component")
+ * class MyComponent {
+ *   @AttachListener('click')
+ *   handleClick(event: MouseEvent): void {
+ *     console.log('Element clicked:', event);
+ *   }
+ * }
+ *
+ */
 export function AttachListener<K extends keyof HTMLElementEventMap>(
   eventType: K,
   options?: AddEventListenersParams<any>[2],
@@ -53,12 +85,13 @@ export function AttachShadow(init: ShadowRootInit = { mode: 'open' }): CustomEle
  *
  * @remarks
  * When applied to a custom element, this decorator assigns the provided attribute names
- * to the element's metadata (under the property "observedAttributes"). The decorated element
+ * to resulting HTMLElement "observedAttributes" property. The decorated element
  * will then observe these attributes for changes.
  *
  * @param attributes - A list of attribute names that the custom element should observe.
  *
  * @returns A decorator function that sets the observed attributes in the custom element's metadata.
+ *
  */
 export function ObservedAttributes(...attributes: string[]): CustomElementDecorator {
   return function (_, { metadata }) {
@@ -69,18 +102,23 @@ export function ObservedAttributes(...attributes: string[]): CustomElementDecora
 /**
  * Decorator for methods that should be executed upon connection.
  *
- * Applies a void callback mechanism tied to the "onConnected" event, ensuring that the decorated method
+ * Applies a void callback mechanism tied to the "connectedCallback" event, ensuring that the decorated method
  * is called when the connection lifecycle event occurs.
  *
  * @remarks
  * Use this decorator to annotate functions that should run post-connection, without the expectation
  * of a return value.
  *
- * @example
- * ```typescript
- * @postConnect
- * onInitialize() {
- *   // Initialization logic here.
+ * @see voidCallbackDecorator for implementation details.
+ *
+ *@example
+ *
+ * @CustomElement('my-element')
+ * class MyElement {
+ *   @Connected
+ *   connected() {
+ *     // Called when the element is connected to the DOM
+ *   }
  * }
  * ```
  */
@@ -97,6 +135,18 @@ export const Connected = voidCallbackDecorator('onConnected');
  * @remarks
  * - Useful for managing resource deallocation or other necessary shutdown procedures.
  * - Ensures that the method is invoked in a context that does not expect a return value.
+ *
+ *```typescript
+ * @CustomElement('my-element')
+ * class MyElement {
+ *   @Disconnected
+ *   disconnect() {
+ *     // Called when the element is disconnected from the DOM
+ *   }
+ * }
+ * ```
+ *
+ * @see voidCallbackDecorator for implementation details.
  */
 export const Disconnected = voidCallbackDecorator('onDisconnected');
 
@@ -110,7 +160,7 @@ export const Disconnected = voidCallbackDecorator('onDisconnected');
  *
  * @example
  * ```typescript
-   @CustomElement
+   @CustomElement('my-element')
  * class MyElement {
      @Adopted
  *   onAdopted() {
