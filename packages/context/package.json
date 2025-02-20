@@ -4,6 +4,7 @@
   "description": "Core package for web component implementation by diax",
   "main": "dist/index.js",
   "module": "dist/index.js",
+  "types": "index.d.ts",
   "exports": {
     ".": "./dist/index.js",
     "./host": "./dist/host.js"
@@ -11,7 +12,6 @@
   "files": [
     "dist"
   ],
-  "types": "dist/index.d.ts",
   "dependencies": {
     "@diax-js/common": "^0.3.0"
   },

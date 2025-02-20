@@ -16,9 +16,10 @@
         "sourceMap": true,
         "declaration": true,
         "declarationMap": true,
+        "allowJs": false,
         "types": [
             "vitest/globals",
             "node"
         ]
-    },
+    }
 }
