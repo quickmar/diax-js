@@ -1,16 +1,21 @@
-import { ContextHTMLElement, CONTEXT, Context } from '@diax-js/common/context';
-import { HTMLElementCallbacks, TargetConstructor, HTMLElementConstructor } from '@diax-js/common/custom-element';
+import { CONTEXT, Context } from '@diax-js/common/context';
+import {
+  TargetConstructor,
+  HTMLElementConstructor,
+  BaseHTMLElement,
+  TargetCallbacks,
+} from '@diax-js/common/custom-element';
 import { ElementContext, useElement, useSelf } from '@diax-js/context';
 import { CustomElementDecoratorMetadata, runMetadataHooks } from '@diax-js/common/decorator';
 
-export abstract class BaseElement<T> extends HTMLElement implements ContextHTMLElement, HTMLElementCallbacks {
-  protected abstract readonly target: TargetConstructor<T>;
-  protected abstract readonly metadata: CustomElementDecoratorMetadata;
+export abstract class BaseElement<T extends TargetCallbacks> extends HTMLElement implements BaseHTMLElement<T> {
+  abstract readonly target: TargetConstructor<T>;
+  abstract readonly metadata: CustomElementDecoratorMetadata;
   protected component?: T;
-  [CONTEXT]: Context;
+  readonly [CONTEXT]: Context;
 
   private runOnce = () => {
-    runMetadataHooks.call(this.component, this.metadata, 'onHostCreated');
+    runMetadataHooks.call(this.component, this.metadata, 'created');
     this.runOnce = () => {};
   };
 
@@ -23,13 +28,13 @@ export abstract class BaseElement<T> extends HTMLElement implements ContextHTMLE
     useElement(this, () => {
       this.runOnce();
       this.component = useSelf(this.target);
-      runMetadataHooks.call(this.component, this.metadata, 'onConnected');
+      runMetadataHooks.call(this.component, this.metadata, 'connected');
     });
   }
 
   disconnectedCallback(): void {
     useElement(this, () => {
-      runMetadataHooks.call(this.component, this.metadata, 'onDisconnected');
+      runMetadataHooks.call(this.component, this.metadata, 'disconnected');
       this[CONTEXT].destroy();
       this.component = undefined;
     });
@@ -44,15 +49,15 @@ export abstract class BaseElement<T> extends HTMLElement implements ContextHTMLE
 
   adoptedCallback(): void {
     useElement(this, () => {
-      runMetadataHooks.call(this.component, this.metadata, 'onAdopted');
+      runMetadataHooks.call(this.component, this.metadata, 'adopted');
     });
   }
 }
 
-export function getElementClass<T>(
+export function getElementClass<T extends TargetCallbacks>(
   target: TargetConstructor<T>,
   metadata: CustomElementDecoratorMetadata,
-): HTMLElementConstructor {
+): HTMLElementConstructor<T> {
   return class extends BaseElement<T> {
     static get observedAttributes() {
       return target.observedAttributes;

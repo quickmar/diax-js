@@ -1,3 +1,4 @@
+import { TargetCallbacks } from '../custom-element/model';
 import { Method, NoArgType } from '../model/common';
 
 /**
@@ -15,10 +16,10 @@ import { Method, NoArgType } from '../model/common';
 export interface CustomElementDecoratorMetadata {
   observedAttributes?: string[];
   disabledOptions?: string[];
-  onHostCreated?: VoidFunction[];
-  onConnected?: VoidFunction[];
-  onDisconnected?: VoidFunction[];
-  onAdopted?: VoidFunction[];
+  created?: VoidFunction[];
+  connected?: VoidFunction[];
+  disconnected?: VoidFunction[];
+  adopted?: VoidFunction[];
 }
 
 /**
@@ -29,7 +30,10 @@ export interface CustomElementDecoratorMetadata {
  * @returns A decorator function that defines the custom element
  */
 
-export type CustomElementDecorator = <T>(target: NoArgType<T>, context: ClassDecoratorContext) => void;
+export type CustomElementDecorator = <T extends TargetCallbacks>(
+  target: NoArgType<T>,
+  context: ClassDecoratorContext,
+) => void;
 
 /**
  * A decorator type for class methods used in custom elements.

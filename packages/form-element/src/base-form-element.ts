@@ -1,10 +1,13 @@
-import { TargetConstructor } from '@diax-js/common/custom-element';
+import { TargetCallbacks, TargetConstructor } from '@diax-js/common/custom-element';
 import { FormElement, FormElementCallbacks, FormElementConstructor } from '@diax-js/common/form-element';
 import { CustomElementDecoratorMetadata } from '@diax-js/common/decorator';
 import { useElement, useSupplier } from '@diax-js/context';
 import { BaseElement } from '@diax-js/custom-element';
 
-export abstract class BaseFormElement<T> extends BaseElement<T> implements FormElementCallbacks, FormElement {
+export abstract class BaseFormElement<T extends TargetCallbacks>
+  extends BaseElement<T>
+  implements FormElementCallbacks, FormElement
+{
   static get formAssociated(): true {
     return true;
   }
@@ -63,10 +66,10 @@ export abstract class BaseFormElement<T> extends BaseElement<T> implements FormE
   }
 }
 
-export function getFormElementClass<T>(
+export function getFormElementClass<T extends TargetCallbacks>(
   target: TargetConstructor<T>,
   metadata: CustomElementDecoratorMetadata,
-): FormElementConstructor {
+): FormElementConstructor<T> {
   return class extends BaseFormElement<T> {
     static get observedAttributes() {
       return target.observedAttributes;

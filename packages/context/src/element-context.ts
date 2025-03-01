@@ -2,7 +2,7 @@ import { DestroyAction, isCleanable } from '@diax-js/common/support';
 import { Context, Dependencies, Token } from '@diax-js/common/context';
 import { CustomElementDecoratorMetadata } from '@diax-js/common/decorator';
 import { Signal, Subscription } from '@diax-js/common/state';
-import { HTMLElementConstructor } from '@diax-js/common/custom-element';
+import { BaseHTMLElement, HTMLElementConstructor, TargetCallbacks } from '@diax-js/common/custom-element';
 
 const initAttributes = (observedAttributes: string[]) => {
   return Object.preventExtensions(
@@ -11,7 +11,7 @@ const initAttributes = (observedAttributes: string[]) => {
 };
 
 export class ElementContext implements Context {
-  readonly host: HTMLElement;
+  readonly host: BaseHTMLElement<TargetCallbacks>;
   readonly observedAttributes: Set<string>;
   attributes: Record<string, Signal<string> | null>;
   dependencies: Dependencies = new BaseDependencies();
@@ -19,9 +19,9 @@ export class ElementContext implements Context {
   subscriptionMode = null;
   ownedSubscriptions: Set<Subscription> = new Set();
 
-  constructor(node: InstanceType<HTMLElementConstructor>, metadata: CustomElementDecoratorMetadata) {
+  constructor(node: BaseHTMLElement<TargetCallbacks>, metadata: CustomElementDecoratorMetadata) {
     this.host = node;
-    const ctor = node.constructor as HTMLElementConstructor;
+    const ctor = node.constructor as HTMLElementConstructor<TargetCallbacks>;
     const { observedAttributes = [] } = ctor;
     this.observedAttributes = new Set([...observedAttributes, ...(metadata.observedAttributes ?? [])]);
     this.attributes = initAttributes([...this.observedAttributes]);

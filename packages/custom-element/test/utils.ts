@@ -10,25 +10,25 @@ export class TestTarget {
     return [];
   }
 
-  init = vi.fn();
-  destroy = vi.fn();
-  adopt = vi.fn();
+  connected = vi.fn();
+  disconnected = vi.fn();
+  adopted = vi.fn();
 }
 
 const metadata: CustomElementDecoratorMetadata = {
-  onConnected: [
+  connected: [
     function (this: TestTarget) {
-      this.init();
+      this.connected();
     },
   ],
-  onDisconnected: [
+  disconnected: [
     function (this: TestTarget) {
-      this.destroy();
+      this.disconnected();
     },
   ],
-  onAdopted: [
+  adopted: [
     function (this: TestTarget) {
-      this.adopt();
+      this.adopted();
     },
   ],
 };

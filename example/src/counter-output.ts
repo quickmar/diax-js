@@ -24,6 +24,10 @@ class CounterOutput {
     });
   }
 
+  connected() {
+    console.log('CounterOutput connected');
+  }
+
   @Connected
   init() {
     console.log('test');

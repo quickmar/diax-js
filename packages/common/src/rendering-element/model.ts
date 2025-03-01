@@ -1,5 +1,5 @@
 import { ContextHTMLElement } from '../context/model';
-import { HTMLElementConstructor, TargetConstructor } from '../custom-element/model';
+import { HTMLElementConstructor, TargetCallbacks, TargetConstructor } from '../custom-element/model';
 
 /**
  * {@link RenderingHTMLElement} is a object that defines callback for any rendering HTMLElement.
@@ -13,7 +13,7 @@ export interface RenderingHTMLElement<R> extends ContextHTMLElement {
  * {@link RenderingTargetCallbacks} is a object that defines callback for any rendering {@link Target}.
  * Main method is render that must return result of some template function.
  */
-export interface RenderingTargetCallbacks<R> {
+export interface RenderingTargetCallbacks<R> extends TargetCallbacks {
   render(): R;
 }
 
@@ -21,7 +21,7 @@ export interface RenderingTargetCallbacks<R> {
  * {@link RenderingElementConstructor} is a object that defines constructor for any rendering HTMLElement.
  * It extends {@link HTMLElementConstructor} and adds {@link RenderingTargetCallbacks} to it.
  */
-export interface RenderingElementConstructor<R> extends HTMLElementConstructor<RenderingHTMLElement<R>> {}
+export interface RenderingElementConstructor<R> extends HTMLElementConstructor<RenderingTargetCallbacks<R>> {}
 
 /**
  * {@link RenderingElementDecorator} is a function that defines decorator for any rendering {@link RenderingTargetCallbacks}.

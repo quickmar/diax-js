@@ -2,7 +2,7 @@ import { CustomElementDecoratorMetadata } from './model';
 
 export type RunnableKey = keyof Pick<
   CustomElementDecoratorMetadata,
-  'onConnected' | 'onDisconnected' | 'onHostCreated' | 'onAdopted'
+  'connected' | 'disconnected' | 'created' | 'adopted'
 >;
 
 /**

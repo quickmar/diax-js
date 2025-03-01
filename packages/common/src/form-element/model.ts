@@ -1,4 +1,9 @@
-import { HTMLElementCallbacks, HTMLElementConstructor, TargetConstructor } from '../custom-element/model';
+import {
+  HTMLElementCallbacks,
+  HTMLElementConstructor,
+  TargetCallbacks,
+  TargetConstructor,
+} from '../custom-element/model';
 import { NoArgType } from '../model/common';
 
 /**
@@ -52,6 +57,6 @@ export interface FormElement
  * @property {true} formAssociated - Indicates that the element will participate in form submission.
  * This property must be declared as `static` in implementing classes.
  */
-export interface FormElementConstructor extends HTMLElementConstructor {
+export interface FormElementConstructor<T extends TargetCallbacks> extends HTMLElementConstructor<T> {
   readonly formAssociated: true;
 }

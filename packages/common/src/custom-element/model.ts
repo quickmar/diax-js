@@ -15,6 +15,12 @@ export interface DisabledFeatures {
   readonly disabledFeatures: ('shadow' | 'internals')[];
 }
 
+export interface TargetCallbacks {
+  connected?(): void;
+  disconnected?(): void;
+  adopted?(): void;
+}
+
 /**
  * Represents a constructor interface for a custom element target with callback methods.
  *
@@ -23,7 +29,7 @@ export interface DisabledFeatures {
  * @property {string[]} [observedAttributes] - Array of attribute names to be observed for changes
  * @property {string[]} [disabledFeatures] - Array of feature names that should be disabled for this element
  */
-export interface TargetConstructor<T> extends NoArgType<T> {
+export interface TargetConstructor<T extends TargetCallbacks> extends NoArgType<T> {
   readonly observedAttributes?: string[];
   readonly disabledFeatures?: string[];
 }
@@ -39,7 +45,7 @@ export interface TargetConstructor<T> extends NoArgType<T> {
  *
  * @extends NoArgType<ContextHTMLElement & HTMLElementCallbacks>
  */
-export interface HTMLElementConstructor<T = object> extends NoArgType<T & ContextHTMLElement & HTMLElementCallbacks> {
+export interface HTMLElementConstructor<T extends TargetCallbacks> extends NoArgType<BaseHTMLElement<T>> {
   readonly observedAttributes?: string[];
   readonly disabledFeatures?: string[];
 }
@@ -60,4 +66,9 @@ export interface HTMLElementCallbacks {
   disconnectedCallback(): void;
   attributeChangedCallback(name: string, oldValue: unknown, newValue: unknown): void;
   adoptedCallback(): void;
+}
+
+export interface BaseHTMLElement<T extends TargetCallbacks> extends ContextHTMLElement, HTMLElementCallbacks {
+  readonly target: TargetConstructor<T>;
+  readonly metadata: CustomElementDecoratorMetadata;
 }
