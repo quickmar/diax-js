@@ -15,6 +15,7 @@ import { Method, NoArgType } from '../model/common';
  */
 export interface CustomElementDecoratorMetadata {
   observedAttributes?: string[];
+  disabledFeatures?: string[];
   disabledOptions?: string[];
   created?: VoidFunction[];
   connected?: VoidFunction[];

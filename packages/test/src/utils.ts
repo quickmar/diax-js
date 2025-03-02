@@ -84,8 +84,6 @@ export class MockContextTarget {
   }
 }
 
-export class MockContextElement extends getElementClass(MockContextTarget, {}) {
-  static {
-    customElements.define('mock-context-element', this);
-  }
-}
+export const MockContextElement = getElementClass(MockContextTarget);
+
+customElements.define('mock-context-element', MockContextElement);

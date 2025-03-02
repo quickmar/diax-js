@@ -1,8 +1,7 @@
 import { DestroyAction, isCleanable } from '@diax-js/common/support';
 import { Context, Dependencies, Token } from '@diax-js/common/context';
-import { CustomElementDecoratorMetadata } from '@diax-js/common/decorator';
 import { Signal, Subscription } from '@diax-js/common/state';
-import { BaseHTMLElement, HTMLElementConstructor, TargetCallbacks } from '@diax-js/common/custom-element';
+import { BaseHTMLElement, TargetCallbacks } from '@diax-js/common/custom-element';
 
 const initAttributes = (observedAttributes: string[]) => {
   return Object.preventExtensions(
@@ -11,20 +10,32 @@ const initAttributes = (observedAttributes: string[]) => {
 };
 
 export class ElementContext implements Context {
-  readonly host: BaseHTMLElement<TargetCallbacks>;
-  readonly observedAttributes: Set<string>;
-  attributes: Record<string, Signal<string> | null>;
+  #host: WeakRef<BaseHTMLElement<TargetCallbacks>>;
+  #attributes: Record<string, Signal<string> | null> | null = null;
   dependencies: Dependencies = new BaseDependencies();
   observables = new Set<Signal<unknown>>();
   subscriptionMode = null;
   ownedSubscriptions: Set<Subscription> = new Set();
 
-  constructor(node: BaseHTMLElement<TargetCallbacks>, metadata: CustomElementDecoratorMetadata) {
-    this.host = node;
-    const ctor = node.constructor as HTMLElementConstructor<TargetCallbacks>;
-    const { observedAttributes = [] } = ctor;
-    this.observedAttributes = new Set([...observedAttributes, ...(metadata.observedAttributes ?? [])]);
-    this.attributes = initAttributes([...this.observedAttributes]);
+  constructor(node: BaseHTMLElement<TargetCallbacks>) {
+    this.#host = new WeakRef(node);
+  }
+
+  get host(): BaseHTMLElement<TargetCallbacks> {
+    const host = this.#host.deref();
+    if (!host) throw new ReferenceError('Host element is not available');
+    return host;
+  }
+
+  get observedAttributes(): Set<string> {
+    return new Set(this.host.metadata.observedAttributes);
+  }
+
+  get attributes(): Record<string, Signal<string> | null> {
+    if (!this.#attributes) {
+      this.#attributes = initAttributes([...this.observedAttributes]);
+    }
+    return this.#attributes;
   }
 
   destroy(): void {

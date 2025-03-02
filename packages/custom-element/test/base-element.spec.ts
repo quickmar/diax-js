@@ -78,7 +78,7 @@ describe('BaseElement', () => {
   it('should call init', () => {
     document.body.appendChild(element);
 
-    expect(getComponent(element).connected).toBeCalledTimes(1);
+    expect(getComponent(element)._connected).toBeCalledTimes(1);
     element.remove();
   });
 

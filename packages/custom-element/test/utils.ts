@@ -10,35 +10,25 @@ export class TestTarget {
     return [];
   }
 
-  connected = vi.fn();
-  disconnected = vi.fn();
-  adopted = vi.fn();
-}
+  _connected = vi.fn();
+  _disconnected = vi.fn();
+  _adopted = vi.fn();
 
-const metadata: CustomElementDecoratorMetadata = {
-  connected: [
-    function (this: TestTarget) {
-      this.connected();
-    },
-  ],
-  disconnected: [
-    function (this: TestTarget) {
-      this.disconnected();
-    },
-  ],
-  adopted: [
-    function (this: TestTarget) {
-      this.adopted();
-    },
-  ],
-};
-
-export class TestBaseElement extends getElementClass(TestTarget, metadata) {
-  static {
-    customElements.define('test-base-element', this);
+  connected() {
+    this._connected();
   }
 
-  constructor() {
-    super();
+  disconnected() {
+    this._disconnected();
+  }
+
+  adopted() {
+    this._adopted();
+  }
+}
+
+export class TestBaseElement extends getElementClass(TestTarget) {
+  static {
+    customElements.define('test-base-element', this);
   }
 }

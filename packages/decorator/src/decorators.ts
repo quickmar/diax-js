@@ -56,7 +56,7 @@ export function AttachListener<K extends keyof HTMLElementEventMap>(
     { kind, metadata }: ClassMethodDecoratorContext<This, Value>,
   ) {
     if (kind !== 'method') return;
-    addMetadataHook(metadata, 'onConnected', function (this: ThisParameterType<typeof value>) {
+    addMetadataHook(metadata, 'connected', function (this: ThisParameterType<typeof value>) {
       attachListener(eventType, value.bind(this), options);
     });
   };
@@ -74,7 +74,7 @@ export function AttachListener<K extends keyof HTMLElementEventMap>(
  */
 export function AttachShadow(init: ShadowRootInit = { mode: 'open' }): CustomElementDecorator {
   return function (_, { metadata }) {
-    addMetadataHook(metadata, 'onHostCreated', () => {
+    addMetadataHook(metadata, 'created', () => {
       attachShadow(init);
     });
   };
@@ -122,7 +122,7 @@ export function ObservedAttributes(...attributes: string[]): CustomElementDecora
  * }
  * ```
  */
-export const Connected = voidCallbackDecorator('onConnected');
+export const Connected = voidCallbackDecorator('connected');
 
 /**
  * Decorator that marks a method to be called before the object is disconnected.
@@ -148,7 +148,7 @@ export const Connected = voidCallbackDecorator('onConnected');
  *
  * @see voidCallbackDecorator for implementation details.
  */
-export const Disconnected = voidCallbackDecorator('onDisconnected');
+export const Disconnected = voidCallbackDecorator('disconnected');
 
 /**
  * Decorator that applies a void callback for the "onAdopted" lifecycle event.
@@ -171,11 +171,11 @@ export const Disconnected = voidCallbackDecorator('onDisconnected');
  *
  * @see voidCallbackDecorator for implementation details.
  */
-export const Adopted = voidCallbackDecorator('onAdopted');
+export const Adopted = voidCallbackDecorator('adopted');
 
 function voidCallbackDecorator(key: RunnableKey): CustomElementMethodDecorator<() => void> {
-  return function (value, { kind, metadata }) {
-    if (kind !== 'method') return;
+  return function (value, { kind, metadata, name }) {
+    if (kind !== 'method' || name === key) return;
     addMetadataHook(metadata, key, function (this: ThisParameterType<typeof value>) {
       value.call(this);
     });

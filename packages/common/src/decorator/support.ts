@@ -5,6 +5,8 @@ export type RunnableKey = keyof Pick<
   'connected' | 'disconnected' | 'created' | 'adopted'
 >;
 
+export type CallbackRunnableKey = keyof Pick<CustomElementDecoratorMetadata, 'connected' | 'disconnected' | 'adopted'>;
+
 /**
  * Executes metadata hooks defined in the given metadata object.
  *

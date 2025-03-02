@@ -6,7 +6,14 @@ import {
   TargetCallbacks,
 } from '@diax-js/common/custom-element';
 import { ElementContext, useElement, useSelf } from '@diax-js/context';
-import { CustomElementDecoratorMetadata, runMetadataHooks } from '@diax-js/common/decorator';
+import {
+  CallbackRunnableKey,
+  CustomElementDecoratorMetadata,
+  runMetadataHooks,
+  RunnableKey,
+} from '@diax-js/common/decorator';
+
+const contexts = new WeakMap<BaseElement<TargetCallbacks>, Context>();
 
 export abstract class BaseElement<T extends TargetCallbacks> extends HTMLElement implements BaseHTMLElement<T> {
   abstract readonly target: TargetConstructor<T>;
@@ -19,9 +26,9 @@ export abstract class BaseElement<T extends TargetCallbacks> extends HTMLElement
     this.runOnce = () => {};
   };
 
-  constructor(metadata: CustomElementDecoratorMetadata) {
+  constructor() {
     super();
-    this[CONTEXT] = new ElementContext(this, metadata);
+    this[CONTEXT] = new ElementContext(this);
   }
 
   connectedCallback(): void {
@@ -56,19 +63,17 @@ export abstract class BaseElement<T extends TargetCallbacks> extends HTMLElement
 
 export function getElementClass<T extends TargetCallbacks>(
   target: TargetConstructor<T>,
-  metadata: CustomElementDecoratorMetadata,
+  metadata?: CustomElementDecoratorMetadata,
 ): HTMLElementConstructor<T> {
+  const meta = extendsMetadata(target, metadata ?? {});
+
   return class extends BaseElement<T> {
     static get observedAttributes() {
-      return target.observedAttributes;
+      return meta.observedAttributes;
     }
 
     static get disabledFeatures() {
-      return target.disabledFeatures;
-    }
-
-    constructor() {
-      super(metadata);
+      return meta.disabledFeatures;
     }
 
     get target() {
@@ -76,7 +81,56 @@ export function getElementClass<T extends TargetCallbacks>(
     }
 
     get metadata() {
-      return metadata;
+      return meta;
     }
   };
+}
+
+export function extendsMetadata<T extends TargetCallbacks>(
+  target: TargetConstructor<T>,
+  metadata: CustomElementDecoratorMetadata,
+): CustomElementDecoratorMetadata {
+  const meta: CustomElementDecoratorMetadata = {
+    observedAttributes: [],
+    disabledFeatures: [],
+    adopted: [],
+    connected: [],
+    disconnected: [],
+    created: [],
+    disabledOptions: [],
+    ...metadata,
+  };
+  assignObservedAttributes(target, meta);
+  assignDisabledFeatures(target, meta);
+  assignCallbacks('connected', target, meta);
+  assignCallbacks('disconnected', target, meta);
+  assignCallbacks('adopted', target, meta);
+  return meta;
+}
+
+function assignCallbacks<T extends TargetCallbacks>(
+  key: CallbackRunnableKey,
+  target: TargetConstructor<T>,
+  metadata: CustomElementDecoratorMetadata,
+) {
+  if (!metadata[key]) {
+    metadata[key] = [];
+  }
+  metadata[key]?.push(function (this: T) {
+    target.prototype[key]?.call(this);
+  });
+}
+
+function assignObservedAttributes<T extends TargetCallbacks>(
+  target: TargetConstructor<T>,
+  metadata: CustomElementDecoratorMetadata,
+) {
+  metadata.observedAttributes!.push(...(target.observedAttributes ?? []));
+}
+
+function assignDisabledFeatures<T extends TargetCallbacks>(
+  target: TargetConstructor<T>,
+  metadata: CustomElementDecoratorMetadata,
+) {
+  metadata.disabledFeatures!.push(...(target.disabledFeatures ?? []));
 }
