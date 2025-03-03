@@ -1,12 +1,5 @@
 import { CustomElementDecoratorMetadata } from './model';
 
-export type RunnableKey = keyof Pick<
-  CustomElementDecoratorMetadata,
-  'connected' | 'disconnected' | 'created' | 'adopted'
->;
-
-export type CallbackRunnableKey = keyof Pick<CustomElementDecoratorMetadata, 'connected' | 'disconnected' | 'adopted'>;
-
 /**
  * Executes metadata hooks defined in the given metadata object.
  *
@@ -18,13 +11,13 @@ export type CallbackRunnableKey = keyof Pick<CustomElementDecoratorMetadata, 'co
  * @param metadata - The metadata object that may contain an array of hooks.
  * @param key - The key of the metadata object where the hooks array is stored.
  */
-export function runMetadataHooks<T>(this: T, metadata: CustomElementDecoratorMetadata, key: RunnableKey): void {
-  const hooks = metadata[key];
+export function runMetadataHooks<T>(thisArg: T, metadata: CustomElementDecoratorMetadata, key: PropertyKey): void {
+  const hooks = Reflect.get(metadata, key);
   if (!hooks || !Array.isArray(hooks)) {
     return;
   }
   for (const hook of hooks) {
-    callHook.call(this, hook);
+    callHook.call(thisArg, hook);
   }
 }
 
@@ -36,7 +29,7 @@ export function runMetadataHooks<T>(this: T, metadata: CustomElementDecoratorMet
  * @param key - The key under which the hook should be stored
  * @param hook - The function to be added as a hook
  */
-export function addMetadataHook(metadata: CustomElementDecoratorMetadata, key: RunnableKey, hook: VoidFunction): void {
+export function addMetadataHook(metadata: DecoratorMetadataObject, key: PropertyKey, hook: VoidFunction): void {
   let hooks = metadata[key] as VoidFunction[];
   if (!hooks) {
     hooks = [];

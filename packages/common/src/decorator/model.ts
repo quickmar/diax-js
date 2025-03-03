@@ -13,14 +13,14 @@ import { Method, NoArgType } from '../model/common';
  * @property onDisconnected - An optional array of callbacks executed when the custom element is disconnected from the DOM.
  * @property onAdopted - An optional array of callbacks executed when the custom element is adopted into a new document.
  */
-export interface CustomElementDecoratorMetadata {
-  observedAttributes?: string[];
-  disabledFeatures?: string[];
-  disabledOptions?: string[];
-  created?: VoidFunction[];
-  connected?: VoidFunction[];
-  disconnected?: VoidFunction[];
-  adopted?: VoidFunction[];
+export interface CustomElementDecoratorMetadata extends Record<string, unknown[]> {
+  observedAttributes: string[];
+  disabledFeatures: string[];
+  disabledOptions: string[];
+  created: VoidFunction[];
+  connected: VoidFunction[];
+  disconnected: VoidFunction[];
+  adopted: VoidFunction[];
 }
 
 /**

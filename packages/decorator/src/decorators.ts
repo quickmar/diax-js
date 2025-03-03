@@ -1,8 +1,8 @@
 import { Method } from '@diax-js/common';
 import {
   CustomElementDecorator,
+  CustomElementDecoratorMetadata,
   CustomElementMethodDecorator,
-  RunnableKey,
   addMetadataHook,
 } from '@diax-js/common/decorator';
 import { AddEventListenersParams } from '@diax-js/common/state';
@@ -173,11 +173,11 @@ export const Disconnected = voidCallbackDecorator('disconnected');
  */
 export const Adopted = voidCallbackDecorator('adopted');
 
-function voidCallbackDecorator(key: RunnableKey): CustomElementMethodDecorator<() => void> {
+function voidCallbackDecorator(
+  key: keyof Pick<CustomElementDecoratorMetadata, 'adopted' | 'connected' | 'disconnected'>,
+): CustomElementMethodDecorator<() => void> {
   return function (value, { kind, metadata, name }) {
     if (kind !== 'method' || name === key) return;
-    addMetadataHook(metadata, key, function (this: ThisParameterType<typeof value>) {
-      value.call(this);
-    });
+    addMetadataHook(metadata, key, value);
   };
 }

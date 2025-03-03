@@ -6,12 +6,7 @@ import {
   TargetCallbacks,
 } from '@diax-js/common/custom-element';
 import { ElementContext, useElement, useSelf } from '@diax-js/context';
-import {
-  CallbackRunnableKey,
-  CustomElementDecoratorMetadata,
-  runMetadataHooks,
-  RunnableKey,
-} from '@diax-js/common/decorator';
+import { CustomElementDecoratorMetadata, runMetadataHooks } from '@diax-js/common/decorator';
 
 const contexts = new WeakMap<BaseElement<TargetCallbacks>, Context>();
 
@@ -22,7 +17,7 @@ export abstract class BaseElement<T extends TargetCallbacks> extends HTMLElement
   readonly [CONTEXT]: Context;
 
   private runOnce = () => {
-    runMetadataHooks.call(this.component, this.metadata, 'created');
+    runMetadataHooks(this.component, this.metadata, 'created');
     this.runOnce = () => {};
   };
 
@@ -35,13 +30,13 @@ export abstract class BaseElement<T extends TargetCallbacks> extends HTMLElement
     useElement(this, () => {
       this.runOnce();
       this.component = useSelf(this.target);
-      runMetadataHooks.call(this.component, this.metadata, 'connected');
+      runMetadataHooks(this.component, this.metadata, 'connected');
     });
   }
 
   disconnectedCallback(): void {
     useElement(this, () => {
-      runMetadataHooks.call(this.component, this.metadata, 'disconnected');
+      runMetadataHooks(this.component, this.metadata, 'disconnected');
       this[CONTEXT].destroy();
       this.component = undefined;
     });
@@ -56,24 +51,27 @@ export abstract class BaseElement<T extends TargetCallbacks> extends HTMLElement
 
   adoptedCallback(): void {
     useElement(this, () => {
-      runMetadataHooks.call(this.component, this.metadata, 'adopted');
+      runMetadataHooks(this.component, this.metadata, 'adopted');
     });
   }
 }
 
 export function getElementClass<T extends TargetCallbacks>(
   target: TargetConstructor<T>,
-  metadata?: CustomElementDecoratorMetadata,
+  metadata?: DecoratorMetadataObject,
 ): HTMLElementConstructor<T> {
-  const meta = extendsMetadata(target, metadata ?? {});
+  metadata = metadata ?? {};
+  if (!extendMetadata(target, metadata)) {
+    panic();
+  }
 
   return class extends BaseElement<T> {
     static get observedAttributes() {
-      return meta.observedAttributes;
+      return metadata.observedAttributes;
     }
 
     static get disabledFeatures() {
-      return meta.disabledFeatures;
+      return metadata.disabledFeatures;
     }
 
     get target() {
@@ -81,56 +79,45 @@ export function getElementClass<T extends TargetCallbacks>(
     }
 
     get metadata() {
-      return meta;
+      return metadata;
     }
   };
 }
 
-export function extendsMetadata<T extends TargetCallbacks>(
+export function extendMetadata<T extends TargetCallbacks>(
   target: TargetConstructor<T>,
-  metadata: CustomElementDecoratorMetadata,
-): CustomElementDecoratorMetadata {
-  const meta: CustomElementDecoratorMetadata = {
-    observedAttributes: [],
-    disabledFeatures: [],
-    adopted: [],
-    connected: [],
-    disconnected: [],
-    created: [],
-    disabledOptions: [],
-    ...metadata,
-  };
-  assignObservedAttributes(target, meta);
-  assignDisabledFeatures(target, meta);
-  assignCallbacks('connected', target, meta);
-  assignCallbacks('disconnected', target, meta);
-  assignCallbacks('adopted', target, meta);
-  return meta;
+  metadata: object,
+): metadata is CustomElementDecoratorMetadata {
+  assignObservedAttributes(target, metadata);
+  assignDisabledFeatures(target, metadata);
+  assignCallbacks('connected', target, metadata);
+  assignCallbacks('disconnected', target, metadata);
+  assignCallbacks('adopted', target, metadata);
+  return true;
 }
 
-function assignCallbacks<T extends TargetCallbacks>(
-  key: CallbackRunnableKey,
-  target: TargetConstructor<T>,
-  metadata: CustomElementDecoratorMetadata,
-) {
-  if (!metadata[key]) {
-    metadata[key] = [];
+export function panic(): never {
+  throw new Error();
+}
+
+function assignCallbacks<T extends TargetCallbacks>(key: PropertyKey, target: TargetConstructor<T>, metadata: object) {
+  const method = Reflect.get(target.prototype, key);
+  const arr = method ? [method] : [];
+  assignArray(metadata, key, arr);
+}
+
+function assignObservedAttributes<T extends TargetCallbacks>(target: TargetConstructor<T>, metadata: object) {
+  assignArray(metadata, 'observedAttributes', target.observedAttributes);
+}
+
+function assignDisabledFeatures<T extends TargetCallbacks>(target: TargetConstructor<T>, metadata: object) {
+  assignArray(metadata, 'disabledFeatures', target.disabledFeatures);
+}
+
+function assignArray(metadata: object, key: PropertyKey, values?: unknown[]) {
+  const value = Reflect.get(metadata, key);
+  if (value && Array.isArray(value)) {
+    return value.push(...(values ?? []));
   }
-  metadata[key]?.push(function (this: T) {
-    target.prototype[key]?.call(this);
-  });
-}
-
-function assignObservedAttributes<T extends TargetCallbacks>(
-  target: TargetConstructor<T>,
-  metadata: CustomElementDecoratorMetadata,
-) {
-  metadata.observedAttributes!.push(...(target.observedAttributes ?? []));
-}
-
-function assignDisabledFeatures<T extends TargetCallbacks>(
-  target: TargetConstructor<T>,
-  metadata: CustomElementDecoratorMetadata,
-) {
-  metadata.disabledFeatures!.push(...(target.disabledFeatures ?? []));
+  Reflect.set(metadata, key, values ?? []);
 }

@@ -2,10 +2,9 @@ import { SignalSubscription } from '@diax-js/common/state';
 import { RenderingTargetCallbacks, RenderingHTMLElement, RenderingElementConstructor } from '@diax-js/common/rendering';
 import { useElement } from '@diax-js/context';
 import { produceRenderingAction, subscribe } from '@diax-js/state/support';
-import { BaseElement, extendsMetadata } from '@diax-js/custom-element';
+import { BaseElement, extendMetadata, panic } from '@diax-js/custom-element';
 import { render, Hole } from 'uhtml';
 import { TargetConstructor } from '@diax-js/common/custom-element';
-import { CustomElementDecoratorMetadata } from '@diax-js/common/decorator';
 
 export abstract class BaseRenderingElement<R>
   extends BaseElement<RenderingTargetCallbacks<R>>
@@ -38,10 +37,13 @@ export abstract class BaseRenderingElement<R>
 
 export function getRenderingElementClass(
   target: TargetConstructor<RenderingTargetCallbacks<Hole>>,
-  metadata?: CustomElementDecoratorMetadata,
+  metadata?: DecoratorMetadataObject,
 ): RenderingElementConstructor<Hole> {
-  metadata = extendsMetadata(target, metadata ?? {});
-  
+  metadata = metadata ?? {};
+  if (!extendMetadata(target, metadata)) {
+    panic();
+  }
+
   return class extends BaseRenderingElement<Hole> {
     static get observedAttributes() {
       return metadata.observedAttributes;

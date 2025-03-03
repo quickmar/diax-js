@@ -10,7 +10,7 @@ declare global {
 }
 
 @CustomElement('counter-output')
-@AttachShadow()
+// @AttachShadow()
 class CounterOutput {
   private holder?: HTMLInputElement;
 
