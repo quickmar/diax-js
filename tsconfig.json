@@ -21,12 +21,6 @@
     },
     {
       "path": "./packages/test"
-    },
-    {
-      "path": "./packages/browser"
-    },
-    {
-      "path": "./packages/decorator"
     }
   ],
 }
